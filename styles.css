@@ -372,7 +372,6 @@ caption { text-align: left; font-size: var(--fs-meta); color: var(--fg-2);
 
 /* header: sentence case and a real weight, not tracked-out small caps */
 thead th {
-  position: sticky; top: 0; z-index: 2;
   background: var(--table-bg);
   font: 600 var(--fs-meta)/1.3 var(--sans); letter-spacing: 0;
   color: var(--fg-2); text-align: right; padding: var(--s3) var(--s4);
@@ -385,8 +384,10 @@ thead tr.group th { color: var(--fg-3); font-weight: 500; padding-bottom: var(--
                     box-shadow: none; }
 thead tr.group th[colspan] { text-align: center;
                              box-shadow: inset 0 -1px 0 var(--table-line); }
-thead tr:first-child th { top: 0; }
-thead tr:nth-child(2) th { top: 1.9rem; }
+/* only the row that names the columns is pinned; a magic offset for a second
+   sticky row breaks the moment a header wraps */
+thead tr:last-child th { position: sticky; top: 0; z-index: 2; }
+thead tr:last-child th.stick { z-index: 4; }
 
 thead th:first-child, tbody td:first-child, tbody th:first-child { text-align: left; }
 tbody td, tbody th {
@@ -418,7 +419,6 @@ b.win { font-weight: 700; color: var(--fg); }
 
 /* the method column stays readable while the metrics scroll under it */
 th.stick, td.stick { position: sticky; left: 0; z-index: 3; background: var(--table-bg); }
-thead th.stick { z-index: 4; }
 tbody tr.ours th.stick { background: color-mix(in srgb, var(--paver) 8%, var(--table-bg)); }
 tbody tr.sweep th.stick { background: color-mix(in srgb, var(--paver) 3.5%, var(--table-bg)); }
 tbody tr:hover th.stick { background: color-mix(in srgb, var(--fg) 5%, var(--table-bg)); }

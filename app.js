@@ -931,7 +931,7 @@ addEventListener('DOMContentLoaded', () => {
         card.innerHTML =
           `<div class="vhead"><span class="who${ours ? ' ours' : ''}">${NAME[file] || file}</span>
              <span class="score" title="Driving Score / Route Completion">${score}</span></div>
-           <video preload="metadata" playsinline muted
+           <video preload="metadata" playsinline muted poster="assets/video/posters/${r.id}_${file.replace('.mp4','')}.jpg"
                   aria-label="Closed-loop replay of route ${r.id}, ${r.scenario}, ${NAME[file] || file}"></video>
            <div class="chips">${outcome.map(t => `<span class="tag ${cls(t)}">${t}</span>`).join('')}</div>
            <p class="caption">Front camera and top-down view of route ${r.id}, ${r.scenario}, driven by
