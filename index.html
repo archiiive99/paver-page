@@ -125,7 +125,7 @@
           downstream recipe. Every axis is normalized across all three, and outward is always better.</p>
         <div class="pane" data-pane="chart"><div id="chartRadar"></div><div class="chips" id="radarTabs" role="tablist" aria-label="Architecture"></div></div>
         <div class="pane" data-pane="table" hidden>      <div class="scroller"><table>
-        <caption>Multi-task nuScenes validation results for three architectures, each without and with PAVER pretraining.</caption>
+        
         <thead>
           <tr class="grp"><th class="stick"></th><th colspan="2" scope="colgroup">Epochs</th><th colspan="2" scope="colgroup">Auxiliary tasks</th><th colspan="2" scope="colgroup">Planning</th><th colspan="3" scope="colgroup">Motion</th><th colspan="2" scope="colgroup">Detection</th><th scope="col">Map</th></tr>
           <tr><th class="stick" scope="col">Method</th><th scope="col">PT</th><th scope="col">FT</th><th scope="col">Pretraining</th><th scope="col">Fine-tuning</th><th scope="col">L2 <span class="u">m, lower is better</span></th><th scope="col">Col. <span class="u">%, lower is better</span></th><th scope="col">ADE <span class="u">m, lower is better</span></th><th scope="col">FDE <span class="u">m, lower is better</span></th><th scope="col">MR <span class="u">lower is better</span></th><th scope="col">mAP ↑</th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <span class="u">higher is better</span></th><th scope="col">mAP ↑</th></tr>
@@ -139,6 +139,7 @@
           <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>20</td><td>30</td><td>Actions</td><td>Det., Map, Mot., Plan.</td><td><b class="win">0.54</b></td><td><b class="win">0.21</b></td><td><b class="win">0.80</b></td><td><b class="win">1.05</b></td><td><b class="win">0.11</b></td><td><b class="win">0.21</b></td><td><b class="win">0.28</b></td><td>0.44</td></tr>
         </tbody>
       </table></div>
+        <p class="tcap">Multi-task nuScenes validation results for three architectures, each without and with PAVER pretraining.</p>
       <p class="foot" id="fn-repro">A bold value is the better of the pair it is compared against. <sup>†</sup> Reproduced results <a href="#fnref-1">↩</a>. Actions denotes PAVER's sparse action targets. PT and FT denote pretraining and fine-tuning epochs. L2 is the trajectory displacement error and Col. the box collision rate in percent, both averaged over 1, 2, and 3 seconds.</p></div>
       </div>
     </div>
@@ -295,7 +296,7 @@
       </div>
       <p class="lead">The same planning result decomposed into the 1, 2 and 3 second horizons.</p>
       <div class="pane" data-pane="chart"><div id="chartHorizon"></div><div class="chips" id="horizonTabs" role="tablist" aria-label="Metric"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
-          <caption>Planning error and collision rate at each prediction horizon.</caption>
+          
           <thead><tr class="grp"><th class="stick"></th><th colspan="3" scope="colgroup">L2 (m) ↓</th><th colspan="3" scope="colgroup">Col. (%) ↓</th></tr>
           <tr><th class="stick" scope="col">Method</th><th scope="col">1s</th><th scope="col">2s</th><th scope="col">3s</th><th scope="col">1s</th><th scope="col">2s</th><th scope="col">3s</th></tr></thead>
           <tbody>
@@ -307,6 +308,7 @@
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td><b class="win">0.28</b></td><td><b class="win">0.51</b></td><td><b class="win">0.82</b></td><td><b class="win">0.09</b></td><td><b class="win">0.18</b></td><td><b class="win">0.35</b></td></tr>
           </tbody>
         </table></div>
+        <p class="tcap">Planning error and collision rate at each prediction horizon.</p>
         <p class="foot"><sup>†</sup> Reproduced results.</p></div>
     </div>
       <div class="card" id="table5">
@@ -314,7 +316,7 @@
       </div>
       <p class="lead">UniPAD and MIM4D reconstruct scene content with 6.41M and 13.43M auxiliary parameters. PAVER uses 0.01M and still reaches the lowest planning error and collision rate on VAD-Tiny.</p>
       <div class="pane" data-pane="chart"><div id="chartMethods"></div><div class="chips" id="methodsTabs" role="tablist" aria-label="Metric"></div></div><div class="pane" data-pane="table" hidden>      <div class="scroller"><table>
-        <caption>Comparison against reconstruction-based driving pretraining at matched downstream budgets.</caption>
+        
         <thead><tr class="grp"><th class="stick"></th><th></th><th></th><th colspan="3" scope="colgroup">L2 (m) ↓</th><th colspan="3" scope="colgroup">Col. (%) ↓</th></tr>
         <tr><th class="stick" scope="col">Method</th><th scope="col">Target</th><th scope="col">#Params ↓</th><th scope="col">1s</th><th scope="col">2s</th><th scope="col">3s</th><th scope="col">1s</th><th scope="col">2s</th><th scope="col">3s</th></tr></thead>
         <tbody>
@@ -327,13 +329,14 @@
           <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>Sparse Actions</td><td>0.01M</td><td><b class="win">0.30</b></td><td><b class="win">0.53</b></td><td><b class="win">0.85</b></td><td>0.26</td><td>0.43</td><td>0.61</td></tr>
         </tbody>
       </table></div>
+        <p class="tcap">Comparison against reconstruction-based driving pretraining at matched downstream budgets.</p>
       <p class="foot">#Params reports temporary auxiliary parameters. RGB denotes camera-color reconstruction and Depth denotes LiDAR-projected sparse metric-depth reconstruction. <sup>†</sup> Reproduced results. <sup>‡</sup> Reported results.</p></div>
     </div>
       <div class="card" id="table3">
       <div class="chead"><div class="titles"><span class="kicker">Paper table 3</span><h3>Map prediction</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <div class="pane" data-pane="chart"><div id="chartMap"></div><div class="chips" id="mapTabs" role="tablist" aria-label="Metric"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
-          <caption>Vector map average precision per class on nuScenes.</caption>
+          
           <thead><tr class="grp"><th class="stick"></th><th colspan="3" scope="colgroup">AP ↑</th><th></th></tr>
           <tr><th class="stick" scope="col">Method</th><th scope="col">Divider</th><th scope="col">Ped. Crossing</th><th scope="col">Boundary</th><th scope="col">mAP ↑</th></tr></thead>
           <tbody>
@@ -345,6 +348,7 @@
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>0.47</td><td>0.35</td><td>0.48</td><td>0.44</td></tr>
           </tbody>
         </table></div>
+        <p class="tcap">Vector map average precision per class on nuScenes.</p>
         <p class="foot">AP and mAP denote average precision per map class and its mean. <sup>†</sup> Reproduced results.</p></div>
     </div>
       <div class="card" id="table2">
@@ -356,7 +360,7 @@
         and detection all improve over scratch &mdash; while the collision reduction does not carry over, so it is a
         usable substitute rather than an equivalent one.</p>
       <div class="pane" data-pane="chart"><div id="chartPseudo"></div><div class="chips" id="pseudoTabs" role="tablist" aria-label="Metric"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
-          <caption>Replacing the LiDAR target source with monocular pseudo-LiDAR.</caption>
+          
           <thead><tr class="grp"><th class="stick"></th><th colspan="2" scope="colgroup">Planning</th><th colspan="3" scope="colgroup">Motion</th><th scope="col">Det.</th><th scope="col">Map</th></tr>
           <tr><th class="stick" scope="col">Target source</th><th scope="col">L2 <span class="u">m, lower is better</span></th><th scope="col">Col. <span class="u">%, lower is better</span></th><th scope="col">ADE <span class="u">m, lower is better</span></th><th scope="col">FDE <span class="u">m, lower is better</span></th><th scope="col">MR <span class="u">lower is better</span></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <span class="u">higher is better</span></th><th scope="col">mAP ↑</th></tr></thead>
           <tbody>
@@ -365,6 +369,7 @@
             <tr class="ours"><th class="stick" scope="row">LiDAR</th><td>0.60</td><td><b class="win">0.187</b></td><td><b class="win">0.803</b></td><td><b class="win">1.086</b></td><td>0.12</td><td><b class="win">0.397</b></td><td>0.44</td></tr>
           </tbody>
         </table></div>
+        <p class="tcap">Replacing the LiDAR target source with monocular pseudo-LiDAR.</p>
         <p class="foot">If no LiDAR is available, monocular pseudo-LiDAR from a frozen metric-depth estimator is a usable, non-equivalent target source. <sup>†</sup> Reproduced results.</p></div>
       </div>
       </div>
@@ -384,7 +389,7 @@
       </div>
       <p class="lead">The initialization that helps open-loop planning also survives closed-loop control, where errors accumulate over a route instead of being scored per frame.</p>
       <div class="pane" data-pane="chart"><div id="chartClosed"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
-          <caption>Closed-loop driving on Town05 Long, 9 routes with one repetition.</caption>
+          
           <thead><tr><th class="stick" scope="col">Method</th><th scope="col"><abbr title="Driving Score">DS</abbr> <span class="u">higher is better</span></th><th scope="col"><abbr title="Route Completion">RC</abbr> <span class="u">higher is better</span></th><th scope="col"><abbr title="Infraction Score">IS</abbr> <span class="u">higher is better</span></th></tr></thead>
           <tbody>
             <tr><th class="stick" scope="row">UniAD-Tiny</th><td>48.45</td><td>60.96</td><td>0.85</td></tr>
@@ -393,6 +398,7 @@
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td><b class="win">49.07</b></td><td>58.95</td><td>0.90</td></tr>
           </tbody>
         </table></div>
+        <p class="tcap">Closed-loop driving on Town05 Long, 9 routes with one repetition.</p>
         <p class="foot" id="fn-genad">DS, RC, and IS denote Driving Score, Route Completion, and Infraction Score. n/a marks a metric the source does not report. <sup>‡</sup> Reported by GenAD.</p></div>
     </div>
       <div class="card" id="routes">
@@ -431,11 +437,12 @@
       </div>
       <p class="lead">Every row pretrains for 20 epochs. The three lightly tinted rows are the PAVER capacity sweep, not the headline configuration.</p>
       <div class="pane" data-pane="chart"><div id="chartStrategy"></div><div class="chips" id="strategyTabs" role="tablist" aria-label="Metric"></div></div><div class="pane" data-pane="table" hidden>      <div class="scroller"><table>
-        <caption>Pretraining supervision against auxiliary-head budget. The three lightly tinted rows are PAVER's capacity sweep, not the headline configuration.</caption>
+        
         <thead><tr class="grp"><th class="stick" colspan="4" scope="colgroup">Pretraining supervision</th><th></th><th colspan="2" scope="colgroup">Plan.</th><th scope="col">Mot.</th><th scope="col">Det.</th><th scope="col">Map</th></tr>
         <tr><th class="stick" scope="col">Det.</th><th scope="col">Map</th><th scope="col">Occ.</th><th scope="col">Act.</th><th scope="col">#Params ↓</th><th scope="col">L2 <span class="u">m, lower is better</span></th><th scope="col">Col. <span class="u">%, lower is better</span></th><th scope="col">ADE <span class="u">m, lower is better</span></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <span class="u">higher is better</span></th><th scope="col">mAP ↑</th></tr></thead>
         <tbody id="t7body"></tbody>
       </table></div>
+        <p class="tcap">Pretraining supervision against auxiliary-head budget. The three lightly tinted rows are PAVER's capacity sweep, not the headline configuration.</p>
       <p class="foot">All pretraining runs use 20 epochs. Occ. and Act. denote occupancy and PAVER's action conditioning. No task-supervised row matches the collision rate and NDS of sparse action targets, at 1/300 of the auxiliary parameters.</p></div>
     </div>
       <div class="card" id="table8">
@@ -443,11 +450,12 @@
       </div>
       <p class="lead">Neither component helps safety on its own. Only together do they reach 0.187 collision with the lowest L2 and the highest NDS.</p>
       <div class="pane" data-pane="chart"><div id="chartComponents"></div><div class="chips" id="componentsTabs" role="tablist" aria-label="Metric"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
-          <caption>Feature masking and action-state conditioning, separately and together.</caption>
+          
           <thead><tr class="grp"><th class="stick" colspan="2"></th><th colspan="2" scope="colgroup">Planning</th><th colspan="3" scope="colgroup">Motion</th><th scope="col">Det.</th><th scope="col">Map</th></tr>
           <tr><th class="stick" scope="col">Mask</th><th scope="col">Action</th><th scope="col">L2 <span class="u">m, lower is better</span></th><th scope="col">Col. <span class="u">%, lower is better</span></th><th scope="col">ADE <span class="u">m, lower is better</span></th><th scope="col">FDE <span class="u">m, lower is better</span></th><th scope="col">MR <span class="u">lower is better</span></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <span class="u">higher is better</span></th><th scope="col">mAP ↑</th></tr></thead>
           <tbody id="t8body"></tbody>
         </table></div>
+        <p class="tcap">Feature masking and action-state conditioning, separately and together.</p>
         <p class="foot">Neither component helps safety alone; only together do they reach 0.187 collision with the lowest L2 and highest NDS.</p></div>
     </div>
       <div class="card" id="table9">
@@ -455,7 +463,7 @@
       </div>
       <p class="lead">Each point is a fine-tuning budget on top of 20 pretraining epochs. The dashed line marks the total training time of the scratch baseline.</p>
       <div class="pane" data-pane="chart"><div id="chartSchedule"></div><div class="chips" id="scheduleTabs" role="tablist" aria-label="Architecture"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
-          <caption>Pretraining and fine-tuning epoch budgets against total wall-clock training time.</caption>
+          
           <thead><tr class="grp"><th class="stick"></th><th colspan="3" scope="colgroup">Training cost</th><th colspan="2" scope="colgroup">Planning</th><th scope="col">Mot.</th><th scope="col">Det.</th><th scope="col">Map</th></tr>
           <tr><th class="stick" scope="col">Method</th><th scope="col">PT</th><th scope="col">FT</th><th scope="col">Time</th><th scope="col">L2 <span class="u">m, lower is better</span></th><th scope="col">Col. <span class="u">%, lower is better</span></th><th scope="col">ADE <span class="u">m, lower is better</span></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <span class="u">higher is better</span></th><th scope="col">mAP ↑</th></tr></thead>
           <tbody>
@@ -470,6 +478,7 @@
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>20</td><td>30</td><td>66.1h</td><td><b class="win">0.561</b></td><td>0.43</td><td><b class="win">0.685</b></td><td>0.45</td><td><b class="win">0.498</b></td></tr>
           </tbody>
         </table></div>
+        <p class="tcap">Pretraining and fine-tuning epoch budgets against total wall-clock training time.</p>
         <p class="foot" id="fn-stage1">Time is total training time on 4 NVIDIA RTX&nbsp;5090 GPUs. <sup>†</sup> Reproduced. <sup>‡</sup> Stage 1 pretrains detection, mapping, and motion prediction without planning.</p></div>
     </div>
       </div>

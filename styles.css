@@ -426,7 +426,7 @@ tbody tr:hover th.stick { background: color-mix(in srgb, var(--fg) 5%, var(--tab
 /* a value the source does not provide reads as absent, not as zero */
 td .na { color: var(--fg-3); font-variant-numeric: normal; }
 
-.tnote { font-size: var(--fs-meta); line-height: 1.6; color: var(--fg-3); }
+.tnote { font-size: var(--fs-label); line-height: 1.6; color: var(--fg-3); }
 .tnote a { color: var(--fg-2); }
 
 /* ── charts ───────────────────────────────────────────────────────────── */
@@ -1185,3 +1185,22 @@ input[type="search"]::-webkit-search-cancel-button:hover { opacity: 0.9; }
 
 /* the back-to-top button sits clear of content on small screens */
 @media (max-width: 700px) { #top { inset: auto var(--s4) calc(var(--s4) + env(safe-area-inset-bottom)) auto; } }
+
+/* ── table captions and spacing ─────────────────────────────────────────── */
+/* the caption sat inside the table, repeating the card title and scrolling
+   with the columns; it belongs under the table, in the tone of a note */
+.tcap {
+  margin: var(--s3) 0 0;
+  font-size: var(--fs-label);
+  line-height: 1.55;
+  color: var(--fg-3);
+}
+.tcap + .foot { margin-top: var(--s2); }
+
+/* a table needs air above it: the lead ran straight into the header row */
+.scroller { margin-top: var(--s5); }
+.pane > .scroller:first-child { margin-top: var(--s4); }
+
+/* the sentence above a table introduces it, so it reads at body tone but does
+   not compete with the card title */
+.card > .lead { color: var(--fg-2); }
