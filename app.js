@@ -110,6 +110,20 @@ function cardHeader(opts) {
 /* ── images: display derivative in the page, original in the viewer ───── */
 const DIMS = () => window.PAVER_DIMS || {};
 /* a figure that fails to load says so instead of leaving an empty frame */
+/* a failure that leaves the pane blank is indistinguishable from a slow load,
+ * so it says what happened where the content would have been */
+function clearViewerBusy() {
+  const st = document.getElementById('wvStage');
+  if (st) st.removeAttribute('aria-busy');
+}
+
+function showViewerError(message) {
+  const stage = document.getElementById('wvStage');
+  if (!stage) return;
+  stage.removeAttribute('aria-busy');
+  stage.innerHTML = `<p class="empty">${message}</p>`;
+}
+
 function onImgError(im) {
   im.addEventListener('error', () => {
     im.dataset.failed = '1';
@@ -941,6 +955,7 @@ addEventListener('DOMContentLoaded', () => {
     }).join('');
     sel.addEventListener('change', () => {
       show(sel.value, true);
+      announce(`Route ${sel.value}`);
       /* the charts below describe the same route, so they follow the replay */
       const chart = $('#routeChart');
       if (chart && chart.value !== sel.value &&
@@ -967,6 +982,7 @@ addEventListener('DOMContentLoaded', () => {
         now.textContent = clock(c);
         dur.textContent = clock(d);
         track.setAttribute('aria-valuenow', String(Math.round(pct)));
+        track.setAttribute('aria-valuetext', `${clock(c)} of ${clock(d)}`);
       }
       function seek(pct) {
         const d = length();
@@ -1085,6 +1101,13 @@ addEventListener('DOMContentLoaded', () => {
       cap.textContent = spec[4];
       const all = scenes(), page = all.slice(0, shown);
       $('#galCount').textContent = `${page.length} of ${all.length} scenes`;
+      if (!all.length) {
+        body.innerHTML = '<p class="empty">No scene matches that filter. Clear the box to see them all.</p>';
+        $('#galMore').hidden = true;
+        markTabs(tabs, key);
+        if (push) setParam('gal', key);
+        return;
+      }
       body.innerHTML = '';
       page.forEach(sc => {
         const wrap = document.createElement('div');
@@ -1549,7 +1572,12 @@ addEventListener('DOMContentLoaded', () => {
 
   async function fetchFrame(token) {
     if (cache.has(token)) return cache.get(token);
-    const p = fetch(`assets/webviz/frames/${token}.json`).then(r => r.json());
+    const st = document.getElementById('wvStage');
+    if (st) st.setAttribute('aria-busy', 'true');
+    const p = fetch(`assets/webviz/frames/${token}.json`)
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(d => { clearViewerBusy(); return d; })
+      .catch(err => { showViewerError(`Scene data could not be loaded (${err.message}).`); throw err; });
     cache.set(token, p);
     return p;
   }
@@ -1673,8 +1701,13 @@ addEventListener('DOMContentLoaded', () => {
 
   (async function init() {
     try {
-      manifest = await (await fetch('assets/webviz/manifest.json',
+      try {
+        manifest = await (await fetch('assets/webviz/manifest.json',
         { cache: 'no-store' })).json();
+      } catch (err) {
+        showViewerError('The visualizer manifest could not be loaded.');
+        return;
+      }
     } catch (e) {
       card.hidden = true;
       return;
