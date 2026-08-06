@@ -930,7 +930,9 @@ addEventListener('DOMContentLoaded', () => {
         card.className = 'card tight';
         card.innerHTML =
           `<div class="vhead"><span class="who${ours ? ' ours' : ''}">${NAME[file] || file}</span>
-             <span class="score" title="Driving Score / Route Completion">${score}</span></div>
+             <span class="score"><abbr title="Driving Score">DS</abbr> ${score.split(' / ')[0]}
+               <i aria-hidden="true">&middot;</i>
+               <abbr title="Route Completion">RC</abbr> ${score.split(' / ')[1]}</span></div>
            <video preload="metadata" playsinline muted poster="assets/video/posters/${r.id}_${file.replace('.mp4','')}.jpg"
                   aria-label="Closed-loop replay of route ${r.id}, ${r.scenario}, ${NAME[file] || file}"></video>
            <div class="chips">${outcome.map(t => `<span class="tag ${cls(t)}">${t}</span>`).join('')}</div>
@@ -1010,10 +1012,12 @@ addEventListener('DOMContentLoaded', () => {
       track.addEventListener('pointerup', () => { dragging = false; track.classList.remove('scrubbing'); });
       track.addEventListener('keydown', e => {
         const d = length(); if (!d) return;
-        const step = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0;
-        if (!step) return;
+        const at = lead().currentTime;
+        const to = { ArrowLeft: at - 1, ArrowRight: at + 1,
+                     PageDown: at - 10, PageUp: at + 10, Home: 0, End: d }[e.key];
+        if (to === undefined) return;
         e.preventDefault();
-        seek((lead().currentTime + step) / d);
+        seek(to / d);
       });
       window.__routePaint = paint;
       setInterval(() => { if (!dragging) paint(); }, 200);
@@ -1130,6 +1134,7 @@ addEventListener('DOMContentLoaded', () => {
         body.appendChild(wrap);
       });
       $('#galMore').hidden = shown >= all.length;
+      if (!$('#galMore').hidden) $('#galMore').textContent = `Load ${Math.min(PAGE, all.length - shown)} more`;
       markTabs(tabs, key);
       if (push) setParam('gal', key);
     }
@@ -1753,7 +1758,7 @@ addEventListener('DOMContentLoaded', () => {
     function modeBar() {
       const gc = gcOf();
       const bar = $('#wvMode');
-      chipTabs(bar, [['pred', 'Prediction'], ['attn', 'Grad-CAM']], (k, push) => {
+      chipTabs(bar, [['pred', 'Detections'], ['attn', 'Grad-CAM']], (k, push) => {
         if (k === 'attn' && !gcOf()) return;
         camMode = k;
         if (k === 'attn') setPlaying(false);
@@ -1765,7 +1770,7 @@ addEventListener('DOMContentLoaded', () => {
       const attn = $$('button', bar).find(b => b.dataset.k === 'attn');
       if (attn) {
         attn.disabled = !gc;
-        attn.title = gc ? 'Grad-CAM of the BEV embedding for this frame'
+        attn.title = gc ? 'Heat map of the BEV embedding, drawn over the image'
           : `Grad-CAM is not available for ${arch}: ` +
             `${(manifest.gradcam && manifest.gradcam.architectures[arch] || {}).reason ||
                'no verified complete run'}`;

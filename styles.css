@@ -1103,3 +1103,49 @@ img[data-failed] { object-fit: contain; background: var(--seg-track);
 /* an empty result says what to do next */
 .empty { padding: var(--s6); text-align: center; color: var(--fg-3);
          font-size: var(--fs-meta); }
+
+/* ── motion, targets, links ─────────────────────────────────────────────── */
+/* eight different durations read as eight different components; three steps
+   cover everything: a press, a state change, and a layout move */
+:root { --t-fast: .12s; --t-base: .2s; --t-slow: .42s; }
+
+/* a control small enough to miss is a control that gets missed */
+.btn, .segbar button, .select select { min-height: 34px; }
+@media (pointer: coarse) {
+  .btn, .segbar button, .select select { min-height: 44px; }
+  .wvplay { width: 44px; height: 44px; }
+}
+
+/* a link inside running text looks like a link before it is hovered */
+.lead a, .caption a, .foot a, p a:not(.btn) {
+  text-decoration: underline; text-underline-offset: 0.18em;
+  text-decoration-thickness: from-font;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+}
+.lead a:hover, .caption a:hover, .foot a:hover, p a:not(.btn):hover {
+  text-decoration-color: currentColor;
+}
+
+/* every interactive element shows focus, not only the six that had a rule */
+a:focus-visible, button:focus-visible, select:focus-visible,
+input:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px;
+}
+
+/* the field says how to clear itself */
+input[type="search"] { -webkit-appearance: none; appearance: none; }
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; cursor: pointer;
+  background: currentColor; opacity: 0.45;
+  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8" stroke="black" stroke-width="2" fill="none"/></svg>') center/contain no-repeat;
+}
+input[type="search"]::-webkit-search-cancel-button:hover { opacity: 0.9; }
+
+/* readers who ask for less motion get none of it, not just less of it */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important; scroll-behavior: auto !important;
+  }
+}

@@ -68,7 +68,7 @@
   <div class="hero">
     <div class="wrap">
       <div class="chips">
-        <span class="tag accent">Preprint, under review</span>
+        <span class="tag accent">Preprint</span>
       </div>
       <h1>Planning-Aligned Pretraining of BEV Representations with Sparse Action-Conditioned Targets for End-to-End Autonomous Driving</h1>
       <div class="authors">
@@ -86,19 +86,19 @@
           <span class="k-label">Collision rate</span>
           <div class="k-row"><span class="k-from">0.51%</span><span class="k-arrow">&rarr;</span><span class="k-to">0.19%</span></div>
           <span class="tag ok">&minus;63% collisions</span>
-          <span class="k-note">VAD-Tiny, averaged over the 1, 2 and 3 second horizons</span>
+          <span class="k-note">VAD-Tiny at epoch 30, averaged over the 1, 2 and 3 second horizons.</span>
         </div>
         <div class="card kpi">
           <span class="k-label">Total training time</span>
           <div class="k-row"><span class="k-from">21.3h</span><span class="k-arrow">&rarr;</span><span class="k-to">13.6h</span></div>
-          <span class="tag ok">1.57&times; faster</span>
-          <span class="k-note">VAD-Tiny on four RTX 5090 GPUs, including the 20 pretraining epochs</span>
+          <span class="tag ok">1.57&times; faster, 7.7&nbsp;h saved</span>
+          <span class="k-note">VAD-Tiny on four RTX&nbsp;5090 GPUs, including the 20 pretraining epochs.</span>
         </div>
         <div class="card kpi">
           <span class="k-label">Closed-loop driving score</span>
           <div class="k-row"><span class="k-from">48.5</span><span class="k-arrow">&rarr;</span><span class="k-to">58.8</span></div>
-          <span class="tag ok">+10.3 points</span>
-          <span class="k-note">UniAD-Tiny on Bench2Drive Town05 Long, nine routes</span>
+          <span class="tag ok">+10.3 driving&nbsp;score</span>
+          <span class="k-note">UniAD-Tiny on Bench2Drive Town05&nbsp;Long, nine routes driven once each.</span>
         </div>
       </div>
     </div>
@@ -108,7 +108,7 @@
     <div class="wrap">
       <h2 id="headline-h" class="sr">Multi-task performance</h2>
       <div class="card" id="glance">
-      <div class="chead"><div class="titles"><span class="kicker">At a glance</span><h3>Planning transfer and auxiliary capacity</h3></div><div class="actions"></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Transfer</span><h3>Planning transfer and auxiliary capacity</h3></div><div class="actions"></div></div>
       <p class="lead">Left: arrows run from each baseline to the same architecture pretrained with PAVER; hollow markers are reconstruction-based pretraining as reported by its authors. Right: detection NDS against auxiliary parameter count on a logarithmic axis.</p>
       <div class="pane" data-pane="chart"><div class="stack"><div id="chartTransfer"></div><div id="chartCapacity"></div></div></div>
       <div class="pane" data-pane="table" hidden id="glanceTable"></div>
@@ -262,7 +262,7 @@
       <div class="stack">
       <div class="card" id="fig1">
       <div class="chead"><div class="titles"><span class="kicker">Figure 1</span><h3>Total training time, pretraining included</h3></div><div class="actions"></div></div>
-      <p class="lead">Measured end to end on four NVIDIA RTX 5090 GPUs. The PAVER rows carry their own 20 pretraining epochs and still finish sooner than the scratch baselines.</p>
+      <p class="lead">Measured end to end on four NVIDIA RTX&nbsp;5090 GPUs. The PAVER rows carry their own 20 pretraining epochs and still finish sooner than the scratch baselines.</p>
       <div class="pane" data-pane="chart"><div id="chartCost"></div></div>
       <div class="pane" data-pane="table" hidden id="costTable"></div>
     </div>
@@ -376,7 +376,7 @@
     <div class="wrap">
       <header class="shead">
         <span class="label">Closed-loop</span>
-        <h2 id="closedloop-h">CARLA Bench2Drive Town05 Long</h2>
+        <h2 id="closedloop-h">CARLA Bench2Drive Town05&nbsp;Long</h2>
         <p class="lead">Nine routes, one repetition, identical protocol. Each pair below is the same route driven by UniAD-Tiny and by the same architecture initialized with PAVER.</p>
       </header>
       <div class="stack">
@@ -390,7 +390,7 @@
           <tbody>
             <tr><th class="stick" scope="row">UniAD-Tiny</th><td>48.45</td><td>60.96</td><td>0.85</td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td><b class="win">58.79</b></td><td><b class="win">79.06</b></td><td>0.79</td></tr>
-            <tr class="sep"><th class="stick" scope="row">GenAD<a href="#fn-genad"><sup>‡</sup></a></th><td>34.53</td><td><abbr title="not reported by the source">n/a</abbr></td><td><abbr title="not reported by the source">n/a</abbr></td></tr>
+            <tr class="sep"><th class="stick" scope="row">GenAD<a href="#fn-genad"><sup>‡</sup></a></th><td>34.53</td><td><abbr title="not reported in the GenAD paper">n/a</abbr></td><td><abbr title="not reported in the GenAD paper">n/a</abbr></td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td><b class="win">49.07</b></td><td>58.95</td><td>0.90</td></tr>
           </tbody>
         </table></div>
@@ -399,7 +399,7 @@
       <div class="card" id="routes">
       <div class="chead"><div class="titles"><span class="kicker">Replays</span><h3>Route replays</h3></div><div class="actions"></div></div>
       <p class="lead">Each route is driven twice, once by UniAD-Tiny and once by the same model pretrained with PAVER. The two clips play in step, and the Driving Score and Route Completion of that run are shown above each video.</p>
-      <div class="actions"><label class="sr" for="routeSel">Route</label><div class="select"><select id="routeSel"></select></div></div><div class="videos" id="videoGrid"></div><div class="wvtransport" id="routeTransport"><button class="wvplay" id="routePlay" type="button" aria-label="Play both clips"><svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><div class="wvtrack" id="routeTrack" role="slider" tabindex="0" aria-label="Seek both clips" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="wvrail"><div class="wvfill" id="routeFill"></div></div><div class="wvknob" id="routeKnob"></div></div><span class="wvclock"><b id="routeNow">0:00</b><i>/</i><span id="routeDur">0:00</span></span></div>
+      <div class="actions"><label class="sr" for="routeSel">Route</label><div class="select"><select id="routeSel"></select></div></div><div class="videos" id="videoGrid"></div><div class="wvtransport" id="routeTransport"><button class="wvplay" id="routePlay" type="button" aria-label="Play or pause both clips"><svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><div class="wvtrack" id="routeTrack" role="slider" tabindex="0" aria-label="Seek both clips together" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="wvrail"><div class="wvfill" id="routeFill"></div></div><div class="wvknob" id="routeKnob"></div></div><span class="wvclock"><b id="routeNow">0:00</b><i>/</i><span id="routeDur">0:00</span></span></div>
 
       </div>
       <div class="card" id="routefigs">
@@ -472,7 +472,7 @@
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>20</td><td>30</td><td>66.1h</td><td><b class="win">0.561</b></td><td>0.43</td><td><b class="win">0.685</b></td><td>0.45</td><td><b class="win">0.498</b></td></tr>
           </tbody>
         </table></div>
-        <p class="foot" id="fn-stage1">Time is total training time on 4 NVIDIA RTX 5090 GPUs. <sup>†</sup> Reproduced. <sup>‡</sup> Stage 1 pretrains detection, mapping, and motion prediction without planning.</p></div>
+        <p class="foot" id="fn-stage1">Time is total training time on 4 NVIDIA RTX&nbsp;5090 GPUs. <sup>†</sup> Reproduced. <sup>‡</sup> Stage 1 pretrains detection, mapping, and motion prediction without planning.</p></div>
     </div>
       </div>
     </div>
@@ -537,7 +537,7 @@
       <div class="card" id="gallery">
       <div class="chead"><div class="titles"><span class="kicker">Gallery</span><h3>Map-supervised pretraining</h3></div><div class="actions"><div class="chips" id="galTabs" role="tablist" aria-label="Gallery"></div></div>
       </div>
-      <div class="chips"><label class="sr" for="galFilter">Filter scenes</label><input type="search" id="galFilter" placeholder="filter by scene id" autocomplete="off"><span class="meta" id="galCount"></span></div><div class="stack" id="galBody"></div><div class="chips"><button class="btn" id="galMore">Load more scenes</button></div>
+      <div class="chips"><label class="sr" for="galFilter">Filter scenes</label><input type="search" id="galFilter" placeholder="Filter by scene id" autocomplete="off"><span class="meta" id="galCount"></span></div><div class="stack" id="galBody"></div><div class="chips"><button class="btn" id="galMore">Load more scenes</button></div>
     </div>
       </div>
     </div>
