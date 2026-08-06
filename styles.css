@@ -1235,3 +1235,20 @@ figure.fig { margin: 0; break-inside: avoid; }
 figure.fig > .caption { margin-top: var(--s3); }
 
 .wvnote { font-size: var(--fs-label); color: var(--fg-3); margin-left: var(--s3); }
+
+/* ── zoom affordance ────────────────────────────────────────────────────── */
+/* the method figures carry text that is unreadable at page scale, and nothing
+   said they open larger; the frame now says so and shows a cursor that means it */
+.frame { position: relative; }
+.frame img[data-full] { cursor: zoom-in; }
+.frame::after {
+  content: "Click to enlarge";
+  position: absolute; right: var(--s3); bottom: var(--s3);
+  font-size: var(--fs-label); line-height: 1;
+  padding: 5px 9px; border-radius: var(--radius-pill);
+  background: rgb(var(--line) / 0.10); color: var(--fg-2);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  opacity: 0; transition: opacity var(--t-base) ease; pointer-events: none;
+}
+.frame:hover::after, .frame:focus-within::after { opacity: 1; }
+@media (pointer: coarse) { .frame::after { content: "Tap to enlarge"; opacity: 1; } }

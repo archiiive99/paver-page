@@ -136,7 +136,45 @@ const animObs = new IntersectionObserver(es => es.forEach(e => {
 }), { rootMargin: '-8% 0px -8% 0px' });
 function animate(svg){ if (REDUCED) svg.classList.add('run'); else animObs.observe(svg); }
 
+/* Charts carry an aria-label, which tells a screen reader what a picture is
+ * about but not what it says. This renders the same numbers as a table so the
+ * figures are readable rather than merely announced. */
 function dataTable(host, caption, head, rows){
+  host.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.className = 'scroller';
+  const t = document.createElement('table');
+  const thead = document.createElement('thead');
+  const hr = document.createElement('tr');
+  head.forEach((h, i) => {
+    const th = document.createElement('th');
+    th.scope = 'col';
+    if (i === 0) th.className = 'stick';
+    th.textContent = h;
+    hr.appendChild(th);
+  });
+  thead.appendChild(hr);
+  const tb = document.createElement('tbody');
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    if (r.ours) tr.className = 'ours';
+    (r.cells || r).forEach((cell, i) => {
+      const el2 = document.createElement(i === 0 ? 'th' : 'td');
+      if (i === 0) { el2.scope = 'row'; el2.className = 'stick'; }
+      el2.textContent = cell;
+      tr.appendChild(el2);
+    });
+    tb.appendChild(tr);
+  });
+  t.append(thead, tb);
+  wrap.appendChild(t);
+  host.appendChild(wrap);
+  if (caption) {
+    const p = document.createElement('p');
+    p.className = 'tcap';
+    p.textContent = caption;
+    host.appendChild(p);
+  }
 }
 
 /* ── 1. training cost ─────────────────────────────────────────────────── */
@@ -254,6 +292,16 @@ function chartTransfer(host){
   el('text', { x: (L + W - R) / 2, y: H - 12, class: 'axis mid', text: 'Planning L2 (m) ↓' }, svg);
   el('text', { x: 13, y: (T + H - B) / 2, class: 'axis mid', transform: `rotate(-90 13 ${(T + H - B) / 2})`,
     text: 'Collision rate (%) ↓' }, svg);
+  /* the page uses hollow for anything that is not ours; saying so inside the
+     chart keeps it from being read against another figure's convention */
+  el('circle', { cx: W - R - 150, cy: T - 12, r: 5, fill: 'none',
+    stroke: 'var(--fg-3)', 'stroke-width': 2 }, svg);
+  el('text', { x: W - R - 140, y: T - 8, class: 'hint start', text: 'baseline' }, svg);
+  el('circle', { cx: W - R - 78, cy: T - 12, r: 5, fill: 'none',
+    stroke: 'var(--accent-2)', 'stroke-width': 2 }, svg);
+  el('text', { x: W - R - 68, y: T - 8, class: 'hint start', text: 'reported' }, svg);
+  el('circle', { cx: W - R - 6, cy: T - 12, r: 5, fill: 'var(--paver)' }, svg);
+  el('text', { x: W - R + 4, y: T - 8, class: 'hint start', text: 'ours' }, svg);
   el('text', { x: L + 12, y: H - B - 14, class: 'goodlab start', text: 'better' }, svg);
   el('path', { d: `M${L + 12},${H - B - 34} l0,-14 m0,14 l-5,-6 m5,6 l5,-6`, class: 'goodarrow' }, svg);
 
@@ -525,7 +573,7 @@ function chartSchedule(host, family){
   animate(svg);
 }
 
-window.PAVER_CHARTS = { chartCost, chartTransfer, chartCapacity, chartHorizon, chartClosed, chartSchedule, D };
+window.PAVER_CHARTS = { dataTable, chartCost, chartTransfer, chartCapacity, chartHorizon, chartClosed, chartSchedule, D };
 
 /* ══ analysis charts driven by data.js ════════════════════════════════════
  * Values follow the checkpoint provenance recorded for the paper.

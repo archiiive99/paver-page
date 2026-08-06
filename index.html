@@ -107,7 +107,7 @@
 
   <section id="headline" aria-labelledby="headline-h">
     <div class="wrap">
-      <h2 id="headline-h" class="sr">Multi-task performance</h2>
+      <h2 id="headline-h" class="sr">Headline results</h2>
       <div class="card" id="glance">
       <div class="chead"><div class="titles"><span class="kicker">Transfer</span><h3>Planning transfer and auxiliary capacity</h3></div><div class="actions"></div></div>
       <p class="lead">Left: arrows run from each baseline to the same architecture pretrained with PAVER; hollow markers are reconstruction-based pretraining as reported by its authors. Right: detection NDS against auxiliary parameter count on a logarithmic axis.</p>
@@ -416,6 +416,8 @@
           lines are the recorded events.</p>
         <div id="chartTimeline"></div>
         <div id="chartTrace"></div>
+        <div class="chips" role="tablist" aria-label="View" id="routeView"></div>
+        <div id="routeTable" hidden></div>
         <p class="caption">Route completion is reconstructed by projecting the ego track onto the leaderboard polyline
           and agrees with the recorded value within 3.0 points. <b>Failed&nbsp;-&nbsp;TickRuntime</b> denotes the
           200.05&nbsp;s simulated-time budget being exhausted, that is a timeout, not a simulator error.</p>

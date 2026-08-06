@@ -899,9 +899,24 @@ addEventListener('DOMContentLoaded', () => {
     let route = getParam('route', '25857');
     let channel = getParam('ch', 'speed');
     if (!ids.includes(route)) route = ids[0];
+    function drawTable() {
+      const host = $('#routeTable');
+      const rec = (D.closedloop || {})[route];
+      if (!host || !rec) return;
+      const rows = Object.entries(rec.policies).map(([name, p]) => ({
+        ours: /paver/i.test(name),
+        cells: [name, p.ds == null ? 'n/a' : p.ds.toFixed(2),
+                p.rc == null ? 'n/a' : p.rc.toFixed(2),
+                p.outcome || p.status || '', p.dur == null ? '' : p.dur.toFixed(0) + ' s']
+      }));
+      C2.dataTable(host, `Route ${route}, ${rec.scenario}.`,
+        ['Policy', 'Driving score', 'Route completion', 'Outcome', 'Duration'], rows);
+    }
+
     function draw(push) {
       C2.chartRouteTimeline($('#chartTimeline'), route);
       C2.chartRouteTrace($('#chartTrace'), route, channel);
+      drawTable();
       sel.value = route;
       markTabs(tabs, channel);
       if (push) { setParam('route', route); setParam('ch', channel); }
@@ -911,6 +926,13 @@ addEventListener('DOMContentLoaded', () => {
     sel.value = route;
     enhanceSelect(sel);
     sel.addEventListener('change', () => { route = sel.value; draw(true); });
+    chipTabs($('#routeView'), [['chart', 'Chart'], ['table', 'Table']], (k, push) => {
+      $('#chartTimeline').hidden = k === 'table';
+      $('#chartTrace').hidden = k === 'table';
+      $('#routeTable').hidden = k !== 'table';
+      markTabs($('#routeView'), k);
+    });
+    markTabs($('#routeView'), 'chart');
     chipTabs(tabs, [['speed', 'Speed'], ['brake', 'Brake']], (k, p) => { channel = k; draw(p); });
     draw();
   })();
