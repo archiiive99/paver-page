@@ -295,7 +295,7 @@ const viewer = (function () {
       el.dataset.note || el.alt || '',
       el.dataset.px ? 'original ' + el.dataset.px : '',
       `<a href="${el.dataset.full}" target="_blank" rel="noopener">open original</a>`,
-      el.dataset.pdf ? `<a href="${el.dataset.pdf}" target="_blank" rel="noopener">vector PDF</a>` : '',
+      el.dataset.pdf ? `<a href="${el.dataset.pdf}" download>save vector PDF</a>` : '',
       group.length > 1 ? `${index + 1} / ${group.length}` : ''
     ].filter(Boolean).join(' &middot; ');
     if (im.complete) fit(); else im.onload = fit;
