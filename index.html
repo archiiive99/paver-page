@@ -102,7 +102,7 @@
     <div class="wrap">
       <h2 id="headline-h" class="sr">Multi-task performance</h2>
       <div class="card" id="glance">
-      <div class="chead"><div class="titles"><span class="kicker">Figure 1b</span><h3>Planning transfer and auxiliary capacity</h3></div><div class="actions"></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">At a glance</span><h3>Planning transfer and auxiliary capacity</h3></div><div class="actions"></div></div>
       <p class="lead">Left: arrows run from each baseline to the same architecture pretrained with PAVER; hollow markers are reconstruction-based pretraining as reported by its authors. Right: detection NDS against auxiliary parameter count on a logarithmic axis.</p>
       <div class="pane" data-pane="chart"><div class="stack"><div id="chartTransfer"></div><div id="chartCapacity"></div></div></div>
       <div class="pane" data-pane="table" hidden id="glanceTable"></div>
@@ -281,7 +281,7 @@
       </header>
       <div class="stack">
       <div class="card" id="table4">
-      <div class="chead"><div class="titles"><span class="kicker">Table 4</span><h3>Planning by horizon</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Table 5</span><h3>Planning by horizon</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <p class="lead">The same planning result decomposed into the 1, 2 and 3 second horizons.</p>
       <div class="pane" data-pane="chart"><div id="chartHorizon"></div><div class="chips" id="horizonTabs" role="tablist" aria-label="Metric"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
@@ -300,7 +300,7 @@
         <p class="foot"><sup>†</sup> Reproduced results.</p></div>
     </div>
       <div class="card" id="table5">
-      <div class="chead"><div class="titles"><span class="kicker">Table 5</span><h3>Against reconstruction-based pretraining</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Table 6</span><h3>Against reconstruction-based pretraining</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <p class="lead">UniPAD and MIM4D reconstruct scene content with 6.41M and 13.43M auxiliary parameters. PAVER uses 0.01M and still reaches the lowest planning error and collision rate on VAD-Tiny.</p>
       <div class="pane" data-pane="chart"><div id="chartMethods"></div><div class="chips" id="methodsTabs" role="tablist" aria-label="Metric"></div></div><div class="pane" data-pane="table" hidden>      <div class="scroller"><table>
@@ -370,7 +370,7 @@
       </header>
       <div class="stack">
       <div class="card" id="closedtable">
-      <div class="chead"><div class="titles"><span class="kicker">Table 6</span><h3>Driving Score, Route Completion and Infraction Score</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Table 7</span><h3>Closed-loop results on Bench2Drive</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <p class="lead">The initialization that helps open-loop planning also survives closed-loop control, where errors accumulate over a route instead of being scored per frame.</p>
       <div class="pane" data-pane="chart"><div id="chartClosed"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
@@ -386,9 +386,9 @@
         <p class="foot" id="fn-genad">DS, RC, and IS denote Driving Score, Route Completion, and Infraction Score. A dash means the source does not report that metric. <sup>‡</sup> Reported by GenAD.</p></div>
     </div>
       <div class="card" id="routes">
-      <div class="chead"><div class="titles"><span class="kicker">Route playback</span><h3>Matched policy pairs</h3></div><div class="actions"></div></div>
-      <p class="lead">Playback is synchronized so the two policies stay frame aligned. Driving Score and Route Completion are shown per clip.</p>
-      <div class="chips" id="routeTabs" role="tablist" aria-label="Routes"></div><div class="chips"><button class="btn" id="syncPlay">Play both</button><button class="btn" id="syncPause">Pause both</button><button class="btn" id="syncReset">Restart both</button></div><div class="videos" id="videoGrid"></div>
+      <div class="chead"><div class="titles"><span class="kicker">Closed-loop results</span><h3>Bench2Drive route replays</h3></div><div class="actions"></div></div>
+      <p class="lead">Each route is driven twice, once by UniAD-Tiny and once by the same model pretrained with PAVER. The two clips play in step, and the Driving Score and Route Completion of that run are shown above each video.</p>
+      <div class="actions"><label class="sr" for="routeSel">Route</label><div class="select"><select id="routeSel"></select></div></div><div class="chips"><button class="btn" id="syncPlay">Play both</button><button class="btn" id="syncPause">Pause both</button><button class="btn" id="syncReset">Restart both</button></div><div class="videos" id="videoGrid"></div>
       <div class="card" id="routefigs">
         <div class="chead"><div class="titles"><h3>Route completion and driving behaviour</h3></div><div class="actions">
             <label class="sr" for="routeChart">Route</label>
@@ -417,7 +417,7 @@
       </header>
       <div class="stack">
       <div class="card" id="table7">
-      <div class="chead"><div class="titles"><span class="kicker">Table 7</span><h3>Pretraining supervision against auxiliary budget</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Table 8</span><h3>Pretraining supervision against auxiliary budget</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <p class="lead">Every row pretrains for 20 epochs. The three lightly tinted rows are the PAVER capacity sweep, not the headline configuration.</p>
       <div class="pane" data-pane="chart"><div id="chartStrategy"></div><div class="chips" id="strategyTabs" role="tablist" aria-label="Metric"></div></div><div class="pane" data-pane="table" hidden>      <div class="scroller"><table>
@@ -429,7 +429,7 @@
       <p class="foot">All pretraining runs use 20 epochs. Occ. and Act. denote occupancy and PAVER's action conditioning. No task-supervised row matches the collision rate and NDS of sparse action targets, at 1/300 of the auxiliary parameters.</p></div>
     </div>
       <div class="card" id="table8">
-      <div class="chead"><div class="titles"><span class="kicker">Table 8</span><h3>Feature masking and action-state conditioning</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Table 9</span><h3>Feature masking and action-state conditioning</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <p class="lead">Neither component helps safety on its own. Only together do they reach 0.187 collision with the lowest L2 and the highest NDS.</p>
       <div class="pane" data-pane="chart"><div id="chartComponents"></div><div class="chips" id="componentsTabs" role="tablist" aria-label="Metric"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
@@ -441,7 +441,7 @@
         <p class="foot">Neither component helps safety alone; only together do they reach 0.187 collision with the lowest L2 and highest NDS.</p></div>
     </div>
       <div class="card" id="table9">
-      <div class="chead"><div class="titles"><span class="kicker">Table 9</span><h3>Training schedule and total cost</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Table 10</span><h3>Training schedule and total cost</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <p class="lead">Each point is a fine-tuning budget on top of 20 pretraining epochs. The dashed line marks the total training time of the scratch baseline.</p>
       <div class="pane" data-pane="chart"><div id="chartSchedule"></div><div class="chips" id="scheduleTabs" role="tablist" aria-label="Architecture"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>

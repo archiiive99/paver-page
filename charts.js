@@ -1252,7 +1252,7 @@ function chartRows(host, setKey, metricKey) {
   const refRight = x(ref0[key]) > (L + W - R) / 2;
   el('text', { x: x(ref0[key]) + (refRight ? -8 : 8), y: T - 10,
     class: 'reflab ' + (refRight ? 'end' : 'start'),
-    text: fams.length > 1 ? 'baseline of each block' : 'baseline' }, svg);
+    text: 'baseline' }, svg);
 
   rows.forEach((r, i) => {
     const y = T + i * rh;

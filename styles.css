@@ -53,6 +53,11 @@
   --plot-bg:   #191d25;
   --shadow:    0 14px 34px -14px rgb(0 0 0 / 0.55), 0 1px 1px rgb(0 0 0 / 0.30);
   --sheen:     0.22;
+  --baseline:  #e0a458;
+  --seg-track: rgb(255 255 255 / 0.05);
+  --seg-thumb: rgb(255 255 255 / 0.13);
+  --seg-line:  rgb(255 255 255 / 0.17);
+  --seg-cast:  0 1px 2px rgb(0 0 0 / 0.28);
 }
 
 :root[data-theme="light"] {
@@ -77,6 +82,11 @@
   --plot-bg:   #fbfcfd;
   --shadow:    0 10px 30px -12px rgb(16 26 46 / 0.16), 0 1px 2px rgb(16 26 46 / 0.05);
   --sheen:     0.7;
+  --baseline:  #9a6512;
+  --seg-track: rgb(14 20 30 / 0.045);
+  --seg-thumb: #ffffff;
+  --seg-line:  rgb(14 20 30 / 0.10);
+  --seg-cast:  0 1px 2px rgb(16 26 46 / 0.12);
 }
 
 /* ── reset ────────────────────────────────────────────────────────────── */
@@ -375,8 +385,8 @@ tbody tr.sweep th.stick { background: color-mix(in srgb, var(--paver) 5%, var(--
          font-variant-numeric: tabular-nums; }
 .chart .grid     { stroke: rgb(var(--line) / calc(var(--line-a) * 1.2)); stroke-width: 1; }
 .chart .sepline  { stroke: rgb(var(--line) / calc(var(--line-a) * 1.7)); stroke-width: 1; }
-.chart .ref      { stroke: var(--accent-2); stroke-width: 1.4; stroke-dasharray: 5 4; opacity: 0.85; }
-.chart .reflab   { fill: var(--accent-2); font-size: 13px; font-weight: 600; }
+.chart .ref      { stroke: var(--baseline); stroke-width: 1.4; stroke-dasharray: 5 4; opacity: 0.85; }
+.chart .reflab   { fill: var(--baseline); font-size: 13px; font-weight: 600; }
 .chart .tick     { fill: var(--fg-3); font-size: 13px; }
 .chart .axis     { fill: var(--fg-2); font-size: 14px; font-weight: 600; }
 .chart .axis.l2  { fill: var(--paver); }
@@ -527,52 +537,17 @@ pre.bib { margin: 0; padding: var(--s4); border-radius: var(--radius); overflow-
 .segbar {
   position: relative; display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 4px;
   border-radius: var(--radius-pill); max-width: 100%;
-  /* DIMMING LAYER: gives the glass something to sit on, kept light */
-  background: rgb(var(--line) / 0.035);
-  box-shadow:
-    inset 0 1px 1.5px rgb(0 0 0 / 0.07),
-    inset 0 -1px 0 rgb(255 255 255 / 0.05);
-}
-:root[data-theme="light"] .segbar {
-  background: rgb(14 20 30 / 0.026);
-  box-shadow:
-    inset 0 1px 1.5px rgb(16 26 46 / 0.045),
-    inset 0 -1px 0 rgb(255 255 255 / 0.7);
+  background: var(--seg-track);
 }
 
 .segbar .thumb {
   position: absolute; left: 0; top: 0; z-index: -1; width: 0; height: 0;
   border-radius: var(--radius-pill);
-  -webkit-backdrop-filter: blur(10px) saturate(190%) brightness(1.12);
-  backdrop-filter: blur(10px) saturate(190%) brightness(1.12);
-  background:
-    /* HIGHLIGHT: specular streak along the top */
-    linear-gradient(180deg, rgb(255 255 255 / 0.42) 0%, rgb(255 255 255 / 0.10) 38%,
-                    rgb(255 255 255 / 0.02) 62%, rgb(255 255 255 / 0.08) 100%),
-    /* neutral tint only: contrast comes from the dimmed track, not from colour */
-    rgb(255 255 255 / 0.16);
-  box-shadow:
-    inset 0 1px 0.5px rgb(255 255 255 / 0.75),
-    inset 0 -1px 1px rgb(255 255 255 / 0.16),
-    /* SHADOW: raised, per the regular variant over content */
-    0 1px 2px rgb(0 0 0 / 0.22),
-    0 6px 14px -6px rgb(0 0 0 / 0.30);
+  background: var(--seg-thumb);
+  box-shadow: inset 0 0 0 1px var(--seg-line), var(--seg-cast);
   transition: transform 0.46s cubic-bezier(0.34, 1.3, 0.38, 1),
               width 0.46s cubic-bezier(0.34, 1.3, 0.38, 1),
               height 0.3s ease, opacity 0.2s ease;
-}
-:root[data-theme="light"] .segbar .thumb {
-  -webkit-backdrop-filter: blur(8px) saturate(165%) brightness(1.05);
-  backdrop-filter: blur(8px) saturate(165%) brightness(1.05);
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.80) 0%, rgb(255 255 255 / 0.52) 40%,
-                    rgb(255 255 255 / 0.44) 100%),
-    rgb(255 255 255 / 0.55);
-  box-shadow:
-    inset 0 1px 0.5px rgb(255 255 255 / 1),
-    inset 0 -1px 1px rgb(16 26 46 / 0.06),
-    0 1px 2px rgb(16 26 46 / 0.14),
-    0 5px 12px -5px rgb(16 26 46 / 0.22);
 }
 .segbar .thumb.hidden { opacity: 0; }
 .segbar button {
@@ -582,12 +557,11 @@ pre.bib { margin: 0; padding: var(--s4); border-radius: var(--radius); overflow-
   display: inline-flex; align-items: center; justify-content: center;
   height: 34px; padding: 0 var(--s4); line-height: 1;
   border-radius: var(--radius-pill);
-  font-size: var(--fs-meta); font-weight: 500; color: var(--fg-3);
+  font-size: var(--fs-meta); font-weight: 500; color: var(--fg-2);
   transition: color 0.28s ease;
 }
-.segbar button:hover { color: var(--fg-2); }
+.segbar button:hover { color: var(--fg); }
 .segbar button[aria-selected="true"] { color: var(--fg); font-weight: 650; }
-:root[data-theme="dark"] .segbar button[aria-selected="true"] { text-shadow: 0 1px 1px rgb(0 0 0 / 0.35); }
 @media (prefers-reduced-motion: reduce) { .segbar .thumb { transition: none; } }
 
 

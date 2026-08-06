@@ -908,7 +908,7 @@ addEventListener('DOMContentLoaded', () => {
 
   /* closed-loop videos */
   (function routes() {
-    const tabs = $('#routeTabs'), grid = $('#videoGrid');
+    const sel = $('#routeSel'), grid = $('#videoGrid');
     const NAME = { 'uniadtiny.mp4': 'UniAD-Tiny', 'uniadtiny_paver.mp4': 'UniAD-Tiny + PAVER' };
     const OUTCOME = {
       '24759': { base: ['blocked'], paver: ['blocked'] },
@@ -949,13 +949,15 @@ addEventListener('DOMContentLoaded', () => {
         players.push($('video', card));
       });
       observeCards(grid);
-      markTabs(tabs, r.id);
+      sel.value = r.id;
       if (push) setParam('route', r.id);
     }
-    chipTabs(tabs, paired.map(r => {
+    sel.innerHTML = paired.map(r => {
       const o = (OUTCOME[r.id] || {}).paver || [];
-      return [r.id, `${r.id} · ${r.scenario} · ${o[o.length - 1] || ''}`];
-    }), show);
+      const tail = o[o.length - 1] ? ` \u2014 ${o[o.length - 1]}` : '';
+      return `<option value="${r.id}">Route ${r.id} \u00b7 ${r.scenario}${tail}</option>`;
+    }).join('');
+    sel.addEventListener('change', () => show(sel.value, true));
     $('#syncPlay').addEventListener('click', () => players.forEach(v => { v.currentTime = players[0].currentTime; v.play(); }));
     $('#syncPause').addEventListener('click', () => players.forEach(v => v.pause()));
     $('#syncReset').addEventListener('click', () => players.forEach(v => { v.currentTime = 0; v.pause(); }));
