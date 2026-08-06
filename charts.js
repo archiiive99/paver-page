@@ -393,9 +393,12 @@ function niceTicks(max, count = 4) {
   const raw = max / count;
   const mag = Math.pow(10, Math.floor(Math.log10(raw)));
   const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw) || mag * 10;
+  /* the top tick must reach past the data: rounding it down leaves the longest
+     bar drawing outside the plot */
+  const top = Math.ceil(max / step - 1e-9) * step;
   const ticks = [];
-  for (let v = 0; v <= max + step * 0.001; v += step) ticks.push(Number(v.toFixed(10)));
-  return { ticks, top: ticks[ticks.length - 1] };
+  for (let i = 0; i * step <= top + step * 1e-6; i++) ticks.push(Number((i * step).toFixed(10)));
+  return { ticks, top: Number(top.toFixed(10)) };
 }
 
 function chartHorizon(host, metric){
@@ -1144,6 +1147,12 @@ function chartRows(host, setKey, metricKey) {
   el('text', { x: (L + W - R) / 2, y: H - 10, class: 'axis mid',
     text: label + (lower ? ' ↓' : ' ↑') }, svg);
   el('text', { x: W - R + 12, y: T - 10, class: 'hint start', text: 'vs baseline' }, svg);
+  /* the dashed rule is the reference each block is measured against, which the
+     chart never said out loud */
+  el('line', { x1: L, x2: L + 16, y1: T - 14, y2: T - 14, class: 'ref' }, svg);
+  el('text', { x: L + 22, y: T - 10, class: 'hint start', text: 'baseline of the block' }, svg);
+  el('path', { d: `M${L - 202},${T - 18} l4,4 l-4,4`, class: 'bestmark' }, svg);
+  el('text', { x: L - 192, y: T - 10, class: 'hint start', text: 'best' }, svg);
 
   /* each reference is a line spanning only the rows it governs, so a chart with
    * several architectures shows several baselines without ambiguity */
@@ -1171,7 +1180,11 @@ function chartRows(host, setKey, metricKey) {
     const g = el('g', { class: 'bar' + (r.ours ? ' ours' : '') + (isBest ? ' best' : '') }, svg);
 
     /* the winner is marked by weight and a leading tick, not by a floating word */
-    if (isBest) el('path', { d: `M${L - 202},${y + rh / 2 - 4} l4,4 l-4,4`, class: 'bestmark' }, g);
+    if (isBest) {
+      const mk = el('path', { d: `M${L - 202},${y + rh / 2 - 4} l4,4 l-4,4`, class: 'bestmark' }, g);
+      /* the wedge marked the best row but never said so */
+      el('title', { text: 'Best value in this chart' }, mk);
+    }
     el('text', { x: L - 16, y: y + rh / 2 + 4,
       class: 'tick end' + (isBest ? ' beststrong' : ''), text: r.label }, g);
 
