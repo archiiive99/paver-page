@@ -509,7 +509,7 @@ const METHOD_FIGURES = [
    'Only the pretrained BEV encoder transfers; every task decoder is reinitialized.'],
   ['fig5', 'Figure 5', 'Sparse action-target construction', 'soft_labels5',
    'Each candidate state is queried at K lateral positions across the vehicle width. Risk is the fraction of those queries on measured returns and Unknown the fraction on cells no ray supports, so both targets describe only what the sensor observed.',
-   'LiDAR rays provide Risk and Unknown targets for action-indexed queries; "Safe" denotes free space.']
+   'LiDAR rays provide Risk and Unknown targets for action-indexed queries; \u201cSafe\u201d denotes free space.']
 ];
 
 (function featureFigure2() {
@@ -1359,7 +1359,9 @@ addEventListener('DOMContentLoaded', () => {
       cv.setAttribute('role', 'img');
       const tag = document.createElement('span');
       tag.className = 'wvcamname';
-      tag.textContent = name.replace('CAM_', '');
+      /* the sensor name is an implementation detail; the reader wants the view */
+      tag.textContent = name.replace('CAM_', '').replace(/_/g, ' ').toLowerCase()
+        .replace(/\b\w/g, ch => ch.toUpperCase());
       cell.append(cv, tag);
       host.appendChild(cell);
       const view = { name, canvas: cv, hits: [] };
@@ -1624,13 +1626,13 @@ addEventListener('DOMContentLoaded', () => {
                      (val == null ? ' none' : '');
       l2.title = val == null ? why : '';
       if (!scored) {
-        col.textContent = 'Collision —';
+        col.textContent = 'Collision not scored';
         col.className = 'wvcol none';
         col.title = why;
         return;
       }
       const hit = m.boxCol > 0;
-      col.textContent = `Collision ${hit ? 'True' : 'False'}`;
+      col.textContent = hit ? 'Collision' : 'No collision';
       col.className = 'wvcol ' + (hit ? 'hit' : 'clear');
       col.title = '';
     });
@@ -1725,7 +1727,12 @@ addEventListener('DOMContentLoaded', () => {
     const seen = new Map();
     /* scenes carry a number, so the list reads in order rather than in the
      * order the export happened to write them */
-    const rows = (manifest.clips || manifest.frames).slice().sort((a, b) => {
+    const source = manifest.clips || manifest.frames;
+    /* the list reads in scene order, but the scene that opens first is the one
+     * the export put first, which is chosen to show the difference the section
+     * describes; sorting the list must not silently reselect it */
+    const opening = source[0];
+    const rows = source.slice().sort((a, b) => {
       const num = f => {
         const m = /(\d+)/.exec(f.sceneName || '');
         return m ? parseInt(m[1], 10) : Number.MAX_SAFE_INTEGER;
@@ -1738,7 +1745,7 @@ addEventListener('DOMContentLoaded', () => {
       seen.set(base, n);
       return `<option value="${f.token}">${base}${n > 1 ? ` (${n})` : ''}</option>`;
     }).join('');
-    const first = rows.find(f => f.token === getParam('wf', '')) || rows[0];
+    const first = rows.find(f => f.token === getParam('wf', '')) || opening;
     sel.value = first.token;
     enhanceSelect(sel);
     sel.addEventListener('change', () => load(sel.value, true));

@@ -185,6 +185,44 @@ function halo(g, cx, cy, r, colour){
   el('circle', { cx, cy, r: r * 1.9, fill: colour, opacity: 0.16 }, g);
 }
 
+
+/* ── label placement ────────────────────────────────────────────────────────
+ * Scatter labels were pinned to one side of their marker, so a crowded region
+ * printed one label on top of another. Each label now tries a few positions and
+ * takes the first that clears everything already placed. Widths are estimated
+ * from the character count, which is close enough at these sizes and avoids a
+ * layout read per label. */
+function labelPlacer(bounds) {
+  const taken = [];
+  const inside = b => !bounds ||
+    (b.x1 >= bounds.x1 && b.x2 <= bounds.x2 && b.y1 >= bounds.y1 && b.y2 <= bounds.y2);
+  const overlaps = (a, b) => !(a.x2 < b.x1 || b.x2 < a.x1 || a.y2 < b.y1 || b.y2 < a.y1);
+  return {
+    reserve(x1, y1, x2, y2) { taken.push({ x1, y1, x2, y2 }); },
+    place(cx, cy, text, size = 13, gap = 15) {
+      const w = text.length * size * 0.52, h = size * 1.15;
+      const options = [
+        { x: cx + gap, y: cy + 4, anchor: 'start' },
+        { x: cx - gap, y: cy + 4, anchor: 'end' },
+        { x: cx, y: cy - gap, anchor: 'middle' },
+        { x: cx, y: cy + gap + size * 0.7, anchor: 'middle' },
+        { x: cx + gap, y: cy - gap, anchor: 'start' },
+        { x: cx - gap, y: cy - gap, anchor: 'end' },
+        { x: cx + gap, y: cy + gap + size * 0.6, anchor: 'start' },
+        { x: cx - gap, y: cy + gap + size * 0.6, anchor: 'end' }
+      ];
+      for (const o of options) {
+        const x1 = o.anchor === 'start' ? o.x : o.anchor === 'end' ? o.x - w : o.x - w / 2;
+        const box = { x1, y1: o.y - h, x2: x1 + w, y2: o.y + 3 };
+        if (inside(box) && !taken.some(t => overlaps(box, t))) { taken.push(box); return o; }
+      }
+      const o = options[0];
+      taken.push({ x1: o.x, y1: o.y - h, x2: o.x + w, y2: o.y + 3 });
+      return o;
+    }
+  };
+}
+
 function chartTransfer(host){
   const W = 760, H = 500, L = 80, R = 34, T = 34, B = 74;
   const svg = frame(host, W, H, 'Planning L2 against collision rate; every arrow runs from a baseline to the same architecture pretrained with PAVER');
@@ -219,7 +257,10 @@ function chartTransfer(host){
   el('text', { x: L + 12, y: H - B - 14, class: 'goodlab start', text: 'better' }, svg);
   el('path', { d: `M${L + 12},${H - B - 34} l0,-14 m0,14 l-5,-6 m5,6 l5,-6`, class: 'goodarrow' }, svg);
 
+  const place = labelPlacer({ x1: L + 4, y1: T + 2, x2: W - R - 4, y2: H - B - 2 });
+
   /* the transfer arrows are the message, so they are heavy and coloured */
+  const arrows = [];
   ['Tiny', 'Base', 'GenAD'].forEach(fam => {
     const a = D.transfer.find(p => p.fam === fam && !p.ours);
     const b = D.transfer.find(p => p.fam === fam && p.ours);
@@ -230,10 +271,29 @@ function chartTransfer(host){
     const x2 = x(b.l2) - dx / len * pad, y2 = y(b.col) - dy / len * pad;
     el('line', { x1, y1, x2, y2, class: 'twarrow-glow' }, svg);
     el('line', { x1, y1, x2, y2, class: 'twarrow', 'marker-end': 'url(#tw-head)' }, svg);
-    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    /* the line itself is an obstacle: sampling it keeps labels off the stroke */
+    for (let t = 0; t <= 1; t += 0.05) {
+      const sx = x1 + (x2 - x1) * t, sy = y1 + (y2 - y1) * t;
+      place.reserve(sx - 5, sy - 5, sx + 5, sy + 5);
+    }
     const dcol = b.col - a.col, dl2 = b.l2 - a.l2;
-    const txt = `${dl2 < 0 ? '−' : '+'}${fmt(Math.abs(dl2), 2)} m  ${dcol < 0 ? '−' : '+'}${fmt(Math.abs(dcol), 2)}%`;
-    el('text', { x: mx + 10, y: my - 8, class: 'twdelta start', text: txt }, svg);
+    arrows.push({ x1, y1, x2, y2, dx, dy, len,
+      txt: `${dl2 < 0 ? '−' : '+'}${fmt(Math.abs(dl2), 2)} m  ${dcol < 0 ? '−' : '+'}${fmt(Math.abs(dcol), 2)}%` });
+  });
+
+  /* labels go on only after every stroke is known, so none lands on a line */
+  arrows.forEach(a => {
+    const mx = (a.x1 + a.x2) / 2, my = (a.y1 + a.y2) / 2;
+    const nx = -a.dy / a.len, ny = a.dx / a.len, off = 20;
+    const p = place.place(mx + nx * off, my + ny * off, a.txt, 13, 6);
+    el('text', { x: p.x, y: p.y, class: 'twdelta ' + p.anchor, text: a.txt }, svg);
+  });
+
+  /* every marker is reserved before any label is placed, so a label never
+     lands on a point it does not belong to */
+  D.transfer.forEach(p => {
+    const r = p.ours ? 11 : 8;
+    place.reserve(x(p.l2) - r, y(p.col) - r, x(p.l2) + r, y(p.col) + r);
   });
 
   D.transfer.forEach(p => {
@@ -247,9 +307,9 @@ function chartTransfer(host){
     } else {
       el('circle', { cx: x(p.l2), cy: y(p.col), r, fill: 'none', stroke: 'var(--fg-3)', 'stroke-width': 2 }, g);
     }
-    const anchor = p.l2 > 0.72 ? 'end' : 'start';
-    el('text', { x: x(p.l2) + (anchor === 'end' ? -16 : 16), y: y(p.col) + 4,
-      class: (p.ours ? 'plab strong ' : 'plab dim ') + anchor, text: p.label }, g);
+    const lp = place.place(x(p.l2), y(p.col), p.label, p.ours ? 14 : 13);
+    el('text', { x: lp.x, y: lp.y,
+      class: (p.ours ? 'plab strong ' : 'plab dim ') + lp.anchor, text: p.label }, g);
     hoverable(g, `<b>${p.label}</b><br>L2 ${fmt(p.l2, 3)} m · collision ${fmt(p.col, 3)}%` +
       (p.reported ? `<br><i>reported result, ${shortParams(p.params)} auxiliary parameters</i>` : ''));
   });
@@ -325,25 +385,40 @@ function chartCapacity(host){
 }
 
 /* ── 4. per-horizon grouped bars ──────────────────────────────────────── */
+
+/* A max of 1.22 divided into four gives 0.30, 0.61, 0.91: three numbers nobody
+ * reads. This picks a round step near the requested count and returns ticks a
+ * reader recognises. */
+function niceTicks(max, count = 4) {
+  const raw = max / count;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw) || mag * 10;
+  const ticks = [];
+  for (let v = 0; v <= max + step * 0.001; v += step) ticks.push(Number(v.toFixed(10)));
+  return { ticks, top: ticks[ticks.length - 1] };
+}
+
 function chartHorizon(host, metric){
   const spec = D.horizon[metric];
   const W = 700, H = 330, L = 68, R = 18, T = 30, B = 74;
   const svg = frame(host, W, H, `${metric} at the 1, 2 and 3 second horizons for each architecture, without and with PAVER`);
-  const max = Math.max(...spec.rows.flatMap(r => [...r.base, ...r.paver])) * 1.16;
+  const peak = Math.max(...spec.rows.flatMap(r => [...r.base, ...r.paver]));
+  const scale = niceTicks(peak * 1.12, 4);
+  const max = scale.top;
   const y = v => (H - B) - (H - B - T) * v / max;
   const groups = spec.rows.length, gw = (W - L - R) / groups;
 
-  for (let i = 0; i <= 4; i++) {
-    const v = max * i / 4;
+  const decimals = max >= 10 ? 0 : max >= 1 ? 1 : 2;
+  scale.ticks.forEach(v => {
     el('line', { x1: L, x2: W - R, y1: y(v), y2: y(v), class: 'grid' }, svg);
-    el('text', { x: L - 14, y: y(v) + 4, class: 'tick end', text: fmt(v, 2) }, svg);
-  }
+    el('text', { x: L - 14, y: y(v) + 4, class: 'tick end', text: fmt(v, decimals) }, svg);
+  });
   el('text', { x: 13, y: (T + H - B) / 2, class: 'axis mid', transform: `rotate(-90 13 ${(T + H - B) / 2})`,
     text: `${metric} (${spec.unit}) ↓` }, svg);
 
   spec.rows.forEach((row, gi) => {
     const x0 = L + gi * gw;
-    el('text', { x: x0 + gw / 2, y: H - B + 26, class: 'tick mid', text: row.model }, svg);
+    el('text', { x: x0 + gw / 2, y: H - B + 46, class: 'tick mid', text: row.model }, svg);
     [0, 1, 2].forEach(hz => {
       const slot = x0 + 14 + hz * ((gw - 28) / 3);
       const bw = (gw - 28) / 3 / 2 - 4;
@@ -354,14 +429,14 @@ function chartHorizon(host, metric){
         rect.style.setProperty('--y0', (H - B) + 'px');
         hoverable(g, `<b>${row.model}${ours ? ' + PAVER' : ''}</b><br>${metric} at ${hz + 1}s: ${fmt(v, 2)} ${spec.unit}`);
       });
-      el('text', { x: slot + (bw * 2 + 3) / 2, y: H - B + 44, class: 'hint mid', text: `${hz + 1}s` }, svg);
+      el('text', { x: slot + (bw * 2 + 3) / 2, y: H - B + 22, class: 'hint mid', text: `${hz + 1}s` }, svg);
     });
     if (gi) el('line', { x1: x0, x2: x0, y1: T, y2: H - B + 6, class: 'sepline' }, svg);
   });
   el('g', { class: 'legend' }, svg);
   const lg = svg.querySelector('.legend');
   el('rect', { x: W - R - 150, y: 8, width: 10, height: 10, rx: 2, class: 'swatch base' }, lg);
-  el('text', { x: W - R - 134, y: 17, class: 'hint start', text: 'baseline' }, lg);
+  el('text', { x: W - R - 134, y: 17, class: 'hint start', text: 'Baseline' }, lg);
   el('rect', { x: W - R - 74, y: 8, width: 10, height: 10, rx: 2, class: 'swatch ours' }, lg);
   el('text', { x: W - R - 58, y: 17, class: 'hint start', text: '+ PAVER' }, lg);
   animate(svg);
@@ -580,7 +655,7 @@ function chartRoute(host){
   });
   const lg = el('g', {}, svg);
   el('rect', { x: W - R - 150, y: 10, width: 10, height: 10, rx: 2, class: 'swatch base' }, lg);
-  el('text', { x: W - R - 134, y: 19, class: 'hint start', text: 'baseline' }, lg);
+  el('text', { x: W - R - 134, y: 19, class: 'hint start', text: 'Baseline' }, lg);
   el('rect', { x: W - R - 74, y: 10, width: 10, height: 10, rx: 2, class: 'swatch ours' }, lg);
   el('text', { x: W - R - 58, y: 19, class: 'hint start', text: '+ PAVER' }, lg);
   animate(svg);
@@ -1044,7 +1119,8 @@ function chartRows(host, setKey, metricKey) {
   const W = 760, L = 210, R = 132, T = 30, B = 58;
   const rh = 32, H = T + rows.length * rh + B;
   const svg = frame(host, W, H, `${label} for each configuration, read against the baseline`);
-  const max = Math.max(...rows.map(r => r[key])) * 1.16 || 1;
+  const scale = niceTicks(Math.max(...rows.map(r => r[key])) * 1.12 || 1, 4);
+  const max = scale.top;
   const x = v => L + (W - L - R) * (v / max);
   const plot = W - L - R;
 
@@ -1058,11 +1134,11 @@ function chartRows(host, setKey, metricKey) {
   const best = rows.reduce((a, b) => (lower ? b[key] < a[key] : b[key] > a[key]) ? b : a);
   const decimals = max < 1 ? 3 : 2;
 
-  for (let i = 0; i <= 4; i++) {
-    const v = max * i / 4;
+  scale.ticks.forEach(v => {
     el('line', { x1: x(v), x2: x(v), y1: T - 8, y2: H - B + 4, class: 'grid' }, svg);
-    el('text', { x: x(v), y: H - B + 26, class: 'tick mid', text: fmt(v, max < 1 ? 2 : (max < 20 ? 1 : 0)) }, svg);
-  }
+    el('text', { x: x(v), y: H - B + 26, class: 'tick mid',
+      text: fmt(v, max < 1 ? 2 : (max < 20 ? 1 : 0)) }, svg);
+  });
   el('text', { x: (L + W - R) / 2, y: H - 10, class: 'axis mid',
     text: label + (lower ? ' ↓' : ' ↑') }, svg);
   el('text', { x: W - R + 12, y: T - 10, class: 'hint start', text: 'vs baseline' }, svg);
@@ -1083,7 +1159,7 @@ function chartRows(host, setKey, metricKey) {
   const refRight = x(ref0[key]) > (L + W - R) / 2;
   el('text', { x: x(ref0[key]) + (refRight ? -8 : 8), y: T - 10,
     class: 'reflab ' + (refRight ? 'end' : 'start'),
-    text: 'baseline' }, svg);
+    text: 'Baseline' }, svg);
 
   rows.forEach((r, i) => {
     const y = T + i * rh;

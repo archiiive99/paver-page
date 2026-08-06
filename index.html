@@ -85,7 +85,7 @@
         <div class="card kpi">
           <span class="k-label">Collision rate</span>
           <div class="k-row"><span class="k-from">0.51%</span><span class="k-arrow">&rarr;</span><span class="k-to">0.19%</span></div>
-          <span class="tag ok">&minus;63% collisions</span>
+          <span class="tag ok">&minus;63% relative</span>
           <span class="k-note">VAD-Tiny at epoch 30, averaged over the 1, 2 and 3 second horizons.</span>
         </div>
         <div class="card kpi">
@@ -114,7 +114,7 @@
       <div class="pane" data-pane="table" hidden id="glanceTable"></div>
     </div>
       <div class="card" id="table1">
-        <div class="chead"><div class="titles"><span class="kicker">Table 1</span><h3>Multi-task performance on the nuScenes validation set</h3></div><div class="actions">
+        <div class="chead"><div class="titles"><span class="kicker">Paper table 1</span><h3>Multi-task performance on the nuScenes validation set</h3></div><div class="actions">
             <div class="seg" role="tablist" aria-label="View">
               <button role="tab" aria-selected="true" data-pane="chart">Chart</button>
               <button role="tab" aria-selected="false" data-pane="table">Table</button>
@@ -242,7 +242,7 @@
           queries.</p>
       </header>
       <div class="card" id="fig2">
-        <div class="chead"><div class="titles"><span class="kicker">Figure 2</span><h3>Driving pretraining paradigms</h3></div><div class="actions"></div></div>
+        <div class="chead"><div class="titles"><span class="kicker">Paper figure 2</span><h3>Driving pretraining paradigms</h3></div><div class="actions"></div></div>
         <div class="frame" id="fig2frame"></div>
         <p class="caption">(a) supervises with perception labels, (b) reconstructs scene content and
           transfers the image backbone, and (c) PAVER supervises the BEV encoder with sparse action targets
@@ -259,7 +259,7 @@
       </header>
       <div class="stack">
       <div class="card" id="fig1">
-      <div class="chead"><div class="titles"><span class="kicker">Figure 1</span><h3>Total training time, pretraining included</h3></div><div class="actions"></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Paper figure 1</span><h3>Total training time, pretraining included</h3></div><div class="actions"></div></div>
       <p class="lead">Measured end to end on four NVIDIA RTX&nbsp;5090 GPUs. The PAVER rows carry their own 20 pretraining epochs and still finish sooner than the scratch baselines.</p>
       <div class="pane" data-pane="chart"><div id="chartCost"></div></div>
       <div class="pane" data-pane="table" hidden id="costTable"></div>
@@ -272,7 +272,7 @@
     <div class="wrap">
       <header class="shead">
         <span class="label">Method</span>
-        <h2 id="method-h">A pretraining stage aligned with where planning queries the BEV</h2>
+        <h2 id="method-h">A pretraining stage aligned with where planning queries&nbsp;the&nbsp;BEV</h2>
         <p class="lead">Existing driving pretraining supervises either perception labels or dense reconstruction. PAVER instead supervises the BEV along the corridors that candidate actions would traverse, using targets read straight off a single LiDAR sweep.</p>
       </header>
       <div class="stack">
@@ -286,11 +286,11 @@
       <header class="shead">
         <span class="label">Open-loop</span>
         <h2 id="results-h">Results on nuScenes</h2>
-        <p class="lead">Arrows in the tables mark the direction of improvement: &darr; lower is better, &uarr; higher is better. Bold marks the better value within a comparison block, and rows tinted blue use PAVER.</p>
+        <p class="lead">Arrows in the tables mark the direction of improvement: &darr; lower is better, &uarr; higher is better. Bold marks the better value within a comparison block, and a blue rule on the left marks the PAVER row.</p>
       </header>
       <div class="stack">
       <div class="card" id="table4">
-      <div class="chead"><div class="titles"><span class="kicker">Table 5</span><h3>Planning by horizon</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Paper table 5</span><h3>Planning by horizon</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <p class="lead">The same planning result decomposed into the 1, 2 and 3 second horizons.</p>
       <div class="pane" data-pane="chart"><div id="chartHorizon"></div><div class="chips" id="horizonTabs" role="tablist" aria-label="Metric"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
@@ -309,7 +309,7 @@
         <p class="foot"><sup>†</sup> Reproduced results.</p></div>
     </div>
       <div class="card" id="table5">
-      <div class="chead"><div class="titles"><span class="kicker">Table 6</span><h3>Against reconstruction-based pretraining</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Paper table 6</span><h3>Against reconstruction-based pretraining</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <p class="lead">UniPAD and MIM4D reconstruct scene content with 6.41M and 13.43M auxiliary parameters. PAVER uses 0.01M and still reaches the lowest planning error and collision rate on VAD-Tiny.</p>
       <div class="pane" data-pane="chart"><div id="chartMethods"></div><div class="chips" id="methodsTabs" role="tablist" aria-label="Metric"></div></div><div class="pane" data-pane="table" hidden>      <div class="scroller"><table>
@@ -329,7 +329,7 @@
       <p class="foot">#Params reports temporary auxiliary parameters. RGB denotes camera-color reconstruction and Depth denotes LiDAR-projected sparse metric-depth reconstruction. <sup>†</sup> Reproduced results. <sup>‡</sup> Reported results.</p></div>
     </div>
       <div class="card" id="table3">
-      <div class="chead"><div class="titles"><span class="kicker">Table 3</span><h3>Map prediction</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Paper table 3</span><h3>Map prediction</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <div class="pane" data-pane="chart"><div id="chartMap"></div><div class="chips" id="mapTabs" role="tablist" aria-label="Metric"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
           <caption>Vector map average precision per class on nuScenes.</caption>
@@ -347,7 +347,7 @@
         <p class="foot">AP and mAP denote average precision per map class and its mean. <sup>†</sup> Reproduced results.</p></div>
     </div>
       <div class="card" id="table2">
-      <div class="chead"><div class="titles"><span class="kicker">Table 2</span><h3>Pretraining without a LiDAR sensor</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Paper table 2</span><h3>Pretraining without a LiDAR sensor</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <p class="lead">PAVER reads its targets off a LiDAR sweep, but the sweep is not essential. A frozen
         monocular metric-depth estimator, unprojected per camera, supplies the same surface endpoints and ray
@@ -379,7 +379,7 @@
       </header>
       <div class="stack">
       <div class="card" id="closedtable">
-      <div class="chead"><div class="titles"><span class="kicker">Table 7</span><h3>Driving score, route completion, infraction score</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Paper table 7</span><h3>Driving score, route completion, infraction score</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <p class="lead">The initialization that helps open-loop planning also survives closed-loop control, where errors accumulate over a route instead of being scored per frame.</p>
       <div class="pane" data-pane="chart"><div id="chartClosed"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
@@ -426,7 +426,7 @@
       </header>
       <div class="stack">
       <div class="card" id="table7">
-      <div class="chead"><div class="titles"><span class="kicker">Table 8</span><h3>Pretraining supervision against auxiliary budget</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Paper table 8</span><h3>Pretraining supervision against auxiliary budget</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <p class="lead">Every row pretrains for 20 epochs. The three lightly tinted rows are the PAVER capacity sweep, not the headline configuration.</p>
       <div class="pane" data-pane="chart"><div id="chartStrategy"></div><div class="chips" id="strategyTabs" role="tablist" aria-label="Metric"></div></div><div class="pane" data-pane="table" hidden>      <div class="scroller"><table>
@@ -438,7 +438,7 @@
       <p class="foot">All pretraining runs use 20 epochs. Occ. and Act. denote occupancy and PAVER's action conditioning. No task-supervised row matches the collision rate and NDS of sparse action targets, at 1/300 of the auxiliary parameters.</p></div>
     </div>
       <div class="card" id="table8">
-      <div class="chead"><div class="titles"><span class="kicker">Table 9</span><h3>Feature masking and action-state conditioning</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Paper table 9</span><h3>Feature masking and action-state conditioning</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <p class="lead">Neither component helps safety on its own. Only together do they reach 0.187 collision with the lowest L2 and the highest NDS.</p>
       <div class="pane" data-pane="chart"><div id="chartComponents"></div><div class="chips" id="componentsTabs" role="tablist" aria-label="Metric"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
@@ -450,7 +450,7 @@
         <p class="foot">Neither component helps safety alone; only together do they reach 0.187 collision with the lowest L2 and highest NDS.</p></div>
     </div>
       <div class="card" id="table9">
-      <div class="chead"><div class="titles"><span class="kicker">Table 10</span><h3>Training schedule and total cost</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Paper table 10</span><h3>Training schedule and total cost</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <p class="lead">Each point is a fine-tuning budget on top of 20 pretraining epochs. The dashed line marks the total training time of the scratch baseline.</p>
       <div class="pane" data-pane="chart"><div id="chartSchedule"></div><div class="chips" id="scheduleTabs" role="tablist" aria-label="Architecture"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
@@ -484,12 +484,12 @@
       </header>
       <div class="stack">
       <div class="card" id="fig6">
-      <div class="chead"><div class="titles"><span class="kicker">Figure 6</span><h3>VAD-Tiny qualitative comparisons</h3></div><div class="actions"></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Paper figure 6</span><h3>VAD-Tiny qualitative comparisons</h3></div><div class="actions"></div></div>
       <p class="lead">Six validation scenes: the six surround cameras, the ground truth, the scratch prediction, and the same architecture with PAVER pretraining.</p>
       <div class="colhead q4"><span>Input images</span><span>Ground truth</span><span>VAD-Tiny</span><span>+ PAVER</span></div><div class="frame"><div class="grid-figure q4" id="qrow1"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow2"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow3"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow4"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow5"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow6"></div></div>
     </div>
       <div class="card" id="fig7">
-      <div class="chead"><div class="titles"><span class="kicker">Figure 7</span><h3>Grad-CAM attribution</h3></div><div class="actions"><div class="chips" id="gcamTabs" role="tablist" aria-label="Attribution head"></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Paper figure 7</span><h3>Grad-CAM attribution</h3></div><div class="actions"><div class="chips" id="gcamTabs" role="tablist" aria-label="Attribution head"></div></div>
       </div>
       <p class="lead">Attributing the selected head back to the front camera. On the BEV features, PAVER concentrates on objects that constrain the planned motion.</p>
       <div class="colhead q3"><span>Input image</span><span>VAD-Tiny</span><span>+ PAVER</span></div><div class="frame"><div class="grid-figure q3" id="gcam1"></div><div class="hairline"></div><div class="grid-figure q3" id="gcam2"></div></div>

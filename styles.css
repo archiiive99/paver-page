@@ -319,8 +319,8 @@ nav.navbar a[aria-current="true"] { color: var(--fg); font-weight: 600; }
 .kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s5); }
 @media (max-width: 900px) { .kpis { grid-template-columns: 1fr; } }
 .kpi { display: flex; flex-direction: column; gap: var(--s3); }
-.kpi .k-label { font: 600 var(--fs-label)/1 var(--sans); letter-spacing: 0.06em;
-                text-transform: uppercase; color: var(--fg-3); }
+.kpi .k-label { font: 600 var(--fs-meta)/1 var(--sans); letter-spacing: 0;
+                color: var(--fg-2); }
 .kpi .k-row { display: flex; align-items: baseline; gap: var(--s2); font-family: var(--sans);
               font-variant-numeric: tabular-nums;
               letter-spacing: -0.03em; }
