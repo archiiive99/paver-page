@@ -652,8 +652,6 @@ pre.bib { margin: 0; padding: var(--s4); border-radius: var(--radius); overflow-
 
 .chart .spine { stroke: rgb(var(--line) / calc(var(--line-a) * 2.4)); stroke-width: 1.4; }
 
-.chart .val.inbar { fill: #fff; }
-:root[data-theme="light"] .chart .val.inbar { fill: var(--bg); }
 
 /* users who ask for less transparency or more contrast get flat, opaque surfaces */
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {

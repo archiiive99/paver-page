@@ -195,8 +195,12 @@ function chartCost(host){
     el('text', { x: L - 16, y: y(i) + bh / 2 + 4, class: 'tick end', text: d.label }, g);
     const rect = el('rect', { x: L, y: y(i), width: x(d.h) - L, height: bh, rx: 7, class: 'fill' }, g);
     rect.style.setProperty('--w', (x(d.h) - L) + 'px');
-    el('text', { x: x(d.h) - 10, y: y(i) + bh / 2 + 4, class: 'val end', text: fmt(d.h, 1) + 'h' }, g);
-    if (d.speedup) el('text', { x: x(d.h) + 10, y: y(i) + bh / 2 + 4, class: 'gain', text: `${fmt(d.speedup, 2)}× faster` }, g);
+    /* the value sits beside its bar, never inside it: a short bar could not hold
+       the text, and one chart printing both ways reads as two charts */
+    el('text', { x: x(d.h) + 10, y: y(i) + bh / 2 + 4, class: 'val start',
+      text: fmt(d.h, 1) + 'h' }, g);
+    if (d.speedup) el('text', { x: x(d.h) + 62, y: y(i) + bh / 2 + 4, class: 'gain',
+      text: `${fmt(d.speedup, 2)}× faster` }, g);
     hoverable(g, `<b>${d.label}</b><br>${fmt(d.h, 2)}h total on 4×RTX 5090${d.speedup ? `<br>${fmt(d.speedup, 2)}× faster than its baseline` : ''}`);
   });
   animate(svg);
@@ -924,7 +928,7 @@ function chartRouting(host){
       const rect = el('rect', { x: X(acc), y: y + 4, width: w, height: rh - 14, rx: 3, fill: tint(col, op) }, g);
       rect.style.setProperty('--w', w + 'px');
       hoverable(g, `<b>${r.task}</b><br>${lab}: ${fmt(r[k] * 100, 1)}% of the gradient norm`);
-      if (w > 40) el('text', { x: X(acc) + w / 2, y: y + rh / 2 + 2, class: 'val mid', text: fmt(r[k] * 100, 0) + '%' }, g);
+      if (w > 26) el('text', { x: X(acc) + w / 2, y: y + rh / 2 + 2, class: 'val mid', text: fmt(r[k] * 100, 0) + '%' }, g);
       acc += r[k];
     });
   });
@@ -1609,7 +1613,7 @@ function chartGradEnergy(host){
         fill: tint(tone(cmp), /bev|ego|query|position/i.test(cmp) ? 95 : 50) }, g);
       rect.style.setProperty('--w', w + 'px');
       hoverable(g, `<b>${t}</b><br>${cmp.replace(/_/g, ' ')}: ${fmt(r.share * 100, 1)}% of the gradient energy`);
-      if (w > 46) el('text', { x: X(acc) + w / 2, y: y + rh / 2 + 4, class: 'val mid',
+      if (w > 26) el('text', { x: X(acc) + w / 2, y: y + rh / 2 + 4, class: 'val mid',
         text: fmt(r.share * 100, 0) + '%' }, g);
       acc += r.share;
     });
