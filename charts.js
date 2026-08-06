@@ -1015,7 +1015,8 @@ function chartRadar(host, model) {
     el('text', { x: lx, y: ly, class: 'rlab ' + anchor, text: a.label }, svg);
     el('text', {
       x: lx, y: ly + 17, class: 'rsub ' + anchor,
-      text: `${fmt(spec.base[a.key], 2)} → ${fmt(spec.ours[a.key], 2)}${a.unit}`
+      text: `${fmt(spec.base[a.key], 2)} → ${fmt(spec.ours[a.key], 2)}` +
+            (a.unit ? (a.unit === '%' ? a.unit : ' ' + a.unit) : '')
     }, svg);
   });
 
@@ -1035,11 +1036,12 @@ function chartRadar(host, model) {
     });
   });
 
-  el('rect', { x: W - 176, y: 12, width: 12, height: 4, rx: 2, class: 'swatch base' }, svg);
-  el('text', { x: W - 158, y: 18, class: 'hint start', text: model }, svg);
-  el('rect', { x: W - 176, y: 32, width: 12, height: 4, rx: 2, class: 'swatch ours' }, svg);
-  el('text', { x: W - 158, y: 38, class: 'hint start', text: model + ' + PAVER' }, svg);
-  el('text', { x: cx, y: H - 6, class: 'hint mid', text: 'each axis normalized across all three architectures, outward is better' }, svg);
+  /* the legend is right-aligned so the longer of the two names cannot run past
+     the drawing, whatever architecture is selected */
+  el('rect', { x: W - 20, y: 12, width: 12, height: 4, rx: 2, class: 'swatch base' }, svg);
+  el('text', { x: W - 28, y: 18, class: 'hint end', text: model }, svg);
+  el('rect', { x: W - 20, y: 32, width: 12, height: 4, rx: 2, class: 'swatch ours' }, svg);
+  el('text', { x: W - 28, y: 38, class: 'hint end', text: model + ' + PAVER' }, svg);
   animate(svg);
 }
 
@@ -1188,13 +1190,18 @@ function chartRows(host, setKey, metricKey) {
       const raw = r[key] - ref[key];
       const rel = ref[key] === 0 ? null : raw / ref[key] * 100;
       const better = lower ? raw < 0 : raw > 0;
+      const sign = v => (v > 0 ? '+' : v < 0 ? '\u2212' : '');
+      const mag = Math.abs(rel === null ? raw : rel);
       const txt = rel === null
-        ? (raw > 0 ? '+' : '') + fmt(raw, decimals)
-        : (rel > 0 ? '+' : '') + fmt(rel, 0) + '%';
+        ? sign(raw) + fmt(Math.abs(raw), decimals)
+        /* two rows that differ can round to the same integer percent, so a
+           small difference keeps a decimal rather than reading as identical */
+        : sign(rel) + fmt(mag, mag < 10 ? 1 : 0) + '%';
       el('text', { x: W - R + 12, y: y + rh / 2 + 4,
         class: 'delta start ' + (better ? 'up' : 'down'), text: txt }, g);
     } else {
-      el('text', { x: W - R + 12, y: y + rh / 2 + 4, class: 'delta start flat', text: '—' }, g);
+      el('text', { x: W - R + 12, y: y + rh / 2 + 4, class: 'delta start flat',
+        text: 'reference' }, g);
     }
 
     const others = set.metrics.filter(m => m[0] !== key)

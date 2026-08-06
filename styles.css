@@ -135,11 +135,11 @@ button { font: inherit; color: inherit; }
             animation: drift 40s ease-in-out infinite; }
 :root[data-theme="light"] .aurora i { mix-blend-mode: multiply; opacity: 0.46; }
 .aurora i:nth-child(1) { inset: 4vh auto auto -8vw; width: 54vw; height: 54vw;
-  background: radial-gradient(circle at 40% 40%, var(--accent), transparent 74%); }
+  background: radial-gradient(circle at 40% 40%, color-mix(in srgb, var(--accent) 100%, transparent) 0%, color-mix(in srgb, var(--accent) 62%, transparent) 26%, color-mix(in srgb, var(--accent) 30%, transparent) 46%, color-mix(in srgb, var(--accent) 12%, transparent) 64%, color-mix(in srgb, var(--accent) 3%, transparent) 82%, transparent 100%); }
 .aurora i:nth-child(2) { inset: 26vh -6vw auto auto; width: 46vw; height: 46vw; animation-delay: -13s;
-  background: radial-gradient(circle at 60% 40%, var(--accent-2), transparent 74%); }
+  background: radial-gradient(circle at 60% 40%, color-mix(in srgb, var(--accent-2) 100%, transparent) 0%, color-mix(in srgb, var(--accent-2) 62%, transparent) 26%, color-mix(in srgb, var(--accent-2) 30%, transparent) 46%, color-mix(in srgb, var(--accent-2) 12%, transparent) 64%, color-mix(in srgb, var(--accent-2) 3%, transparent) 82%, transparent 100%); }
 .aurora i:nth-child(3) { inset: auto auto -10vh 24vw; width: 42vw; height: 42vw; animation-delay: -26s;
-  background: radial-gradient(circle at 50% 50%, var(--accent-3), transparent 74%); }
+  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--accent-3) 100%, transparent) 0%, color-mix(in srgb, var(--accent-3) 62%, transparent) 26%, color-mix(in srgb, var(--accent-3) 30%, transparent) 46%, color-mix(in srgb, var(--accent-3) 12%, transparent) 64%, color-mix(in srgb, var(--accent-3) 3%, transparent) 82%, transparent 100%); }
 .aurora.paused i { animation-play-state: paused; }
 @keyframes drift {
   0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
@@ -1166,3 +1166,22 @@ input[type="search"]::-webkit-search-cancel-button:hover { opacity: 0.9; }
 /* a select is easier to aim at when its label is visible, not only announced */
 .field { display: inline-flex; align-items: center; gap: var(--s2); }
 .field > .lbl { font-size: var(--fs-label); color: var(--fg-3); white-space: nowrap; }
+
+/* icons draw at a fixed size instead of inheriting the text size, so every
+   round button looks the same weight */
+.btn.icon .ic, .ic { width: 18px; height: 18px; display: block; }
+.btn.icon { display: inline-flex; align-items: center; justify-content: center; }
+
+/* the title carries hyphenated compounds; breaking inside them reads as two
+   different words, so breaks are allowed only between words */
+.hero h1 { overflow-wrap: normal; word-break: keep-all; hyphens: none; }
+@media (max-width: 700px) { .hero h1 { font-size: clamp(1.7rem, 8.2vw, 2.4rem); } }
+
+/* the bar keeps the short title once the nav collapses, so a scrolled page
+   still says what it is */
+.bar .barname { display: none; font-weight: 650; font-size: var(--fs-meta);
+                letter-spacing: -0.01em; color: var(--fg); }
+@media (max-width: 860px) { .bar .barname { display: block; } }
+
+/* the back-to-top button sits clear of content on small screens */
+@media (max-width: 700px) { #top { inset: auto var(--s4) calc(var(--s4) + env(safe-area-inset-bottom)) auto; } }

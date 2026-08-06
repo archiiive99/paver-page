@@ -19,7 +19,16 @@ function setParam(k, v) {
   const btn = $('#theme'), icon = $('#themeIcon');
   function paint() {
     const dark = root.dataset.theme === 'dark';
-    icon.innerHTML = dark ? '&#9790;' : '&#9728;';
+    /* glyphs for the sun and moon are missing from the bundled face, so the
+     * button fell back to whatever the system offered; these always draw */
+    const SUN = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" ' +
+      'stroke="currentColor" stroke-width="2" stroke-linecap="round">' +
+      '<circle cx="12" cy="12" r="4.2"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2' +
+      'M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4"/></svg>';
+    const MOON = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" ' +
+      'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M20 14.5A8.2 8.2 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/></svg>';
+    icon.innerHTML = dark ? MOON : SUN;
     btn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
     btn.setAttribute('aria-pressed', String(!dark));
   }
