@@ -1124,7 +1124,9 @@ function chartRows(host, setKey, metricKey) {
   const W = 760, L = 210, R = 132, T = 30, B = 58;
   const rh = 32, H = T + rows.length * rh + B;
   const svg = frame(host, W, H, `${label} for each configuration, read against the baseline`);
-  const scale = niceTicks(Math.max(...rows.map(r => r[key])) * 1.12 || 1, 4);
+  /* the axis leaves room for the value to sit beside its bar, so no chart mixes
+     a light label inside one bar with a dark label beside the next */
+  const scale = niceTicks(Math.max(...rows.map(r => r[key])) * 1.2 || 1, 4);
   const max = scale.top;
   const x = v => L + (W - L - R) * (v / max);
   const plot = W - L - R;
@@ -1191,12 +1193,8 @@ function chartRows(host, setKey, metricKey) {
     const w = Math.max(2, x(r[key]) - L);
     const rect = el('rect', { x: L, y: y + 6, width: w, height: rh - 14, rx: 6, class: 'fill' }, g);
     rect.style.setProperty('--w', w + 'px');
-    /* a long bar would push its value into the delta gutter, so it carries it inside */
-    if (w > plot * 0.84) {
-      el('text', { x: L + w - 10, y: y + rh / 2 + 4, class: 'val end inbar', text: fmt(r[key], decimals) }, g);
-    } else {
-      el('text', { x: L + w + 10, y: y + rh / 2 + 4, class: 'val start', text: fmt(r[key], decimals) }, g);
-    }
+    el('text', { x: L + w + 10, y: y + rh / 2 + 4, class: 'val start',
+      text: fmt(r[key], decimals) }, g);
 
     /* delta against the reference, informative on every row rather than only the winner */
     if (!isRef) {

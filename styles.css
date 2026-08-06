@@ -696,9 +696,17 @@ body.locked { overflow: hidden; }
 .card .chart { display: block; width: 100%; height: auto; }
 /* print: drop the glass, keep the content */
 @media print {
-  header.bar, nav, .segbar, #galMore, .viewer { display: none !important; }
+  header.bar, nav, .segbar, #galMore, .viewer, #top, .aurora { display: none !important; }
   .card { background: #fff !important; box-shadow: none !important; break-inside: avoid; }
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9pt; color: #555; }
+  /* a chart clipped at the page edge is worse than a small chart */
+  .chart { max-width: 100%; height: auto; }
+  .scroller { max-height: none; overflow: visible; border: 1px solid #ccc; }
+  thead th { position: static; }
+  th.stick, td.stick { position: static; }
+  /* both panes print, since the reader cannot switch a tab on paper */
+  .pane[hidden] { display: block !important; }
+  section { break-before: auto; }
 }
 
 /* browsers without color-mix fall back to solid token colours */
@@ -1204,3 +1212,26 @@ input[type="search"]::-webkit-search-cancel-button:hover { opacity: 0.9; }
 /* the sentence above a table introduces it, so it reads at body tone but does
    not compete with the card title */
 .card > .lead { color: var(--fg-2); }
+
+/* ── series without colour ──────────────────────────────────────────────── */
+/* baseline and PAVER were told apart by hue alone. A hatch on the baseline
+   fill keeps them separable when the hues are not. */
+.chart defs .hatchpat { }
+.chart .bar:not(.ours) .fill { }
+@supports (fill: url(#x)) {
+  .chart .bar:not(.ours) .fill { stroke: rgb(var(--line) / 0.10); stroke-width: 1; }
+}
+/* the PAVER series keeps a heavier edge, so the pair reads as two weights as
+   well as two hues */
+.chart .bar.ours .fill { stroke: color-mix(in srgb, var(--paver) 70%, transparent);
+                         stroke-width: 1.5; }
+
+/* the hero bars say what they are measured against */
+.kpi .k-scale { display: flex; justify-content: space-between;
+                font-size: var(--fs-label); color: var(--fg-3); margin-top: var(--s1); }
+
+/* a figure and its caption are one unit, so they never break apart */
+figure.fig { margin: 0; break-inside: avoid; }
+figure.fig > .caption { margin-top: var(--s3); }
+
+.wvnote { font-size: var(--fs-label); color: var(--fg-3); margin-left: var(--s3); }

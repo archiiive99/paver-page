@@ -277,6 +277,9 @@ function bindSegments(scope) {
       $$('.pane', card).forEach(p => { p.hidden = p.dataset.pane !== key; });
       markTabs(seg, key);
       announce(key === 'table' ? 'Showing the table' : 'Showing the chart');
+      /* move the reading position to what was just revealed */
+      const shown = $$('.pane', card).find(p => !p.hidden);
+      if (shown) { shown.setAttribute('tabindex', '-1'); shown.focus({ preventScroll: true }); }
     });
     markTabs(seg, items[0][0]);
   });
@@ -1789,13 +1792,23 @@ addEventListener('DOMContentLoaded', () => {
         if (push) setParam('cm2', k);
       });
       const attn = $$('button', bar).find(b => b.dataset.k === 'attn');
+      const reason = (manifest.gradcam && manifest.gradcam.architectures[arch] || {}).reason ||
+        'no verified complete run';
       if (attn) {
         attn.disabled = !gc;
         attn.title = gc ? 'Heat map of the BEV embedding, drawn over the image'
-          : `Grad-CAM is not available for ${arch}: ` +
-            `${(manifest.gradcam && manifest.gradcam.architectures[arch] || {}).reason ||
-               'no verified complete run'}`;
+          : `Grad-CAM is not available for ${arch}: ${reason}`;
       }
+      /* a reason that lives only in a tooltip is a reason nobody reads */
+      let note = $('#wvModeNote');
+      if (!note) {
+        note = document.createElement('span');
+        note.id = 'wvModeNote';
+        note.className = 'wvnote';
+        bar.parentNode.appendChild(note);
+      }
+      note.textContent = gc ? '' : `Grad-CAM unavailable for ${arch}: ${reason}`;
+      note.hidden = !!gc;
       if (camMode === 'attn' && !gc) camMode = 'pred';
       markTabs(bar, camMode);
       $('#wvAttn').hidden = camMode !== 'attn';
