@@ -942,43 +942,6 @@ addEventListener('DOMContentLoaded', () => {
     show(paired.some(r => r.id === getParam('route', '25857')) ? getParam('route', '25857') : paired[0].id);
   })();
 
-  /* cross-model qualitative rows */
-  (function crossModel() {
-    const tabs = $('#crossTabs'), body = $('#crossBody');
-    if (!tabs || !M.crossmodel) return;
-    const ORDER = [
-      ['input_images', 'Input images'], ['ground_truth', 'Ground truth'],
-      ['vad_tiny', 'VAD-Tiny'], ['vad_tiny_paver', 'VAD-Tiny + PAVER'],
-      ['vad_base', 'VAD-Base'], ['vad_base_paver', 'VAD-Base + PAVER'],
-      ['genad', 'GenAD'], ['genad_paver', 'GenAD + PAVER']
-    ];
-    function draw(id, push) {
-      const sc = M.crossmodel.find(s => s.id === id) || M.crossmodel[0];
-      body.innerHTML = '';
-      const head = document.createElement('div');
-      head.className = 'colhead cross';
-      const frame = document.createElement('div');
-      frame.className = 'frame flat';
-      const plate = document.createElement('div');
-      plate.className = 'plate';
-      frame.appendChild(plate);
-      const row = document.createElement('div');
-      row.className = 'grid-figure cross';
-      ORDER.forEach(([v, label]) => {
-        if (!sc.variants[v]) return;
-        const s = document.createElement('span');
-        s.textContent = label;
-        head.appendChild(s);
-        row.appendChild(img(`assets/crossmodel/${sc.variants[v]}`, label, `${label} · ${sc.id}`));
-      });
-      plate.appendChild(row);
-      body.append(head, frame);
-      markTabs(tabs, sc.id);
-      if (push) setParam('cross', sc.id);
-    }
-    chipTabs(tabs, M.crossmodel.map((s, i) => [s.id, 'Scene ' + (i + 1)]), draw);
-    draw(getParam('cross', M.crossmodel[0].id));
-  })();
 
   /* three-camera Grad-CAM gallery */
   (function gradcamThree() {
