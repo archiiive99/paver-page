@@ -583,11 +583,17 @@ const METHOD_FIGURES = [
 })();
 
 (function qualitative() {
-  const scenes = ['rank_356_3bb2aa82346340a0903bf05257735f71', 'rank_176_b6aa15f59b434b0da1790cad8532cf70'];
+  const scenes = ['rank_356_3bb2aa82346340a0903bf05257735f71',
+                  'rank_176_b6aa15f59b434b0da1790cad8532cf70',
+                  'rank_01_4518c3b25dc5423cb72619bcad0d7091',
+                  'rank_02_6bfa08277a1e4ec4b85872ee56f288e5',
+                  'rank_03_91e8409921d642cf9f9e9f761d242362',
+                  'rank_04_1feba2123ec9409abc727851dd6a55ae'];
   const labels = { input_images: 'six surround cameras', ground_truth: 'ground truth',
                    vad_tiny: 'VAD-Tiny', vad_tiny_paver: 'VAD-Tiny + PAVER' };
   scenes.forEach((s, i) => {
     const host = $('#qrow' + (i + 1));
+    if (!host) return;
     Object.keys(labels).forEach(v => host.appendChild(
       img(`assets/qual/${s}__${v}.png`, `Scene ${i + 1}, ${labels[v]}`, `${labels[v]} · ${s}`)));
   });
@@ -784,17 +790,6 @@ addEventListener('DOMContentLoaded', () => {
      'Share of every downstream task gradient norm reaching the image backbone, the transferred BEV encoder, and the remaining transferred parameters. It explains why an encoder-only initialization moves all four task heads.'],
     ['auc', 'Learning speed', 'Area under the learning curve, epochs 1 to 30',
      'Signed advantage over the scratch baseline in the mean metric across the first thirty downstream epochs. Positive means PAVER leads for most of training, not only at the selected checkpoint.'],
-    ['tail', 'Tail safety', 'Paired tail safety',
-     'Per-sample planning L2 sorted into quantiles for the baseline and for PAVER on the identical validation set. The band is the gap; the counters below are paired per-sample outcomes.',
-     'paired_tail_safety/, from tools/analyze_paver_tail_safety.py.'],
-    ['strata', 'Hard against easy scenes', 'Where the gain is larger, in harder or easier scenes',
-     'Scenes are split into a harder and an easier half by each scene property, and the plot shows how much larger the gain is in the harder half. Intervals that exclude zero are highlighted; the rest are consistent with the gain being the same in both halves.'],
-    ['env', 'Environment', 'Gains inside night, rain and other conditions',
-     'Planning L2 gain measured inside each environment condition rather than against the whole set, so the comparison is not diluted by easy daylight frames.'],
-    ['dropout', 'Camera dropout', 'Robustness to missing camera views',
-     'Planning L2 with a clean input and with cameras dropped, for both models. The tooltip carries the robustness advantage and its interval.'],
-    ['route', 'Route and horizon', 'Planning L2 by route command',
-     'Baseline against PAVER for straight, left and right commands at each horizon, with the bootstrap interval on the gain in the tooltip.'],
     ['drift', 'Parameter drift', 'How far each component moves downstream',
      'Relative L2 change of every parameter group across the first thirty downstream epochs. The transferred BEV encoder is highlighted; a small change means the initialization is kept rather than overwritten.'],
     ['mask', 'Mask token', 'What the shared mask token learns',
@@ -810,13 +805,12 @@ addEventListener('DOMContentLoaded', () => {
     const card = $('#trajviews');
     let view = getParam('view', 'traj');
     let metric = getParam('tm', 'Planning L2 Avg');
-    let stratum = getParam('st', 'Scene complexity');
     let scope = getParam('cs', 'PAVER');
     const hidden = new Set();
 
     const simple = {
-      tail: C.chartTail, route: C.chartRoute, cka: C.chartCKA, probe: C.chartProbe,
-      pathways: C.chartPathways, calib: C.chartCalib, dropout: C.chartDropout,
+      cka: C.chartCKA, probe: C.chartProbe,
+      pathways: C.chartPathways, calib: C.chartCalib,
       auc: C.chartAUC, routing: C.chartRouting, targets: C.chartTargets,
       drift: C.chartDrift, mask: C.chartMask, shortcut: C.chartShortcut
     };
@@ -841,22 +835,6 @@ addEventListener('DOMContentLoaded', () => {
         });
         C.chartTrajectories(body, metric, hidden);
         markTabs(tools, metric);
-      } else if (view === 'strata') {
-        const groups = Object.keys(window.PAVER_DATA.strata || {});
-        if (!groups.includes(stratum)) stratum = groups[0];
-        chipTabs(tools, groups.map(g => [g, g]), (g, p) => {
-          stratum = g; C.chartStrata(body, g); markTabs(tools, g); if (p) setParam('st', g);
-        });
-        C.chartStrata(body, stratum);
-        markTabs(tools, stratum);
-      } else if (view === 'env') {
-        const hzs = ['1s', '2s', '3s'];
-        let pick = getParam('eh', '3s');
-        chipTabs(tools, hzs.map(h => [h, h]), (h, p) => {
-          pick = h; C.chartEnv(body, h); markTabs(tools, h); if (p) setParam('eh', h);
-        });
-        C.chartEnv(body, pick);
-        markTabs(tools, pick);
       } else if (view === 'corr') {
         const scopes = (window.PAVER_DATA.corr || {}).scopes || [];
         if (!scopes.includes(scope)) scope = scopes[0];

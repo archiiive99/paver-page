@@ -476,20 +476,14 @@
       <div class="stack">
       <div class="card" id="fig6">
       <div class="chead"><div class="titles"><span class="kicker">Figure 6</span><h3>VAD-Tiny qualitative comparisons</h3></div><div class="actions"></div></div>
-      <p class="lead">Two validation scenes: the six surround cameras, the ground truth, the scratch prediction, and the same architecture with PAVER pretraining.</p>
-      <div class="colhead q4"><span>Input images</span><span>Ground truth</span><span>VAD-Tiny</span><span>+ PAVER</span></div><div class="frame"><div class="grid-figure q4" id="qrow1"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow2"></div></div>
+      <p class="lead">Six validation scenes: the six surround cameras, the ground truth, the scratch prediction, and the same architecture with PAVER pretraining.</p>
+      <div class="colhead q4"><span>Input images</span><span>Ground truth</span><span>VAD-Tiny</span><span>+ PAVER</span></div><div class="frame"><div class="grid-figure q4" id="qrow1"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow2"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow3"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow4"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow5"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow6"></div></div>
     </div>
       <div class="card" id="fig7">
       <div class="chead"><div class="titles"><span class="kicker">Figure 7</span><h3>Grad-CAM attribution</h3></div><div class="actions"><div class="chips" id="gcamTabs" role="tablist" aria-label="Attribution head"></div></div>
       </div>
-      <div class="card" id="figcross">
-        <div class="chead"><div class="titles"><span class="kicker">Cross-model</span><h3>The same scene under three architectures</h3></div><div class="actions"><div class="chips" id="crossTabs" role="tablist" aria-label="Scene"></div></div>
-        </div>
-        <p class="lead">Two validation scenes rendered for VAD-Tiny, VAD-Base and GenAD, each without and with PAVER pretraining, so the effect of the initialization can be read across architectures rather than within one.</p>
-        <div id="crossBody"></div>
-      </div>
       <div class="card" id="figgcam3">
-        <div class="chead"><div class="titles"><span class="kicker">Grad-CAM, three cameras</span><h3>Attribution across the front cameras and every head</h3></div><div class="actions"><div class="chips" id="gcam3Heads" role="tablist" aria-label="Head"></div></div>
+        <div class="chead"><div class="titles"><span class="kicker">Attribution</span><h3>Every head, front three cameras</h3></div><div class="actions"><div class="chips" id="gcam3Heads" role="tablist" aria-label="Head"></div></div>
         </div>
         <p class="lead">Five scenes, the three front cameras, and five attribution targets. Each pair of rows is the scratch model above and the PAVER-initialized model below, so the shift in what the encoder attends to is visible per camera rather than only on the front view.</p>
         <div class="chips" id="gcam3Tabs" role="tablist" aria-label="Scene"></div>

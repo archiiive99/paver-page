@@ -842,7 +842,7 @@ img, .frame, .plate, .ambient, .scene img, video {
              white-space: nowrap; }
 .wvname { font: 600 var(--fs-meta)/1 var(--sans); color: var(--fg-2); }
 .wvpane.ours .wvname { color: var(--paver); }
-.wvl2 { font: 500 var(--fs-meta)/1 var(--sans); color: var(--fg-3);
+.wvl2 { font: 500 var(--fs-meta)/1 var(--sans); color: var(--fg-2);
         font-variant-numeric: tabular-nums; }
 /* Three separate signals, three separate colours: the PAVER blue is the model's
    identity, so a better planning L2 is marked in the success green and a clean
@@ -946,14 +946,7 @@ img, .frame, .plate, .ambient, .scene img, video {
 .wvtransport {
   display: flex; align-items: center; gap: var(--s4);
   padding: var(--s2) var(--s4); border-radius: var(--radius-pill);
-  background: rgb(var(--line) / 0.035);
-  box-shadow: inset 0 1px 1.5px rgb(0 0 0 / 0.07),
-              inset 0 -1px 0 rgb(255 255 255 / 0.05);
-}
-:root[data-theme="light"] .wvtransport {
-  background: rgb(14 20 30 / 0.026);
-  box-shadow: inset 0 1px 1.5px rgb(16 26 46 / 0.045),
-              inset 0 -1px 0 rgb(255 255 255 / 0.7);
+  background: var(--seg-track);
 }
 
 .wvplay {
