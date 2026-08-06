@@ -879,7 +879,7 @@ addEventListener('DOMContentLoaded', () => {
     const sel = $('#routeChart'), tabs = $('#traceTabs');
     if (!C2 || !D || !D.closedloop || !sel) return;
     const ids = Object.keys(D.closedloop);
-    let route = getParam('rt', '25857');
+    let route = getParam('route', '25857');
     let channel = getParam('ch', 'speed');
     if (!ids.includes(route)) route = ids[0];
     function draw(push) {
@@ -887,7 +887,7 @@ addEventListener('DOMContentLoaded', () => {
       C2.chartRouteTrace($('#chartTrace'), route, channel);
       sel.value = route;
       markTabs(tabs, channel);
-      if (push) { setParam('rt', route); setParam('ch', channel); }
+      if (push) { setParam('route', route); setParam('ch', channel); }
     }
     sel.innerHTML = ids.map(id =>
       `<option value="${id}">${id} · ${D.closedloop[id].scenario}</option>`).join('');
