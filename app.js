@@ -1033,9 +1033,6 @@ addEventListener('DOMContentLoaded', () => {
   /* supplementary galleries */
   (function galleries() {
     const GAL = [
-      ['detection', 'Detection', 'Detection-supervised pretraining',
-       ['input_cameras', 'gt', 'detection_only', 'detection_map', 'detection_map_occupancy'],
-       'Matched scenes under detection, detection with map, and detection with map and occupancy pretraining.'],
       ['map', 'Map', 'Map-supervised pretraining',
        ['input_cameras', 'gt', 'map_only', 'detection_map', 'detection_map_occupancy'],
        'Matched scenes under map-only and combined map pretraining.'],
@@ -1048,13 +1045,14 @@ addEventListener('DOMContentLoaded', () => {
     ];
     const PAGE = 4;
     const tabs = $('#galTabs'), body = $('#galBody'), card = $('#gallery');
-    let key = getParam('gal', 'detection'), shown = PAGE, query = '';
+    let key = getParam('gal', 'map'), shown = PAGE, query = '';
 
     function scenes() {
       return (M.qual_supp[key] || []).filter(s => !query || s.id.toLowerCase().includes(query));
     }
     function draw(push) {
-      const spec = GAL.find(g => g[0] === key);
+      const spec = GAL.find(g => g[0] === key) || GAL[0];
+      key = spec[0];
       $('h3', card).textContent = spec[2];
       let cap = $('.caption', card);
       if (!cap) { cap = document.createElement('p'); cap.className = 'caption'; card.appendChild(cap); }
