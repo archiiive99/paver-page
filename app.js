@@ -228,6 +228,10 @@ function moveThumb(host) {
   thumb.style.transform = `translate(${active.offsetLeft}px, ${active.offsetTop}px)`;
   thumb.classList.remove('hidden');
 }
+/* the browser restores the scroll position on its own; the page was letting
+ * a hash jump override it on back navigation */
+if ('scrollRestoration' in history) history.scrollRestoration = 'auto';
+
 function announce(msg) {
   const live = $('#live');
   if (live) live.textContent = msg;
@@ -310,7 +314,8 @@ const viewer = (function () {
       el.dataset.px ? 'original ' + el.dataset.px : '',
       `<a href="${el.dataset.full}" target="_blank" rel="noopener">open original</a>`,
       el.dataset.pdf ? `<a href="${el.dataset.pdf}" download>save vector PDF</a>` : '',
-      group.length > 1 ? `${index + 1} / ${group.length}` : ''
+      group.length > 1 ? `${index + 1} / ${group.length}` : '',
+      group.length > 1 ? 'arrow keys to move, Esc to close' : 'Esc to close'
     ].filter(Boolean).join(' &middot; ');
     if (im.complete) fit(); else im.onload = fit;
   }

@@ -157,10 +157,8 @@
         <div class="chead">
           <div class="titles"><span class="kicker">Interactive</span><h3>3D Visualizer</h3></div>
           <div class="actions">
-            <label class="sr" for="wvArchSel">Architecture</label>
-            <div class="select"><select id="wvArchSel"></select></div>
-            <label class="sr" for="wvFrame">Scene</label>
-            <div class="select"><select id="wvFrame"></select></div>
+            <span class="field"><label class="lbl" for="wvArchSel">Architecture</label><span class="select"><select id="wvArchSel"></select></span></span>
+            <span class="field"><label class="lbl" for="wvFrame">Scene</label><span class="select"><select id="wvFrame"></select></span></span>
           </div>
         </div>
         <p class="lead">Pick an architecture and a validation scene. The six camera
@@ -399,13 +397,12 @@
       <div class="card" id="routes">
       <div class="chead"><div class="titles"><span class="kicker">Replays</span><h3>Route replays</h3></div><div class="actions"></div></div>
       <p class="lead">Each route is driven twice, once by UniAD-Tiny and once by the same model pretrained with PAVER. The two clips play in step, and the Driving Score and Route Completion of that run are shown above each video.</p>
-      <div class="actions"><label class="sr" for="routeSel">Route</label><div class="select"><select id="routeSel"></select></div></div><div class="videos" id="videoGrid"></div><div class="wvtransport" id="routeTransport"><button class="wvplay" id="routePlay" type="button" aria-label="Play or pause both clips"><svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><div class="wvtrack" id="routeTrack" role="slider" tabindex="0" aria-label="Seek both clips together" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="wvrail"><div class="wvfill" id="routeFill"></div></div><div class="wvknob" id="routeKnob"></div></div><span class="wvclock"><b id="routeNow">0:00</b><i>/</i><span id="routeDur">0:00</span></span></div>
+      <div class="actions"><span class="field"><label class="lbl" for="routeSel">Route</label><span class="select"><select id="routeSel"></select></span></span></div><div class="videos" id="videoGrid"></div><div class="wvtransport" id="routeTransport"><button class="wvplay" id="routePlay" type="button" aria-label="Play or pause both clips"><svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><div class="wvtrack" id="routeTrack" role="slider" tabindex="0" aria-label="Seek both clips together" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="wvrail"><div class="wvfill" id="routeFill"></div></div><div class="wvknob" id="routeKnob"></div></div><span class="wvclock"><b id="routeNow">0:00</b><i>/</i><span id="routeDur">0:00</span></span></div>
 
       </div>
       <div class="card" id="routefigs">
         <div class="chead"><div class="titles"><span class="kicker">Traces</span><h3>Route completion and driving behaviour</h3></div><div class="actions">
-            <label class="sr" for="routeChart">Route</label>
-            <div class="select"><select id="routeChart"></select></div>
+            <span class="field"><label class="lbl" for="routeChart">Route</label><span class="select"><select id="routeChart"></select></span></span>
             <div class="chips" id="traceTabs" role="tablist" aria-label="Channel"></div></div>
         </div>
         <p class="lead">Reconstructed from the recorded leaderboard tracks: completion against simulated time for
@@ -518,7 +515,7 @@
       </header>
       <div class="stack">
       <div class="card" id="trajviews">
-      <div class="chead"><div class="titles"><span class="kicker">Interactive</span><h3>Downstream trajectories</h3></div><div class="actions"><label class="sr" for="anSelect">Analysis view</label><div class="select"><select id="anSelect"></select></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Interactive</span><h3>Downstream trajectories</h3></div><div class="actions"><span class="field"><label class="lbl" for="anSelect">View</label><span class="select"><select id="anSelect"></select></span></span></div>
       </div>
       <div id="anBody"></div><div class="chips" id="anTools" role="tablist"></div>
       </div>
