@@ -939,7 +939,16 @@ addEventListener('DOMContentLoaded', () => {
       const tail = o[o.length - 1] ? ` \u2014 ${o[o.length - 1]}` : '';
       return `<option value="${r.id}">Route ${r.id} \u00b7 ${r.scenario}${tail}</option>`;
     }).join('');
-    sel.addEventListener('change', () => show(sel.value, true));
+    sel.addEventListener('change', () => {
+      show(sel.value, true);
+      /* the charts below describe the same route, so they follow the replay */
+      const chart = $('#routeChart');
+      if (chart && chart.value !== sel.value &&
+          [...chart.options].some(o => o.value === sel.value)) {
+        chart.value = sel.value;
+        chart.dispatchEvent(new Event('change'));
+      }
+    });
     /* one transport drives the pair, because the point of the card is that the
      * two policies are watched at the same instant of the same route */
     (function transport() {

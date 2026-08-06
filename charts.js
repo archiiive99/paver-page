@@ -541,100 +541,7 @@ function chartTrajectories(host, metric, hidden){
 }
 
 /* ── 8. paired tail safety ────────────────────────────────────────────── */
-function chartTail(host){
-  const d = DATA(); if (!d) return;
-  const c = d.tail.curve, s = d.tail.summary;
-  const W = 700, H = 340, L = 76, R = 22, T = 24, B = 64;
-  const svg = frame(host, W, H, 'Planning L2 quantile curves for the scratch baseline and PAVER over the shared validation set');
-  const q0 = c[0][0], q1 = c[c.length - 1][0];
-  const ys = c.flatMap(r => [r[1], r[2]]);
-  const y0 = Math.min(...ys) * 0.96, y1 = Math.max(...ys) * 1.04;
-  const X = v => L + (W - L - R) * (v - q0) / (q1 - q0);
-  const Y = v => (H - B) - (H - B - T) * (v - y0) / (y1 - y0);
-
-  for (let i = 0; i <= 4; i++) {
-    const v = y0 + (y1 - y0) * i / 4;
-    el('line', { x1: L, x2: W - R, y1: Y(v), y2: Y(v), class: 'grid' }, svg);
-    el('text', { x: L - 14, y: Y(v) + 4, class: 'tick end', text: fmt(v, 2) }, svg);
-  }
-  [0.5, 0.6, 0.7, 0.8, 0.9, 1.0].forEach(q => {
-    if (q < q0 || q > q1) return;
-    el('line', { x1: X(q), x2: X(q), y1: T, y2: H - B, class: 'grid' }, svg);
-    el('text', { x: X(q), y: H - B + 26, class: 'tick mid', text: fmt(q, 2) }, svg);
-  });
-  el('text', { x: (L + W - R) / 2, y: H - 14, class: 'axis mid', text: 'Quantile of per-sample planning L2' }, svg);
-  el('text', { x: 13, y: (T + H - B) / 2, class: 'axis mid', transform: `rotate(-90 13 ${(T + H - B) / 2})`, text: 'Planning L2 (m) ↓' }, svg);
-
-  const area = el('path', {
-    d: c.map((r, i) => `${i ? 'L' : 'M'}${X(r[0])},${Y(r[1])}`).join(' ') + ' ' +
-       c.slice().reverse().map(r => `L${X(r[0])},${Y(r[2])}`).join(' ') + ' Z',
-    fill: 'var(--paver)', opacity: .16, stroke: 'none'
-  }, svg);
-  [[1, 'baseline', 'var(--fg-3)', 1.8], [2, 'PAVER', 'var(--paver)', 2.6]].forEach(([k, label, col, w]) => {
-    const p = el('path', { d: c.map((r, i) => `${i ? 'L' : 'M'}${X(r[0])},${Y(r[k])}`).join(' '), fill: 'none', class: 'series' }, svg);
-    p.setAttribute('stroke', col); p.setAttribute('stroke-width', w);
-    p.style.setProperty('--len', p.getTotalLength ? p.getTotalLength() : 600);
-    const last = c[c.length - 1];
-    el('text', { x: X(last[0]) - 6, y: Y(last[k]) - 9, class: 'plab end', text: label, fill: col }, svg);
-  });
-  svg.addEventListener('pointermove', ev => {
-    const b = svg.getBoundingClientRect();
-    const qx = q0 + (q1 - q0) * ((ev.clientX - b.left) / b.width * W - L) / (W - L - R);
-    const row = c.reduce((a, r) => Math.abs(r[0] - qx) < Math.abs(a[0] - qx) ? r : a);
-    showTip(`<b>quantile ${fmt(row[0], 3)}</b><br>baseline ${fmt(row[1], 3)} m<br>PAVER ${fmt(row[2], 3)} m<br>` +
-      `gap ${fmt(row[1] - row[2], 3)} m (${fmt((row[1] - row[2]) / row[1] * 100, 1)}%)`, ev);
-  });
-  svg.addEventListener('pointerleave', hideTip);
-  animate(svg);
-
-  const cards = document.createElement('div');
-  cards.className = 'stats'; cards.style.marginTop = '14px';
-  const S = [
-    ['L2 improved', s.l2_improved_samples, 'samples where PAVER lowers planning L2'],
-    ['L2 regressed', s.l2_regressed_samples, 'samples where planning L2 grows'],
-    ['Collision fixed', s.collision_corrected, 'baseline collides, PAVER does not'],
-    ['Collision introduced', s.collision_introduced, 'PAVER collides where the baseline does not']
-  ];
-  cards.innerHTML = S.map(([k, v, l]) => `<div class="glass stat"><div class="k"><b>${Number(v).toLocaleString()}</b></div><div class="l">${k} — ${l}</div></div>`).join('');
-  host.appendChild(cards);
-}
-
 /* ── 9. harder-against-easier scene gains with bootstrap intervals ────── */
-function chartStrata(host, group){
-  const d = DATA(); if (!d || !d.strata[group]) return;
-  const rows = d.strata[group].filter(r => /planning_l2_(1s|2s|3s)|collision/.test(r.metric));
-  const W = 700, L = 222, R = 30, T = 26, B = 60;
-  const rh = 20, H = T + rows.length * rh + B;
-  const svg = frame(host, W, H, `${group}: how much larger the gain is in harder scenes, with bootstrap confidence intervals`);
-  const lim = Math.max(...rows.map(r => Math.max(Math.abs(r.lo), Math.abs(r.hi)))) * 1.06;
-  const X = v => L + (W - L - R) * (v + lim) / (2 * lim);
-
-  for (let i = 0; i <= 4; i++) {
-    const v = -lim + 2 * lim * i / 4;
-    el('line', { x1: X(v), x2: X(v), y1: T - 6, y2: H - B + 4, class: 'grid' }, svg);
-    el('text', { x: X(v), y: H - B + 26, class: 'tick mid', text: fmt(v, 2) }, svg);
-  }
-  el('line', { x1: X(0), x2: X(0), y1: T - 6, y2: H - B + 4, class: 'ref' }, svg);
-  el('text', { x: (L + W - R) / 2, y: H - 12, class: 'axis mid', text: 'Extra gain in the harder half, positive favours PAVER' }, svg);
-
-  rows.forEach((r, i) => {
-    const y = T + i * rh + rh / 2;
-    const sig = r.lo > 0 || r.hi < 0;
-    const g = el('g', { class: 'pt' + (sig ? ' ours' : '') }, svg);
-    el('text', { x: L - 16, y: y + 4, class: 'tick end',
-      text: fitText(`${r.var} · ${r.metric.replace(/_/g, ' ')}`, L - 26, 13) }, g);
-    el('line', { x1: X(r.lo), x2: X(r.hi), y1: y, y2: y, stroke: sig ? 'var(--paver)' : 'var(--fg-3)',
-      'stroke-width': 2, opacity: sig ? .9 : .45 }, g);
-    ['lo', 'hi'].forEach(k => el('line', { x1: X(r[k]), x2: X(r[k]), y1: y - 4, y2: y + 4,
-      stroke: sig ? 'var(--paver)' : 'var(--fg-3)', 'stroke-width': 1.6, opacity: sig ? .9 : .45 }, g));
-    const dot = el('circle', { cx: X(r.gain), cy: y, r: 4.2, class: 'dot' }, g);
-    dot.setAttribute('fill', sig ? 'var(--paver)' : 'var(--fg-3)');
-    hoverable(g, `<b>${r.var}</b><br>${r.metric.replace(/_/g, ' ')}<br>gain ${fmt(r.gain, 4)}<br>` +
-      `95% CI [${fmt(r.lo, 4)}, ${fmt(r.hi, 4)}]<br><i>${sig ? 'interval excludes zero' : 'interval spans zero'}</i>`);
-  });
-  animate(svg);
-}
-
 /* ── 10. route command × horizon ──────────────────────────────────────── */
 function chartRoute(host){
   const d = DATA(); if (!d) return;
@@ -679,7 +586,7 @@ function chartRoute(host){
   animate(svg);
 }
 
-Object.assign(window.PAVER_CHARTS, { chartTrajectories, chartTail, chartStrata, chartRoute });
+Object.assign(window.PAVER_CHARTS, { chartTrajectories, chartRoute });
 
 /* ── 11. layerwise CKA ────────────────────────────────────────────────── */
 function chartCKA(host){
@@ -838,83 +745,7 @@ function chartCalib(host){
 }
 
 /* ── 15. camera dropout robustness ────────────────────────────────────── */
-function chartDropout(host){
-  const d = DATA(); if (!d || !d.dropout) return;
-  const rows = d.dropout.filter(r => r.metric === 'planning_l2_m');
-  const ns = Array.from(new Set(rows.map(r => r.n))).sort();
-  const hs = Array.from(new Set(rows.map(r => r.h)));
-  const W = 700, H = 340, L = 72, R = 20, T = 34, B = 74;
-  const svg = frame(host, W, H, 'Planning L2 under clean and camera-dropped inputs, baseline against PAVER');
-  const max = Math.max(...rows.flatMap(r => [r.bx, r.px, r.bc, r.pc])) * 1.14;
-  const Y = v => (H - B) - (H - B - T) * v / max;
-  for (let i = 0; i <= 4; i++) {
-    const v = max * i / 4;
-    el('line', { x1: L, x2: W - R, y1: Y(v), y2: Y(v), class: 'grid' }, svg);
-    el('text', { x: L - 14, y: Y(v) + 4, class: 'tick end', text: fmt(v, 2) }, svg);
-  }
-  el('text', { x: 13, y: (T + H - B) / 2, class: 'axis mid', transform: `rotate(-90 13 ${(T + H - B) / 2})`, text: 'Planning L2 (m) ↓' }, svg);
-  const gw = (W - L - R) / (ns.length * hs.length);
-  let gi = 0;
-  ns.forEach(n => hs.forEach(hz => {
-    const r = rows.find(x => x.n === n && x.h === hz); if (!r) return;
-    const x0 = L + gi * gw;
-    [['baseline clean', r.bc, false, 30], ['baseline dropped', r.bx, false, 62],
-     ['PAVER clean', r.pc, true, 40], ['PAVER dropped', r.px, true, 94]].forEach(([lab, v, ours, mix], k) => {
-      const bw = (gw - 12) / 4 - 2;
-      const x = x0 + 6 + k * (bw + 2);
-      const g = el('g', { class: 'bar v' + (ours ? ' ours' : '') }, svg);
-      const base = ours ? 'var(--paver)' : 'var(--fg-3)';
-      const rect = el('rect', { x, y: Y(v), width: bw, height: (H - B) - Y(v), rx: 3, class: 'fill',
-        fill: `color-mix(in srgb, ${base} ${mix}%, var(--plot-bg))` }, g);
-      rect.style.setProperty('--h', ((H - B) - Y(v)) + 'px');
-      hoverable(g, `<b>${lab}</b><br>${n} camera${n > 1 ? 's' : ''} dropped · ${hz}<br>L2 ${fmt(v, 3)} m<br>` +
-        `robustness advantage ${fmt(r.adv, 3)} m, 95% CI [${fmt(r.lo, 3)}, ${fmt(r.hi, 3)}]`);
-    });
-    el('text', { x: x0 + gw / 2, y: H - B + 26, class: 'tick mid', text: hz }, svg);
-    if (hz === hs[0]) {
-      el('text', { x: x0 + gw * hs.length / 2, y: H - B + 44, class: 'hint mid',
-        text: `${n} camera${n > 1 ? 's' : ''} dropped` }, svg);
-    }
-    if (gi) el('line', { x1: x0, x2: x0, y1: T, y2: H - B + 6, class: 'sepline' }, svg);
-    gi++;
-  }));
-  el('text', { x: W - R, y: 19, class: 'hint end', text: 'lighter: clean input · solid: cameras dropped' }, svg);
-  animate(svg);
-}
-
 /* ── 16. environment conditions ───────────────────────────────────────── */
-function chartEnv(host){
-  const d = DATA(); if (!d || !d.env) return;
-  const rows = d.env.filter(r => /planning_l2_(1s|2s|3s)/.test(r.metric));
-  const conds = Array.from(new Set(rows.map(r => r.cond)));
-  const W = 700, L = 190, R = 34, T = 26, B = 62;
-  const items = rows.filter(r => r.grp === 'condition');
-  const rh = 20, H = T + items.length * rh + B;
-  const svg = frame(host, W, H, 'Planning L2 gain inside each environment condition, with bootstrap intervals');
-  const lim = Math.max(...items.map(r => Math.max(r.hi, Math.abs(r.lo)))) * 1.06;
-  const X = v => L + (W - L - R) * (v + lim) / (2 * lim);
-  for (let i = 0; i <= 4; i++) {
-    const v = -lim + 2 * lim * i / 4;
-    el('line', { x1: X(v), x2: X(v), y1: T - 6, y2: H - B + 4, class: 'grid' }, svg);
-    el('text', { x: X(v), y: H - B + 26, class: 'tick mid', text: fmt(v, 2) }, svg);
-  }
-  el('line', { x1: X(0), x2: X(0), y1: T - 6, y2: H - B + 4, class: 'ref' }, svg);
-  el('text', { x: (L + W - R) / 2, y: H - 12, class: 'axis mid', text: 'Planning L2 gain inside the condition, positive favours PAVER' }, svg);
-  items.forEach((r, i) => {
-    const y = T + i * rh + rh / 2;
-    const sig = r.lo > 0 || r.hi < 0;
-    const g = el('g', { class: 'pt' + (sig ? ' ours' : '') }, svg);
-    el('text', { x: L - 16, y: y + 4, class: 'tick end',
-      text: fitText(r.cond.replace(/_/g, ' '), L - 26, 13) }, g);
-    el('line', { x1: X(r.lo), x2: X(r.hi), y1: y, y2: y, stroke: sig ? 'var(--paver)' : 'var(--fg-3)', 'stroke-width': 2, opacity: sig ? .9 : .45 }, g);
-    const dot = el('circle', { cx: X(r.gain), cy: y, r: 4.2, class: 'dot' }, g);
-    dot.setAttribute('fill', sig ? 'var(--paver)' : 'var(--fg-3)');
-    hoverable(g, `<b>${r.cond}</b> · ${r.metric.replace(/_/g, ' ')}<br>gain ${fmt(r.gain, 4)} m<br>` +
-      `95% CI [${fmt(r.lo, 4)}, ${fmt(r.hi, 4)}]<br><i>${r.n.toLocaleString()} samples</i>`);
-  });
-  animate(svg);
-}
-
 /* ── 17. learning-curve area under the curve ──────────────────────────── */
 function chartAUC(host){
   const d = DATA(); if (!d || !d.auc) return;
@@ -1045,7 +876,7 @@ function chartCorr(host, scope){
 }
 
 Object.assign(window.PAVER_CHARTS, { chartCKA, chartProbe, chartPathways, chartCalib,
-  chartDropout, chartEnv, chartAUC, chartRouting, chartTargets, chartCorr });
+  chartAUC, chartRouting, chartTargets, chartCorr });
 
 /* ── 21. multi-task radar ─────────────────────────────────────────────── */
 const RADAR = {

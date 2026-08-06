@@ -108,7 +108,7 @@
       <div class="pane" data-pane="table" hidden id="glanceTable"></div>
     </div>
       <div class="card" id="table1">
-        <div class="chead"><div class="titles"><span class="kicker">Table 1</span><h3>Multi-task performance on nuScenes</h3></div><div class="actions">
+        <div class="chead"><div class="titles"><span class="kicker">Table 1</span><h3>Multi-task performance on the nuScenes validation set</h3></div><div class="actions">
             <div class="seg" role="tablist" aria-label="View">
               <button role="tab" aria-selected="true" data-pane="chart">Chart</button>
               <button role="tab" aria-selected="false" data-pane="table">Table</button>
@@ -141,7 +141,7 @@
     <div class="wrap">
       <header class="shead">
         <span class="label">Visualizer</span>
-        <h2 id="scene-h">Qualitative results</h2>
+        <h2 id="scene-h">Explore a validation scene</h2>
         <p class="lead">Both models decode the same validation clip: 3D boxes with their object futures, the
           predicted vector map, and the planned ego trajectory against the recorded one. The baseline drifts
           across the lane boundary it predicted, while the pretrained model keeps its plan inside the corridor
@@ -375,7 +375,7 @@
       </header>
       <div class="stack">
       <div class="card" id="closedtable">
-      <div class="chead"><div class="titles"><span class="kicker">Table 7</span><h3>Closed-loop results on Bench2Drive</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Table 7</span><h3>Driving score, route completion, infraction score</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
       <p class="lead">The initialization that helps open-loop planning also survives closed-loop control, where errors accumulate over a route instead of being scored per frame.</p>
       <div class="pane" data-pane="chart"><div id="chartClosed"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
@@ -384,20 +384,20 @@
           <tbody>
             <tr><th class="stick" scope="row">UniAD-Tiny</th><td>48.45</td><td>60.96</td><td>0.85</td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td><b class="win">58.79</b></td><td><b class="win">79.06</b></td><td>0.79</td></tr>
-            <tr class="sep"><th class="stick" scope="row">GenAD<a href="#fn-genad"><sup>‡</sup></a></th><td>34.53</td><td title="not reported by the source"><abbr title="not reported by the source">—</abbr></td><td title="not reported by the source"><abbr title="not reported by the source">—</abbr></td></tr>
+            <tr class="sep"><th class="stick" scope="row">GenAD<a href="#fn-genad"><sup>‡</sup></a></th><td>34.53</td><td><abbr title="not reported by the source">n/a</abbr></td><td><abbr title="not reported by the source">n/a</abbr></td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td><b class="win">49.07</b></td><td>58.95</td><td>0.90</td></tr>
           </tbody>
         </table></div>
-        <p class="foot" id="fn-genad">DS, RC, and IS denote Driving Score, Route Completion, and Infraction Score. A dash means the source does not report that metric. <sup>‡</sup> Reported by GenAD.</p></div>
+        <p class="foot" id="fn-genad">DS, RC, and IS denote Driving Score, Route Completion, and Infraction Score. n/a marks a metric the source does not report. <sup>‡</sup> Reported by GenAD.</p></div>
     </div>
       <div class="card" id="routes">
-      <div class="chead"><div class="titles"><span class="kicker">Closed-loop results</span><h3>Bench2Drive route replays</h3></div><div class="actions"></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Replays</span><h3>Route replays</h3></div><div class="actions"></div></div>
       <p class="lead">Each route is driven twice, once by UniAD-Tiny and once by the same model pretrained with PAVER. The two clips play in step, and the Driving Score and Route Completion of that run are shown above each video.</p>
       <div class="actions"><label class="sr" for="routeSel">Route</label><div class="select"><select id="routeSel"></select></div></div><div class="videos" id="videoGrid"></div><div class="wvtransport" id="routeTransport"><button class="wvplay" id="routePlay" type="button" aria-label="Play both clips"><svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><div class="wvtrack" id="routeTrack" role="slider" tabindex="0" aria-label="Seek both clips" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="wvrail"><div class="wvfill" id="routeFill"></div></div><div class="wvknob" id="routeKnob"></div></div><span class="wvclock"><b id="routeNow">0:00</b><i>/</i><span id="routeDur">0:00</span></span></div>
 
       </div>
       <div class="card" id="routefigs">
-        <div class="chead"><div class="titles"><h3>Route completion and driving behaviour</h3></div><div class="actions">
+        <div class="chead"><div class="titles"><span class="kicker">Traces</span><h3>Route completion and driving behaviour</h3></div><div class="actions">
             <label class="sr" for="routeChart">Route</label>
             <div class="select"><select id="routeChart"></select></div>
             <div class="chips" id="traceTabs" role="tablist" aria-label="Channel"></div></div>
@@ -506,13 +506,13 @@
     <div class="wrap">
       <header class="shead">
         <span class="label">Supplementary analysis</span>
-        <h2 id="analysis-h">Why the objective transfers</h2>
+        <h2 id="analysis-h">What the pretrained encoder changes</h2>
         <p class="lead">Every supplementary panel is rebuilt here from the analysis CSV and JSON it was originally
           rendered from, so each series can be read value by value.</p>
       </header>
       <div class="stack">
       <div class="card" id="trajviews">
-      <div class="chead"><div class="titles"><h3>Downstream trajectories</h3></div><div class="actions"><label class="sr" for="anSelect">Analysis view</label><div class="select"><select id="anSelect"></select></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Interactive</span><h3>Downstream trajectories</h3></div><div class="actions"><label class="sr" for="anSelect">Analysis view</label><div class="select"><select id="anSelect"></select></div></div>
       </div>
       <div id="anBody"></div><div class="chips" id="anTools" role="tablist"></div>
       </div>
@@ -524,7 +524,7 @@
     <div class="wrap">
       <header class="shead">
         <span class="label">Supplementary galleries</span>
-        <h2 id="galleries-h">Target quality and matched pretraining</h2>
+        <h2 id="galleries-h">Matched pretraining galleries</h2>
         <p class="lead">Matched scenes under each pretraining supervision, and measured LiDAR targets against monocular pseudo-LiDAR for the same frame.</p>
       </header>
       <div class="stack">
@@ -540,9 +540,8 @@
     <div class="wrap">
       <header class="shead">
         <span class="label">Supplement tables</span>
-        <h2 id="supptables-h">Every table from the supplementary material</h2>
-        <p class="lead">The frozen-input controls, the analysis tables, and the class-wise metric tables,
-          transcribed from the supplementary material.</p>
+        <h2 id="supptables-h">Tables from the supplementary material</h2>
+        <p class="lead">The frozen-input controls, the analysis tables, and the class-wise metric tables.</p>
       </header>
       <div class="stack">
         <div class="card" id="supp">
@@ -564,21 +563,22 @@
       <div class="stack">
   <div class="cols-2">
       <div class="card" id="files">
-      <div class="chead"><div class="titles"><h3>Files</h3></div><div class="actions"></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">Downloads</span><h3>Files</h3></div><div class="actions"></div></div>
       <p class="lead">The supplementary material carries the full method contract, rule-based action sampling, frozen-predictor controls, class-wise detection results, and the complete mechanistic analysis.</p>
       <div class="chips"><a class="btn solid" href="assets/paper/paver_main.pdf" target="_blank" rel="noopener">Main paper</a><a class="btn" href="assets/paper/paver_supplement.pdf" target="_blank" rel="noopener">Supplementary material</a></div>
     </div>
       <div class="card" id="cite">
-      <div class="chead"><div class="titles"><h3>Citation</h3></div><div class="actions"></div></div>
+      <div class="chead"><div class="titles"><span class="kicker">BibTeX</span><h3>Citation</h3></div><div class="actions"></div></div>
       <pre class="bib" id="bib">@misc{paver,
   title  = {Planning-Aligned Pretraining of BEV Representations
             with Sparse Action-Conditioned Targets for
             End-to-End Autonomous Driving},
   author = {Jaeha Song and Soonmin Hwang},
   year   = {2026},
-  note   = {Preprint, under review}
+  note   = {Preprint},
+  url    = {https://archiiive99.github.io/paver/}
 }</pre><div class="chips"><button class="btn" id="copyBib">Copy BibTeX</button></div>
-      <p class="caption">The citation key and year are provisional; no venue is listed yet.</p>
+      <p class="caption">The key and year are provisional until the paper appears at a venue.</p>
     </div>
   </div>
       </div>

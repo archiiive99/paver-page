@@ -38,9 +38,11 @@
   --fg:        #f4f5f7;
   --fg-2:      #c9cfd9;
   --fg-3:      #98a0ac;
-  --surface:   255 255 255;
-  --surface-a: 0.052;
-  --surface-hi: 0.085;
+  /* a dark surface at high opacity, not white at low opacity: the old value
+     let 95% of the background wash through, against 38% in light mode */
+  --surface:   24 28 35;
+  --surface-a: 0.70;
+  --surface-hi: 0.84;
   --line:      255 255 255;
   --line-a:    0.11;
   --accent:    #209EFF;
