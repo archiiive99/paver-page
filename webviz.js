@@ -454,12 +454,8 @@ const WV = (() => {
       const C = g.bev.map(p => [p[0], p[1], zb]).concat(g.bev.map(p => [p[0], p[1], top]));
       /* fully behind the camera: nothing to draw */
       if (C.every(p => K.toCam(p)[2] <= CNEAR)) return;
-      if (!it.gt && opts.layers.motion && g.fut) {
-        g.fut.forEach(m => ribbon([[g.c[0], g.c[1]]].concat(m), {
-          width: RIBBON.w / 4, ramp: AUTUMN_RGB, zAbs: zb + 0.05, segments: 18,
-          alpha: on ? 1 : RIBBON.alpha
-        }));
-      }
+      /* trajectories stay in the bird's-eye panes; projecting them onto the
+       * camera image reads as clutter over the scene it is meant to explain */
       /* the hovered box deepens: its faces fill and its edge brightens, the
        * same cue the 3D panes use, so the two views read as one selection */
       if (on && !it.gt) {

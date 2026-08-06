@@ -58,6 +58,8 @@
   --seg-thumb: rgb(255 255 255 / 0.13);
   --seg-line:  rgb(255 255 255 / 0.17);
   --seg-cast:  0 1px 2px rgb(0 0 0 / 0.28);
+  --table-bg:  #171b22;
+  --table-line: rgb(255 255 255 / 0.10);
 }
 
 :root[data-theme="light"] {
@@ -87,6 +89,8 @@
   --seg-thumb: #ffffff;
   --seg-line:  rgb(14 20 30 / 0.10);
   --seg-cast:  0 1px 2px rgb(16 26 46 / 0.12);
+  --table-bg:  #ffffff;
+  --table-line: rgb(14 20 30 / 0.10);
 }
 
 /* ── reset ────────────────────────────────────────────────────────────── */
@@ -351,7 +355,12 @@ img[data-full] { cursor: pointer; }
 }
 
 /* ── tables ───────────────────────────────────────────────────────────── */
-.scroller { overflow-x: auto; border-radius: var(--radius); }
+/* the table needs its own surface: sharing the card background made the
+   rows and the card read as one flat block */
+.scroller { overflow-x: auto; border-radius: var(--radius);
+            background: var(--table-bg); border: 1px solid var(--table-line); }
+.scroller > table { padding: 0; }
+thead th { background: var(--table-bg); }
 table { width: 100%; border-collapse: separate; border-spacing: 0;
         font-size: var(--fs-meta); font-variant-numeric: tabular-nums; }
 caption { text-align: left; font-size: var(--fs-meta); color: var(--fg-3);
@@ -373,7 +382,7 @@ tbody tr.sweep { background: color-mix(in srgb, var(--paver) 5%, transparent); }
 tbody tr.sweep th { color: var(--fg-2); }
 tbody tr.sep td, tbody tr.sep th { border-top: 1px solid rgb(var(--line) / calc(var(--line-a) * 1.4)); }
 b.win { font-weight: 700; color: var(--fg); }
-th.stick, td.stick { position: sticky; left: 0; z-index: 2; background: var(--bg); }
+th.stick, td.stick { position: sticky; left: 0; z-index: 2; background: var(--table-bg); }
 thead th.stick { z-index: 3; }
 tbody tr.ours th.stick { background: color-mix(in srgb, var(--paver) 12%, var(--bg)); }
 tbody tr.sweep th.stick { background: color-mix(in srgb, var(--paver) 5%, var(--bg)); }
@@ -1018,3 +1027,7 @@ img, .frame, .plate, .ambient, .scene img, video {
   .wvhead, .wvtag { -webkit-backdrop-filter: none; backdrop-filter: none;
                     background: var(--solid); }
 }
+
+/* the pair of clips is driven by one transport, so the videos carry no chrome */
+#routeTransport { margin-top: var(--s5); }
+.videos video { width: 100%; display: block; border-radius: var(--radius); background: #000; }

@@ -149,7 +149,7 @@
       </header>
       <div class="card" id="viewer3d">
         <div class="chead">
-          <div class="titles"><h3>3D Visualizer</h3></div>
+          <div class="titles"><span class="kicker">Interactive</span><h3>3D Visualizer</h3></div>
           <div class="actions">
             <label class="sr" for="wvArchSel">Architecture</label>
             <div class="select"><select id="wvArchSel"></select></div>
@@ -157,6 +157,9 @@
             <div class="select"><select id="wvFrame"></select></div>
           </div>
         </div>
+        <p class="lead">Pick an architecture and a validation scene. The six camera
+          images sit above the bird's-eye panes; the controls on the left choose what is
+          drawn over the images and the ones on the right choose which model is shown.</p>
         <!-- what the six camera images show, directly above them -->
         <div class="wvbar" aria-label="Camera images">
           <div class="wvbarL">
@@ -228,16 +231,18 @@
     <div class="wrap">
       <header class="shead">
         <span class="label">The idea</span>
-        <h2 id="idea-h">Three ways to pretrain a BEV encoder</h2>
+        <h2 id="idea-h">Where driving pretraining puts its supervision</h2>
         <p class="lead">Perception-supervised pretraining needs dense driving annotations. Reconstruction-based
-          pretraining spends its capacity on scene content that planning never queries. PAVER keeps the same BEV
-          encoder and replaces the objective with targets defined by candidate actions.</p>
+          pretraining supervises a lifted 3D volume, so what it hands downstream is the image backbone rather
+          than the shared BEV encoder. PAVER supervises the BEV encoder itself, at the locations a planner
+          queries.</p>
       </header>
       <div class="card" id="fig2">
         <div class="chead"><div class="titles"><span class="kicker">Figure 2</span><h3>Driving pretraining paradigms</h3></div><div class="actions"></div></div>
         <div class="frame" id="fig2frame"></div>
-        <p class="caption">Existing work supervises pretraining with (a) perception labels or (b) dense
-          reconstruction; (c) PAVER introduces sparse action targets read off a single LiDAR sweep.</p>
+        <p class="caption">(a) supervises with perception labels, (b) reconstructs scene content and
+          transfers the image backbone, and (c) PAVER supervises the BEV encoder with sparse action targets
+          read off a single LiDAR sweep.</p>
       </div>
     </div>
   </section>
@@ -388,7 +393,7 @@
       <div class="card" id="routes">
       <div class="chead"><div class="titles"><span class="kicker">Closed-loop results</span><h3>Bench2Drive route replays</h3></div><div class="actions"></div></div>
       <p class="lead">Each route is driven twice, once by UniAD-Tiny and once by the same model pretrained with PAVER. The two clips play in step, and the Driving Score and Route Completion of that run are shown above each video.</p>
-      <div class="actions"><label class="sr" for="routeSel">Route</label><div class="select"><select id="routeSel"></select></div></div><div class="chips"><button class="btn" id="syncPlay">Play both</button><button class="btn" id="syncPause">Pause both</button><button class="btn" id="syncReset">Restart both</button></div><div class="videos" id="videoGrid"></div>
+      <div class="actions"><label class="sr" for="routeSel">Route</label><div class="select"><select id="routeSel"></select></div></div><div class="videos" id="videoGrid"></div><div class="wvtransport" id="routeTransport"><button class="wvplay" id="routePlay" type="button" aria-label="Play both clips"><svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><div class="wvtrack" id="routeTrack" role="slider" tabindex="0" aria-label="Seek both clips" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="wvrail"><div class="wvfill" id="routeFill"></div></div><div class="wvknob" id="routeKnob"></div></div><span class="wvclock"><b id="routeNow">0:00</b><i>/</i><span id="routeDur">0:00</span></span></div>
 
       </div>
       <div class="card" id="routefigs">

@@ -917,7 +917,7 @@ addEventListener('DOMContentLoaded', () => {
         card.innerHTML =
           `<div class="vhead"><span class="who${ours ? ' ours' : ''}">${NAME[file] || file}</span>
              <span class="score" title="Driving Score / Route Completion">${score}</span></div>
-           <video controls preload="metadata" playsinline muted
+           <video preload="metadata" playsinline muted
                   aria-label="Closed-loop replay of route ${r.id}, ${r.scenario}, ${NAME[file] || file}"></video>
            <div class="chips">${outcome.map(t => `<span class="tag ${cls(t)}">${t}</span>`).join('')}</div>
            <p class="caption">Front camera and top-down view of route ${r.id}, ${r.scenario}, driven by
@@ -927,6 +927,10 @@ addEventListener('DOMContentLoaded', () => {
         players.push($('video', card));
       });
       observeCards(grid);
+      const play = $('#routePlay');
+      if (play) play.classList.remove('playing');
+      players.forEach(v => v.addEventListener('loadedmetadata',
+        () => window.__routePaint && window.__routePaint(), { once: true }));
       sel.value = r.id;
       if (push) setParam('route', r.id);
     }
@@ -936,9 +940,59 @@ addEventListener('DOMContentLoaded', () => {
       return `<option value="${r.id}">Route ${r.id} \u00b7 ${r.scenario}${tail}</option>`;
     }).join('');
     sel.addEventListener('change', () => show(sel.value, true));
-    $('#syncPlay').addEventListener('click', () => players.forEach(v => { v.currentTime = players[0].currentTime; v.play(); }));
-    $('#syncPause').addEventListener('click', () => players.forEach(v => v.pause()));
-    $('#syncReset').addEventListener('click', () => players.forEach(v => { v.currentTime = 0; v.pause(); }));
+    /* one transport drives the pair, because the point of the card is that the
+     * two policies are watched at the same instant of the same route */
+    (function transport() {
+      const play = $('#routePlay'), track = $('#routeTrack');
+      const fill = $('#routeFill'), knob = $('#routeKnob');
+      const now = $('#routeNow'), dur = $('#routeDur');
+      const clock = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+      const lead = () => players[0];
+      const length = () => (lead() && isFinite(lead().duration) ? lead().duration : 0);
+
+      function paint() {
+        const d = length(), c = lead() ? lead().currentTime : 0;
+        const pct = d ? (c / d) * 100 : 0;
+        fill.style.width = pct + '%';
+        knob.style.left = pct + '%';
+        now.textContent = clock(c);
+        dur.textContent = clock(d);
+        track.setAttribute('aria-valuenow', String(Math.round(pct)));
+      }
+      function seek(pct) {
+        const d = length();
+        if (!d) return;
+        players.forEach(v => { v.currentTime = Math.max(0, Math.min(1, pct)) * d; });
+        paint();
+      }
+      play.addEventListener('click', () => {
+        const playing = lead() && !lead().paused;
+        if (playing) { players.forEach(v => v.pause()); }
+        else { const at = lead() ? lead().currentTime : 0;
+               players.forEach(v => { v.currentTime = at; v.play(); }); }
+        play.classList.toggle('playing', !playing);
+      });
+      let dragging = false;
+      const pctOf = e => {
+        const r = track.getBoundingClientRect();
+        return (e.clientX - r.left) / (r.width || 1);
+      };
+      track.addEventListener('pointerdown', e => {
+        dragging = true; track.classList.add('scrubbing');
+        track.setPointerCapture(e.pointerId); seek(pctOf(e));
+      });
+      track.addEventListener('pointermove', e => { if (dragging) seek(pctOf(e)); });
+      track.addEventListener('pointerup', () => { dragging = false; track.classList.remove('scrubbing'); });
+      track.addEventListener('keydown', e => {
+        const d = length(); if (!d) return;
+        const step = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0;
+        if (!step) return;
+        e.preventDefault();
+        seek((lead().currentTime + step) / d);
+      });
+      window.__routePaint = paint;
+      setInterval(() => { if (!dragging) paint(); }, 200);
+    })();
     show(paired.some(r => r.id === getParam('route', '25857')) ? getParam('route', '25857') : paired[0].id);
   })();
 
@@ -1617,13 +1671,21 @@ addEventListener('DOMContentLoaded', () => {
       return;
     }
     const seen = new Map();
-    sel.innerHTML = (manifest.clips || manifest.frames).map(f => {
+    /* scenes carry a number, so the list reads in order rather than in the
+     * order the export happened to write them */
+    const rows = (manifest.clips || manifest.frames).slice().sort((a, b) => {
+      const num = f => {
+        const m = /(\d+)/.exec(f.sceneName || '');
+        return m ? parseInt(m[1], 10) : Number.MAX_SAFE_INTEGER;
+      };
+      return num(a) - num(b) || String(a.sceneName || '').localeCompare(String(b.sceneName || ''));
+    });
+    sel.innerHTML = rows.map(f => {
       const base = f.sceneName || `scene ${f.scene.slice(0, 8)}`;
       const n = (seen.get(base) || 0) + 1;
       seen.set(base, n);
       return `<option value="${f.token}">${base}${n > 1 ? ` (${n})` : ''}</option>`;
     }).join('');
-    const rows = manifest.clips || manifest.frames;
     const first = rows.find(f => f.token === getParam('wf', '')) || rows[0];
     sel.value = first.token;
     enhanceSelect(sel);
