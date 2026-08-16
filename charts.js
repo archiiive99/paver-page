@@ -1204,7 +1204,7 @@ function chartRows(host, setKey, metricKey) {
   /* the dashed rule is the reference each block is measured against, which the
      chart never said out loud */
   el('line', { x1: L, x2: L + 16, y1: T - 14, y2: T - 14, class: 'ref' }, svg);
-  el('text', { x: L + 22, y: T - 10, class: 'hint start', text: 'baseline of the block' }, svg);
+  el('text', { x: L + 22, y: T - 10, class: 'hint start', text: 'baseline' }, svg);
   el('path', { d: `M${L - 202},${T - 18} l4,4 l-4,4`, class: 'bestmark' }, svg);
   el('text', { x: L - 192, y: T - 10, class: 'hint start', text: 'best' }, svg);
 
@@ -1219,12 +1219,10 @@ function chartRows(host, setKey, metricKey) {
     /* a divider makes the block boundary explicit */
     if (fi > 0) el('line', { x1: L - 200, x2: W - R + 84, y1: top, y2: top, class: 'blockrule' }, svg);
   });
-  /* the label sits above the first block's line; the gutter header is right of it */
-  const ref0 = refOf.get(fams[0]);
-  const refRight = x(ref0[key]) > (L + W - R) / 2;
-  el('text', { x: x(ref0[key]) + (refRight ? -8 : 8), y: T - 10,
-    class: 'reflab ' + (refRight ? 'end' : 'start'),
-    text: 'Baseline' }, svg);
+  /* The dashed rule used to carry a floating "Baseline" label as well as the
+     legend entry above, so the same word appeared twice on one line and the two
+     collided whenever the baseline value fell near the left edge. The legend
+     already names the rule, so the floating copy is gone. */
 
   rows.forEach((r, i) => {
     const y = T + i * rh;

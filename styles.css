@@ -493,6 +493,11 @@ td .na { color: var(--fg-3); font-variant-numeric: normal; }
 
 /* ── media ────────────────────────────────────────────────────────────── */
 .videos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s5); }
+/* the paired replays are panels inside the replay card: a hairline and the
+   shared radius are enough to group them, with no second card surface */
+.vpanel { display: flex; flex-direction: column; gap: var(--s3);
+          padding: var(--s4); border-radius: var(--radius);
+          border: 1px solid rgb(var(--line) / var(--line-a)); }
 @media (max-width: 900px) { .videos { grid-template-columns: 1fr; } }
 .vhead { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s3); }
 .vhead .who { font-size: var(--fs-body); font-weight: 600; }
@@ -1187,7 +1192,13 @@ input[type="search"]::-webkit-search-cancel-button:hover { opacity: 0.9; }
    still says what it is */
 .bar .barname { display: none; font-weight: 650; font-size: var(--fs-meta);
                 letter-spacing: -0.01em; color: var(--fg); }
-@media (max-width: 860px) { .bar .barname { display: block; } }
+/* Once the nav collapses, #menu's auto margin pushed the title to the right
+   edge, straight under the absolutely-positioned theme button. Anchor the
+   title beside the menu instead and let it claim the free space. */
+@media (max-width: 860px) {
+  .bar .barname { display: block; margin-right: auto; }
+  .bar #menu    { margin-right: var(--s3); }
+}
 
 /* the back-to-top button sits clear of content on small screens */
 @media (max-width: 700px) { #top { inset: auto var(--s4) calc(var(--s4) + env(safe-area-inset-bottom)) auto; } }
@@ -1195,11 +1206,16 @@ input[type="search"]::-webkit-search-cancel-button:hover { opacity: 0.9; }
 /* ── table captions and spacing ─────────────────────────────────────────── */
 /* the caption sat inside the table, repeating the card title and scrolling
    with the columns; it belongs under the table, in the tone of a note */
+/* a table caption and a figure caption are the same kind of text, so they share
+   one treatment; only the element they follow differs. --fs-label is reserved
+   for uppercase chips, and using it here made table captions a size smaller
+   than the figure captions beside them. */
 .tcap {
   margin: var(--s3) 0 0;
-  font-size: var(--fs-label);
-  line-height: 1.55;
+  font-size: var(--fs-meta);
+  line-height: 1.6;
   color: var(--fg-3);
+  max-width: 92ch;
 }
 .tcap + .foot { margin-top: var(--s2); }
 

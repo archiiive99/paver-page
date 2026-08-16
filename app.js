@@ -613,22 +613,9 @@ const METHOD_FIGURES = [
   observeCards(host);
 })();
 
-(function qualitative() {
-  const scenes = ['rank_356_3bb2aa82346340a0903bf05257735f71',
-                  'rank_176_b6aa15f59b434b0da1790cad8532cf70',
-                  'rank_01_4518c3b25dc5423cb72619bcad0d7091',
-                  'rank_02_6bfa08277a1e4ec4b85872ee56f288e5',
-                  'rank_03_91e8409921d642cf9f9e9f761d242362',
-                  'rank_04_1feba2123ec9409abc727851dd6a55ae'];
-  const labels = { input_images: 'six surround cameras', ground_truth: 'ground truth',
-                   vad_tiny: 'VAD-Tiny', vad_tiny_paver: 'VAD-Tiny + PAVER' };
-  scenes.forEach((s, i) => {
-    const host = $('#qrow' + (i + 1));
-    if (!host) return;
-    Object.keys(labels).forEach(v => host.appendChild(
-      img(`assets/qual/${s}__${v}.png`, `Scene ${i + 1}, ${labels[v]}`, `${labels[v]} · ${s}`)));
-  });
-})();
+/* The six-scene static comparison grid is gone. The 3D Visualizer shows the
+   same nuScenes scenes with the same two models, interactively and at any
+   scene, so the baked-in image dump was a second, worse copy of it. */
 
 (function gradcam() {
   const heads = [['bev', 'BEV features'], ['planning', 'Planning head'],
@@ -966,7 +953,9 @@ addEventListener('DOMContentLoaded', () => {
         const outcome = (OUTCOME[r.id] || {})[ours ? 'paver' : 'base'] || [];
         const score = ours ? r.paver : r.base;
         const card = document.createElement('div');
-        card.className = 'card tight';
+        /* a panel, not a card: these sit inside the replay card, and a card
+           within a card stacks two surfaces and reads as a boxed box */
+        card.className = 'vpanel';
         card.innerHTML =
           `<div class="vhead"><span class="who${ours ? ' ours' : ''}">${NAME[file] || file}</span>
              <span class="score"><abbr title="Driving Score">DS</abbr> ${score.split(' / ')[0]}

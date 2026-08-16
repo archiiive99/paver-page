@@ -128,7 +128,7 @@
         
         <thead>
           <tr class="grp"><th class="stick"></th><th colspan="2" scope="colgroup">Epochs</th><th colspan="2" scope="colgroup">Auxiliary tasks</th><th colspan="2" scope="colgroup">Planning</th><th colspan="3" scope="colgroup">Motion</th><th colspan="2" scope="colgroup">Detection</th><th scope="col">Map</th></tr>
-          <tr><th class="stick" scope="col">Method</th><th scope="col">PT</th><th scope="col">FT</th><th scope="col">Pretraining</th><th scope="col">Fine-tuning</th><th scope="col">L2 <span class="u">m, lower is better</span></th><th scope="col">Col. <span class="u">%, lower is better</span></th><th scope="col">ADE <span class="u">m, lower is better</span></th><th scope="col">FDE <span class="u">m, lower is better</span></th><th scope="col">MR <span class="u">lower is better</span></th><th scope="col">mAP ↑</th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <span class="u">higher is better</span></th><th scope="col">mAP ↑</th></tr>
+          <tr><th class="stick" scope="col">Method</th><th scope="col"><abbr title="Pretraining">PT</abbr> <span class="u">epochs</span></th><th scope="col"><abbr title="Fine-tuning">FT</abbr> <span class="u">epochs</span></th><th scope="col">Pretraining</th><th scope="col">Fine-tuning</th><th scope="col">L2 <span class="u">m, lower is better</span></th><th scope="col">Col. <span class="u">%, lower is better</span></th><th scope="col">ADE <span class="u">m, lower is better</span></th><th scope="col">FDE <span class="u">m, lower is better</span></th><th scope="col">MR <span class="u">lower is better</span></th><th scope="col">mAP ↑</th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <span class="u">higher is better</span></th><th scope="col">mAP ↑</th></tr>
         </thead>
         <tbody>
           <tr><th class="stick" scope="row">VAD-Tiny<a href="#fn-repro" id="fnref-1"><sup>†</sup></a></th><td>0</td><td>60</td><td>None</td><td>Det., Map, Mot., Plan.</td><td>0.66</td><td>0.51</td><td>0.91</td><td>1.25</td><td>0.13</td><td>0.23</td><td>0.34</td><td>0.42</td></tr>
@@ -466,7 +466,7 @@
       <div class="pane" data-pane="chart"><div class="chips" id="scheduleTabs" role="tablist" aria-label="Architecture"></div><div id="chartSchedule"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
           
           <thead><tr class="grp"><th class="stick"></th><th colspan="3" scope="colgroup">Training cost</th><th colspan="2" scope="colgroup">Planning</th><th scope="col">Mot.</th><th scope="col">Det.</th><th scope="col">Map</th></tr>
-          <tr><th class="stick" scope="col">Method</th><th scope="col">PT</th><th scope="col">FT</th><th scope="col">Time</th><th scope="col">L2 <span class="u">m, lower is better</span></th><th scope="col">Col. <span class="u">%, lower is better</span></th><th scope="col">ADE <span class="u">m, lower is better</span></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <span class="u">higher is better</span></th><th scope="col">mAP ↑</th></tr></thead>
+          <tr><th class="stick" scope="col">Method</th><th scope="col"><abbr title="Pretraining">PT</abbr> <span class="u">epochs</span></th><th scope="col"><abbr title="Fine-tuning">FT</abbr> <span class="u">epochs</span></th><th scope="col">Time</th><th scope="col">L2 <span class="u">m, lower is better</span></th><th scope="col">Col. <span class="u">%, lower is better</span></th><th scope="col">ADE <span class="u">m, lower is better</span></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <span class="u">higher is better</span></th><th scope="col">mAP ↑</th></tr></thead>
           <tbody>
             <tr><th class="stick" scope="row">VAD-Tiny<sup>†</sup></th><td>48<a href="#fn-stage1"><sup>‡</sup></a></td><td>12</td><td>20.5h</td><td>0.70</td><td>0.73</td><td>0.84</td><td>0.36</td><td>0.41</td></tr>
             <tr><th class="stick" scope="row">VAD-Tiny<sup>†</sup></th><td>0</td><td>60</td><td>21.3h</td><td>0.66</td><td>0.51</td><td>0.91</td><td>0.34</td><td>0.42</td></tr>
@@ -491,14 +491,9 @@
       <header class="shead">
         <span class="label">Qualitative</span>
         <h2 id="qualitative-h">What changes in the predictions</h2>
-        <p class="lead">Every panel opens at its original render size in a zoomable viewer, up to 3200&times;1200 for the six-camera composites.</p>
+        <p class="lead">Panels open at their original render size in a zoomable viewer, up to 3200&times;1200 for the six-camera composites.</p>
       </header>
       <div class="stack">
-      <div class="card" id="fig6">
-      <div class="chead"><div class="titles"><span class="kicker">Paper figure 6</span><h3>VAD-Tiny qualitative comparisons</h3></div><div class="actions"></div></div>
-      <p class="lead">Six validation scenes: the six surround cameras, the ground truth, the scratch prediction, and the same architecture with PAVER pretraining.</p>
-      <div class="colhead q4"><span>Input images</span><span>Ground truth</span><span>VAD-Tiny</span><span>+ PAVER</span></div><figure class="fig"><div class="frame"><div class="grid-figure q4" id="qrow1"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow2"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow3"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow4"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow5"></div><div class="hairline"></div><div class="grid-figure q4" id="qrow6"></div></div>
-    </div>
       <div class="card" id="fig7">
       <div class="chead"><div class="titles"><span class="kicker">Paper figure 7</span><h3>Grad-CAM attribution</h3></div><div class="actions"><div class="chips" id="gcamTabs" role="tablist" aria-label="Attribution head"></div></div>
       </div>
