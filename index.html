@@ -128,13 +128,13 @@
         
         <thead>
           <tr class="grp"><th class="stick"></th><th colspan="2" scope="colgroup">Epochs</th><th colspan="2" scope="colgroup">Auxiliary tasks</th><th colspan="2" scope="colgroup">Planning</th><th colspan="3" scope="colgroup">Motion</th><th colspan="2" scope="colgroup">Detection</th><th scope="col">Map</th></tr>
-          <tr><th class="stick" scope="col">Method</th><th scope="col"><abbr title="Pretraining">PT</abbr> <span class="u">epochs</span></th><th scope="col"><abbr title="Fine-tuning">FT</abbr> <span class="u">epochs</span></th><th scope="col">Pretraining</th><th scope="col">Fine-tuning</th><th scope="col">L2 <span class="u">m, lower is better</span></th><th scope="col">Col. <span class="u">%, lower is better</span></th><th scope="col">ADE <span class="u">m, lower is better</span></th><th scope="col">FDE <span class="u">m, lower is better</span></th><th scope="col">MR <span class="u">lower is better</span></th><th scope="col">mAP ↑</th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <span class="u">higher is better</span></th><th scope="col">mAP ↑</th></tr>
+          <tr><th class="stick" scope="col">Method</th><th scope="col"><abbr title="Pretraining">PT</abbr> (epochs)</th><th scope="col"><abbr title="Fine-tuning">FT</abbr> (epochs)</th><th scope="col">Pretraining</th><th scope="col">Fine-tuning</th><th scope="col">L2 (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">Col. (%) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">ADE (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">FDE (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">MR <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">mAP ↑</th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <abbr class="dir" title="higher is better">↑</abbr></th><th scope="col">mAP ↑</th></tr>
         </thead>
         <tbody>
           <tr><th class="stick" scope="row">VAD-Tiny<a href="#fn-repro" id="fnref-1"><sup>†</sup></a></th><td>0</td><td>60</td><td>None</td><td>Det., Map, Mot., Plan.</td><td>0.66</td><td>0.51</td><td>0.91</td><td>1.25</td><td>0.13</td><td>0.23</td><td>0.34</td><td>0.42</td></tr>
           <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>20</td><td>30</td><td>Actions</td><td>Det., Map, Mot., Plan.</td><td><b class="win">0.60</b></td><td><b class="win">0.19</b></td><td><b class="win">0.80</b></td><td><b class="win">1.09</b></td><td><b class="win">0.12</b></td><td><b class="win">0.28</b></td><td><b class="win">0.40</b></td><td><b class="win">0.44</b></td></tr>
-          <tr class="sep"><th class="stick" scope="row">VAD-Base</th><td>0</td><td>60</td><td>None</td><td>Det., Map, Mot., Plan.</td><td>0.72</td><td>0.22</td><td>0.69</td><td>0.90</td><td>0.09</td><td>0.33</td><td>0.46</td><td>0.48</td></tr>
-          <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>20</td><td>30</td><td>Actions</td><td>Det., Map, Mot., Plan.</td><td><b class="win">0.56</b></td><td>0.43</td><td><b class="win">0.69</b></td><td><b class="win">0.90</b></td><td>0.09</td><td>0.33</td><td>0.45</td><td><b class="win">0.50</b></td></tr>
+          <tr class="sep"><th class="stick" scope="row">VAD-Base</th><td>0</td><td>60</td><td>None</td><td>Det., Map, Mot., Plan.</td><td>0.74</td><td><b class="win">0.31</b></td><td>0.76</td><td>1.03</td><td>0.11</td><td>0.29</td><td>0.42</td><td><b class="win">0.50</b></td></tr>
+          <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>20</td><td>30</td><td>Actions</td><td>Det., Map, Mot., Plan.</td><td><b class="win">0.56</b></td><td>0.40</td><td><b class="win">0.69</b></td><td><b class="win">0.90</b></td><td><b class="win">0.09</b></td><td><b class="win">0.33</b></td><td><b class="win">0.45</b></td><td>0.50</td></tr>
           <tr class="sep"><th class="stick" scope="row">GenAD<a href="#fn-repro"><sup>†</sup></a></th><td>0</td><td>60</td><td>None</td><td>Det., Map, Mot., Plan.</td><td>0.59</td><td>0.37</td><td>0.90</td><td>1.23</td><td>0.13</td><td>0.19</td><td>0.26</td><td>0.46</td></tr>
           <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>20</td><td>30</td><td>Actions</td><td>Det., Map, Mot., Plan.</td><td><b class="win">0.54</b></td><td><b class="win">0.21</b></td><td><b class="win">0.80</b></td><td><b class="win">1.05</b></td><td><b class="win">0.11</b></td><td><b class="win">0.21</b></td><td><b class="win">0.28</b></td><td>0.44</td></tr>
         </tbody>
@@ -301,7 +301,7 @@
           <tbody>
             <tr><th class="stick" scope="row">VAD-Tiny<sup>†</sup></th><td>0.35</td><td>0.63</td><td>1.01</td><td>0.38</td><td>0.45</td><td>0.71</td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td><b class="win">0.32</b></td><td><b class="win">0.58</b></td><td><b class="win">0.92</b></td><td><b class="win">0.09</b></td><td><b class="win">0.15</b></td><td><b class="win">0.32</b></td></tr>
-            <tr class="sep"><th class="stick" scope="row">VAD-Base</th><td>0.41</td><td>0.70</td><td>1.05</td><td><b class="win">0.07</b></td><td><b class="win">0.17</b></td><td><b class="win">0.41</b></td></tr>
+            <tr class="sep"><th class="stick" scope="row">VAD-Base</th><td>0.41</td><td>0.71</td><td>1.10</td><td><b class="win">0.20</b></td><td><b class="win">0.29</b></td><td><b class="win">0.43</b></td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td><b class="win">0.30</b></td><td><b class="win">0.53</b></td><td><b class="win">0.85</b></td><td>0.26</td><td>0.43</td><td>0.61</td></tr>
             <tr class="sep"><th class="stick" scope="row">GenAD<sup>†</sup></th><td>0.33</td><td>0.56</td><td>0.88</td><td>0.21</td><td>0.34</td><td>0.56</td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td><b class="win">0.28</b></td><td><b class="win">0.51</b></td><td><b class="win">0.82</b></td><td><b class="win">0.09</b></td><td><b class="win">0.18</b></td><td><b class="win">0.35</b></td></tr>
@@ -323,8 +323,8 @@
           <tr><th class="stick" scope="row">+ UniPAD<sup>‡</sup></th><td>RGB, Depth</td><td>6.41M</td><td>0.45</td><td>0.75</td><td>1.11</td><td>0.19</td><td>0.31</td><td>0.46</td></tr>
           <tr><th class="stick" scope="row">+ MIM4D<sup>‡</sup></th><td>RGB, Depth</td><td>13.43M</td><td>0.39</td><td>0.69</td><td>1.06</td><td>0.21</td><td>0.28</td><td>0.38</td></tr>
           <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>Sparse Actions</td><td>0.01M</td><td><b class="win">0.32</b></td><td><b class="win">0.58</b></td><td><b class="win">0.92</b></td><td><b class="win">0.09</b></td><td><b class="win">0.15</b></td><td><b class="win">0.32</b></td></tr>
-          <tr class="sep"><th class="stick" scope="row">VAD-Base</th><td>—</td><td>0.00M</td><td>0.41</td><td>0.70</td><td>1.05</td><td><b class="win">0.07</b></td><td>0.17</td><td>0.41</td></tr>
-          <tr><th class="stick" scope="row">+ MIM4D<sup>‡</sup></th><td>RGB, Depth</td><td>13.43M</td><td>0.36</td><td>0.64</td><td>1.00</td><td>0.08</td><td><b class="win">0.14</b></td><td><b class="win">0.36</b></td></tr>
+          <tr class="sep"><th class="stick" scope="row">VAD-Base</th><td>—</td><td>0.00M</td><td>0.41</td><td>0.71</td><td>1.10</td><td>0.20</td><td>0.29</td><td>0.43</td></tr>
+          <tr><th class="stick" scope="row">+ MIM4D<sup>‡</sup></th><td>RGB, Depth</td><td>13.43M</td><td>0.36</td><td>0.64</td><td>1.00</td><td><b class="win">0.08</b></td><td><b class="win">0.14</b></td><td><b class="win">0.36</b></td></tr>
           <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>Sparse Actions</td><td>0.01M</td><td><b class="win">0.30</b></td><td><b class="win">0.53</b></td><td><b class="win">0.85</b></td><td>0.26</td><td>0.43</td><td>0.61</td></tr>
         </tbody>
       </table></div>
@@ -341,8 +341,8 @@
           <tbody>
             <tr><th class="stick" scope="row">VAD-Tiny<sup>†</sup></th><td>0.42</td><td>0.31</td><td>0.46</td><td>0.40</td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td><b class="win">0.48</b></td><td><b class="win">0.34</b></td><td><b class="win">0.49</b></td><td><b class="win">0.44</b></td></tr>
-            <tr class="sep"><th class="stick" scope="row">VAD-Base</th><td>0.52</td><td>0.41</td><td>0.51</td><td>0.48</td></tr>
-            <tr class="ours"><th class="stick" scope="row">+ Ours</th><td><b class="win">0.53</b></td><td><b class="win">0.44</b></td><td><b class="win">0.52</b></td><td><b class="win">0.50</b></td></tr>
+            <tr class="sep"><th class="stick" scope="row">VAD-Base</th><td>0.53</td><td><b class="win">0.44</b></td><td><b class="win">0.53</b></td><td><b class="win">0.50</b></td></tr>
+            <tr class="ours"><th class="stick" scope="row">+ Ours</th><td><b class="win">0.53</b></td><td>0.44</td><td>0.52</td><td>0.50</td></tr>
             <tr class="sep"><th class="stick" scope="row">GenAD<sup>†</sup></th><td><b class="win">0.50</b></td><td><b class="win">0.38</b></td><td><b class="win">0.49</b></td><td><b class="win">0.46</b></td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>0.47</td><td>0.35</td><td>0.48</td><td>0.44</td></tr>
           </tbody>
@@ -361,7 +361,7 @@
       <div class="pane" data-pane="chart"><div class="chips" id="pseudoTabs" role="tablist" aria-label="Metric"></div><div id="chartPseudo"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
           
           <thead><tr class="grp"><th class="stick"></th><th colspan="2" scope="colgroup">Planning</th><th colspan="3" scope="colgroup">Motion</th><th scope="col">Det.</th><th scope="col">Map</th></tr>
-          <tr><th class="stick" scope="col">Target source</th><th scope="col">L2 <span class="u">m, lower is better</span></th><th scope="col">Col. <span class="u">%, lower is better</span></th><th scope="col">ADE <span class="u">m, lower is better</span></th><th scope="col">FDE <span class="u">m, lower is better</span></th><th scope="col">MR <span class="u">lower is better</span></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <span class="u">higher is better</span></th><th scope="col">mAP ↑</th></tr></thead>
+          <tr><th class="stick" scope="col">Target source</th><th scope="col">L2 (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">Col. (%) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">ADE (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">FDE (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">MR <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <abbr class="dir" title="higher is better">↑</abbr></th><th scope="col">mAP ↑</th></tr></thead>
           <tbody>
             <tr><th class="stick" scope="row">None<sup>†</sup></th><td>0.66</td><td>0.51</td><td>0.91</td><td>1.25</td><td>0.14</td><td>0.34</td><td>0.42</td></tr>
             <tr><th class="stick" scope="row">Pseudo-LiDAR</th><td><b class="win">0.563</b></td><td>0.56</td><td>0.83</td><td>1.10</td><td><b class="win">0.121</b></td><td>0.39</td><td><b class="win">0.439</b></td></tr>
@@ -389,7 +389,7 @@
       <p class="lead">The initialization that helps open-loop planning also survives closed-loop control, where errors accumulate over a route instead of being scored per frame.</p>
       <div class="pane" data-pane="chart"><div id="chartClosed"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
           
-          <thead><tr><th class="stick" scope="col">Method</th><th scope="col"><abbr title="Driving Score">DS</abbr> <span class="u">higher is better</span></th><th scope="col"><abbr title="Route Completion">RC</abbr> <span class="u">higher is better</span></th><th scope="col"><abbr title="Infraction Score">IS</abbr> <span class="u">higher is better</span></th></tr></thead>
+          <thead><tr><th class="stick" scope="col">Method</th><th scope="col"><abbr title="Driving Score">DS</abbr> <abbr class="dir" title="higher is better">↑</abbr></th><th scope="col"><abbr title="Route Completion">RC</abbr> <abbr class="dir" title="higher is better">↑</abbr></th><th scope="col"><abbr title="Infraction Score">IS</abbr> <abbr class="dir" title="higher is better">↑</abbr></th></tr></thead>
           <tbody>
             <tr><th class="stick" scope="row">UniAD-Tiny</th><td>48.45</td><td>60.96</td><td>0.85</td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td><b class="win">58.79</b></td><td><b class="win">79.06</b></td><td>0.79</td></tr>
@@ -440,7 +440,7 @@
       <div class="pane" data-pane="chart"><div class="chips" id="strategyTabs" role="tablist" aria-label="Metric"></div><div id="chartStrategy"></div></div><div class="pane" data-pane="table" hidden>      <div class="scroller"><table>
         
         <thead><tr class="grp"><th class="stick" colspan="4" scope="colgroup">Pretraining supervision</th><th></th><th colspan="2" scope="colgroup">Plan.</th><th scope="col">Mot.</th><th scope="col">Det.</th><th scope="col">Map</th></tr>
-        <tr><th class="stick" scope="col">Det.</th><th scope="col">Map</th><th scope="col">Occ.</th><th scope="col">Act.</th><th scope="col">#Params ↓</th><th scope="col">L2 <span class="u">m, lower is better</span></th><th scope="col">Col. <span class="u">%, lower is better</span></th><th scope="col">ADE <span class="u">m, lower is better</span></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <span class="u">higher is better</span></th><th scope="col">mAP ↑</th></tr></thead>
+        <tr><th class="stick" scope="col">Det.</th><th scope="col">Map</th><th scope="col">Occ.</th><th scope="col">Act.</th><th scope="col">#Params ↓</th><th scope="col">L2 (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">Col. (%) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">ADE (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <abbr class="dir" title="higher is better">↑</abbr></th><th scope="col">mAP ↑</th></tr></thead>
         <tbody id="t7body"></tbody>
       </table></div>
         <p class="tcap">Pretraining supervision against auxiliary-head budget. The three lightly tinted rows are PAVER's capacity sweep, not the headline configuration.</p>
@@ -453,7 +453,7 @@
       <div class="pane" data-pane="chart"><div class="chips" id="componentsTabs" role="tablist" aria-label="Metric"></div><div id="chartComponents"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
           
           <thead><tr class="grp"><th class="stick" colspan="2"></th><th colspan="2" scope="colgroup">Planning</th><th colspan="3" scope="colgroup">Motion</th><th scope="col">Det.</th><th scope="col">Map</th></tr>
-          <tr><th class="stick" scope="col">Mask</th><th scope="col">Action</th><th scope="col">L2 <span class="u">m, lower is better</span></th><th scope="col">Col. <span class="u">%, lower is better</span></th><th scope="col">ADE <span class="u">m, lower is better</span></th><th scope="col">FDE <span class="u">m, lower is better</span></th><th scope="col">MR <span class="u">lower is better</span></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <span class="u">higher is better</span></th><th scope="col">mAP ↑</th></tr></thead>
+          <tr><th class="stick" scope="col">Mask</th><th scope="col">Action</th><th scope="col">L2 (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">Col. (%) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">ADE (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">FDE (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">MR <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <abbr class="dir" title="higher is better">↑</abbr></th><th scope="col">mAP ↑</th></tr></thead>
           <tbody id="t8body"></tbody>
         </table></div>
         <p class="tcap">Feature masking and action-state conditioning, separately and together.</p>
@@ -466,15 +466,15 @@
       <div class="pane" data-pane="chart"><div class="chips" id="scheduleTabs" role="tablist" aria-label="Architecture"></div><div id="chartSchedule"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
           
           <thead><tr class="grp"><th class="stick"></th><th colspan="3" scope="colgroup">Training cost</th><th colspan="2" scope="colgroup">Planning</th><th scope="col">Mot.</th><th scope="col">Det.</th><th scope="col">Map</th></tr>
-          <tr><th class="stick" scope="col">Method</th><th scope="col"><abbr title="Pretraining">PT</abbr> <span class="u">epochs</span></th><th scope="col"><abbr title="Fine-tuning">FT</abbr> <span class="u">epochs</span></th><th scope="col">Time</th><th scope="col">L2 <span class="u">m, lower is better</span></th><th scope="col">Col. <span class="u">%, lower is better</span></th><th scope="col">ADE <span class="u">m, lower is better</span></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <span class="u">higher is better</span></th><th scope="col">mAP ↑</th></tr></thead>
+          <tr><th class="stick" scope="col">Method</th><th scope="col"><abbr title="Pretraining">PT</abbr> (epochs)</th><th scope="col"><abbr title="Fine-tuning">FT</abbr> (epochs)</th><th scope="col">Time</th><th scope="col">L2 (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">Col. (%) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">ADE (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <abbr class="dir" title="higher is better">↑</abbr></th><th scope="col">mAP ↑</th></tr></thead>
           <tbody>
             <tr><th class="stick" scope="row">VAD-Tiny<sup>†</sup></th><td>48<a href="#fn-stage1"><sup>‡</sup></a></td><td>12</td><td>20.5h</td><td>0.70</td><td>0.73</td><td>0.84</td><td>0.36</td><td>0.41</td></tr>
             <tr><th class="stick" scope="row">VAD-Tiny<sup>†</sup></th><td>0</td><td>60</td><td>21.3h</td><td>0.66</td><td>0.51</td><td>0.91</td><td>0.34</td><td>0.42</td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>20</td><td>10</td><td>6.5h</td><td>0.64</td><td>0.30</td><td>0.85</td><td>0.36</td><td>0.36</td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>20</td><td>20</td><td>10.1h</td><td>0.65</td><td>0.22</td><td><b class="win">0.781</b></td><td>0.39</td><td>0.42</td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>20</td><td>30</td><td>13.6h</td><td><b class="win">0.603</b></td><td><b class="win">0.187</b></td><td>0.80</td><td><b class="win">0.397</b></td><td><b class="win">0.439</b></td></tr>
-            <tr class="sep"><th class="stick" scope="row">VAD-Base</th><td>0</td><td>60</td><td>103h</td><td>0.72</td><td><b class="win">0.217</b></td><td>0.69</td><td><b class="win">0.460</b></td><td>0.48</td></tr>
-            <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>20</td><td>10</td><td>31.8h</td><td>0.65</td><td>0.53</td><td>0.77</td><td>0.37</td><td>0.40</td></tr>
+            <tr class="sep"><th class="stick" scope="row">VAD-Base</th><td>0</td><td>60</td><td>103h</td><td>0.74</td><td><b class="win">0.307</b></td><td><b class="win">0.76</b></td><td><b class="win">0.422</b></td><td><b class="win">0.50</b></td></tr>
+            <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>20</td><td>10</td><td>31.8h</td><td><b class="win">0.65</b></td><td>0.53</td><td>0.77</td><td>0.37</td><td>0.40</td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>20</td><td>20</td><td>49.0h</td><td>0.76</td><td>0.28</td><td>0.70</td><td>0.44</td><td>0.46</td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td>20</td><td>30</td><td>66.1h</td><td><b class="win">0.561</b></td><td>0.43</td><td><b class="win">0.685</b></td><td>0.45</td><td><b class="win">0.498</b></td></tr>
           </tbody>

@@ -36,8 +36,8 @@ const D = {
   transfer: [
     { label: 'VAD-Tiny',         l2: 0.6621, col: 0.5133, fam: 'Tiny',  ours: false },
     { label: 'VAD-Tiny + PAVER', l2: 0.6027, col: 0.1867, fam: 'Tiny',  ours: true },
-    { label: 'VAD-Base',         l2: 0.7188, col: 0.2167, fam: 'Base',  ours: false },
-    { label: 'VAD-Base + PAVER', l2: 0.5611, col: 0.4300, fam: 'Base',  ours: true },
+    { label: 'VAD-Base',         l2: 0.7419, col: 0.3067, fam: 'Base',  ours: false },
+    { label: 'VAD-Base + PAVER', l2: 0.5611, col: 0.4000, fam: 'Base',  ours: true },
     { label: 'GenAD',            l2: 0.5911, col: 0.3700, fam: 'GenAD', ours: false },
     { label: 'GenAD + PAVER',    l2: 0.5366, col: 0.2100, fam: 'GenAD', ours: true },
     { label: 'VAD-Tiny + UniPAD', l2: 0.7700, col: 0.3200, fam: 'other', reported: true, params: 6411021 },
@@ -60,12 +60,12 @@ const D = {
   horizon: {
     L2:  { unit: 'm', better: 'lower', rows: [
       { model: 'VAD-Tiny', base: [0.35, 0.63, 1.01], paver: [0.32, 0.58, 0.92] },
-      { model: 'VAD-Base', base: [0.41, 0.70, 1.05], paver: [0.30, 0.53, 0.85] },
+      { model: 'VAD-Base', base: [0.41, 0.71, 1.10], paver: [0.30, 0.53, 0.85] },
       { model: 'GenAD',    base: [0.33, 0.56, 0.88], paver: [0.28, 0.51, 0.82] }
     ]},
     Collision: { unit: '%', better: 'lower', rows: [
       { model: 'VAD-Tiny', base: [0.38, 0.45, 0.71], paver: [0.09, 0.15, 0.32] },
-      { model: 'VAD-Base', base: [0.07, 0.17, 0.41], paver: [0.26, 0.43, 0.61] },
+      { model: 'VAD-Base', base: [0.20, 0.29, 0.43], paver: [0.26, 0.43, 0.61] },
       { model: 'GenAD',    base: [0.21, 0.34, 0.56], paver: [0.09, 0.18, 0.35] }
     ]}
   },
@@ -1024,8 +1024,8 @@ const RADAR = {
       ours: { l2: 0.60, col: 0.19, ade: 0.80, mr: 0.12, nds: 0.40, map: 0.44 }
     },
     'VAD-Base': {
-      base: { l2: 0.72, col: 0.22, ade: 0.69, mr: 0.09, nds: 0.46, map: 0.48 },
-      ours: { l2: 0.56, col: 0.43, ade: 0.69, mr: 0.09, nds: 0.45, map: 0.50 }
+      base: { l2: 0.74, col: 0.31, ade: 0.76, mr: 0.11, nds: 0.42, map: 0.50 },
+      ours: { l2: 0.56, col: 0.40, ade: 0.69, mr: 0.09, nds: 0.45, map: 0.50 }
     },
     'GenAD': {
       base: { l2: 0.59, col: 0.37, ade: 0.90, mr: 0.13, nds: 0.26, map: 0.46 },
@@ -1120,7 +1120,7 @@ const ROWSETS = {
     rows: [
       { label: 'VAD-Tiny', fam: 'VAD-Tiny', divider: 0.42, ped: 0.31, boundary: 0.46, map: 0.40 },
       { label: 'VAD-Tiny + PAVER', fam: 'VAD-Tiny', ours: true, divider: 0.48, ped: 0.34, boundary: 0.49, map: 0.44 },
-      { label: 'VAD-Base', fam: 'VAD-Base', divider: 0.52, ped: 0.41, boundary: 0.51, map: 0.48 },
+      { label: 'VAD-Base', fam: 'VAD-Base', divider: 0.53, ped: 0.44, boundary: 0.53, map: 0.50 },
       { label: 'VAD-Base + PAVER', fam: 'VAD-Base', ours: true, divider: 0.53, ped: 0.44, boundary: 0.52, map: 0.50 },
       { label: 'GenAD', fam: 'GenAD', divider: 0.50, ped: 0.38, boundary: 0.49, map: 0.46 },
       { label: 'GenAD + PAVER', fam: 'GenAD', ours: true, divider: 0.47, ped: 0.35, boundary: 0.48, map: 0.44 }
@@ -1134,7 +1134,7 @@ const ROWSETS = {
       { label: 'VAD-Tiny + UniPAD', fam: 'VAD-Tiny', l2a: 1.11, cola: 0.46, params: 6.41 },
       { label: 'VAD-Tiny + MIM4D', fam: 'VAD-Tiny', l2a: 1.06, cola: 0.38, params: 13.43 },
       { label: 'VAD-Tiny + PAVER', fam: 'VAD-Tiny', ours: true, l2a: 0.92, cola: 0.32, params: 0.01 },
-      { label: 'VAD-Base', fam: 'VAD-Base', l2a: 1.05, cola: 0.41, params: 0.00 },
+      { label: 'VAD-Base', fam: 'VAD-Base', l2a: 1.10, cola: 0.43, params: 0.00 },
       { label: 'VAD-Base + MIM4D', fam: 'VAD-Base', l2a: 1.00, cola: 0.36, params: 13.43 },
       { label: 'VAD-Base + PAVER', fam: 'VAD-Base', ours: true, l2a: 0.85, cola: 0.61, params: 0.01 }
     ]

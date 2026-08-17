@@ -381,12 +381,23 @@ thead th {
   white-space: nowrap;
   box-shadow: inset 0 -1px 0 var(--table-line);
 }
-thead th .u { display: block; font-weight: 400; font-size: var(--fs-label);
-              color: var(--fg-3); letter-spacing: 0; }
-thead tr.group th { color: var(--fg-3); font-weight: 500; padding-bottom: var(--s1);
-                    box-shadow: none; }
-thead tr.group th[colspan] { text-align: center;
-                             box-shadow: inset 0 -1px 0 var(--table-line); }
+/* The unit and the direction used to be a second line under the column name,
+   which doubled the header height on every table. They are part of the name:
+   "L2 (m) ↓" says the same thing on one line. */
+.dir { font-weight: 400; color: var(--fg-3); text-decoration: none;
+       border: 0; cursor: inherit; }
+/* the name, its unit, its arrow and the sort caret are one unit and must not be
+   split across lines */
+thead th { white-space: nowrap; }
+/* the two files spell the spanning category row differently */
+thead tr.group th, thead tr.grp th {
+  color: var(--fg-3); font-weight: 500; padding-bottom: var(--s3); box-shadow: none;
+}
+/* the category row was sitting straight on top of the column names */
+thead tr.group + tr th, thead tr.grp + tr th { padding-top: var(--s3); }
+thead tr.group th[colspan], thead tr.grp th[colspan] {
+  text-align: center; box-shadow: inset 0 -1px 0 var(--table-line);
+}
 /* only the row that names the columns is pinned; a magic offset for a second
    sticky row breaks the moment a header wraps */
 /* overflow-x on the wrapper still makes it a scroll container, so sticky resolves
