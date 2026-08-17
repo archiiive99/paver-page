@@ -704,7 +704,18 @@ addEventListener('DOMContentLoaded', () => {
   if (C) {
     C.chartCost($('#chartCost'));
     C.chartTransfer($('#chartTransfer'));
-    C.chartCapacity($('#chartCapacity'));
+    (function capacity() {
+      const tabs = $('#capacityTabs');
+      const metrics = C.CAPACITY_METRICS;
+      const draw = (k, push) => {
+        C.chartCapacity($('#chartCapacity'), k);
+        markTabs(tabs, k);
+        if (push) setParam('cap', k);
+      };
+      if (!tabs || !metrics) { C.chartCapacity($('#chartCapacity')); return; }
+      chipTabs(tabs, metrics.map(m => [m[0], m[1]]), draw);
+      draw(getParam('cap', metrics[0][0]));
+    })();
 
     /* the same numbers as a table, behind the header toggle */
     const table = (caption, head, rows) =>
@@ -923,6 +934,13 @@ addEventListener('DOMContentLoaded', () => {
     };
     const cls = t => /complete/.test(t) ? 'ok' : (/collision/.test(t) ? 'bad' : 'warn');
     let players = [];
+    /* Playback speed. The clips are 10 fps rendered from a 2 Hz capture, so they
+       play at five times real time and the default of a quarter speed brings
+       them close to the wall clock. Slower is visibly steppy because the capture
+       has no more frames, which is the trade the control makes explicit. */
+    const RATES = [['0.25', '0.25\u00d7'], ['0.5', '0.5\u00d7'], ['1', '1\u00d7']];
+    let routeRate = parseFloat(getParam('speed', '0.25')) || 0.25;
+    if (!RATES.some(r => parseFloat(r[0]) === routeRate)) routeRate = 0.25;
 
     const paired = M.routes.filter(r => r.videos.length >= 2);
     function show(id, push) {
@@ -957,6 +975,9 @@ addEventListener('DOMContentLoaded', () => {
       if (play) play.classList.remove('playing');
       players.forEach(v => v.addEventListener('loadedmetadata',
         () => window.__routePaint && window.__routePaint(), { once: true }));
+      /* the clips are rendered at 10 fps from a 2 Hz capture, so they run at
+         five times real time; new players inherit whatever speed is selected */
+      players.forEach(v => { v.playbackRate = routeRate; });
       sel.value = r.id;
       if (push) setParam('route', r.id);
     }
@@ -976,6 +997,20 @@ addEventListener('DOMContentLoaded', () => {
         chart.dispatchEvent(new Event('change'));
       }
     });
+    /* the speed control uses the same segmented component as every other switch */
+    (function speed() {
+      const host = $('#routeSpeed');
+      if (!host) return;
+      const pick = (key, push) => {
+        routeRate = parseFloat(key);
+        players.forEach(v => { v.playbackRate = routeRate; });
+        markTabs(host, key);
+        if (push) { setParam('speed', key); announce(`Playback speed ${key} times`); }
+      };
+      chipTabs(host, RATES, pick);
+      pick(String(routeRate));
+    })();
+
     /* one transport drives the pair, because the point of the card is that the
      * two policies are watched at the same instant of the same route */
     (function transport() {

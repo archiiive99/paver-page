@@ -110,8 +110,8 @@
       <h2 id="headline-h" class="sr">Headline results</h2>
       <div class="card" id="glance">
       <div class="chead"><div class="titles"><span class="kicker">Transfer</span><h3>Planning transfer and auxiliary capacity</h3></div><div class="actions"></div></div>
-      <p class="lead">Left: arrows run from each baseline to the same architecture pretrained with PAVER; hollow markers are reconstruction-based pretraining as reported by its authors. Right: detection NDS against auxiliary parameter count on a logarithmic axis.</p>
-      <div class="pane" data-pane="chart"><div class="stack"><div id="chartTransfer"></div><div id="chartCapacity"></div></div></div>
+      <p class="lead">Left: arrows run from each baseline to the same architecture pretrained with PAVER; hollow markers are reconstruction-based pretraining as reported by its authors. Right: the selected metric against auxiliary parameter count on a logarithmic axis, with the no-pretraining baseline as the dashed rule.</p>
+      <div class="pane" data-pane="chart"><div class="stack"><div id="chartTransfer"></div><div class="chips" id="capacityTabs" role="tablist" aria-label="Metric"></div><div id="chartCapacity"></div></div></div>
       <div class="pane" data-pane="table" hidden id="glanceTable"></div>
     </div>
       <div class="card" id="table1">
@@ -403,7 +403,7 @@
       <div class="card" id="routes">
       <div class="chead"><div class="titles"><span class="kicker">Replays</span><h3>Route replays</h3></div><div class="actions"></div></div>
       <p class="lead">Each route is driven twice, once by UniAD-Tiny and once by the same model pretrained with PAVER. The two clips play in step, and the Driving Score and Route Completion of that run are shown above each video.</p>
-      <div class="actions"><span class="field"><label class="lbl" for="routeSel">Route</label><span class="select"><select id="routeSel"></select></span></span></div><div class="videos" id="videoGrid"></div><div class="wvtransport" id="routeTransport"><button class="wvplay" id="routePlay" type="button" aria-label="Play or pause both clips"><svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><div class="wvtrack" id="routeTrack" role="slider" tabindex="0" aria-label="Seek both clips together" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="wvrail"><div class="wvfill" id="routeFill"></div></div><div class="wvknob" id="routeKnob"></div></div><span class="wvclock"><b id="routeNow">0:00</b><i>/</i><span id="routeDur">0:00</span></span></div>
+      <div class="actions"><span class="field"><label class="lbl" for="routeSel">Route</label><span class="select"><select id="routeSel"></select></span></span></div><div class="videos" id="videoGrid"></div><div class="wvtransport" id="routeTransport"><button class="wvplay" id="routePlay" type="button" aria-label="Play or pause both clips"><svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><div class="wvtrack" id="routeTrack" role="slider" tabindex="0" aria-label="Seek both clips together" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="wvrail"><div class="wvfill" id="routeFill"></div></div><div class="wvknob" id="routeKnob"></div></div><span class="wvclock"><b id="routeNow">0:00</b><i>/</i><span id="routeDur">0:00</span></span><div class="chips" id="routeSpeed" role="tablist" aria-label="Playback speed"></div></div>
 
       </div>
       <div class="card" id="routefigs">

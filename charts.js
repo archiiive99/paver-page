@@ -45,16 +45,33 @@ const D = {
     { label: 'VAD-Base + MIM4D',  l2: 0.6667, col: 0.1933, fam: 'other', reported: true, params: 13430493 }
   ],
   capacity: {
-    ref: 0.3379,
+    /* sections/07_target_and_qualitative_evidence.tex, VAD-Tiny aggregate table.
+       The scratch endpoint is the reference every point is read against. */
+    metrics: [
+      ['l2',  'Planning L2 (m)',  true],
+      ['col', 'Collision (%)',    true],
+      ['ade', 'Motion ADE (m)',   true],
+      ['nds', 'Detection NDS',    false],
+      ['map', 'Map mAP',          false]
+    ],
+    ref: { l2: 0.662, col: 0.513, ade: 0.905, nds: 0.338, map: 0.419 },
     pts: [
-      { label: 'PAVER (10K)',                 p: 10258,   nds: 0.3968, kind: 'paver' },
-      { label: 'PAVER (30K)',                 p: 28450,   nds: 0.3828, kind: 'paver' },
-      { label: 'PAVER (90K)',                 p: 93986,   nds: 0.3966, kind: 'paver' },
-      { label: 'Detection',                   p: 3013983, nds: 0.3652, kind: 'task' },
-      { label: 'Map',                         p: 2910001, nds: 0.3312, kind: 'task' },
-      { label: 'Occupancy',                   p: 3561600, nds: 0.3357, kind: 'task' },
-      { label: 'Detection + Map',             p: 5923984, nds: 0.3614, kind: 'task' },
-      { label: 'Detection + Map + Occupancy', p: 9485584, nds: 0.3555, kind: 'task' }
+      { label: 'PAVER (10K)',                 p: 10258,   kind: 'paver',
+        l2: 0.603, col: 0.187, ade: 0.803, nds: 0.397, map: 0.439 },
+      { label: 'PAVER (30K)',                 p: 28450,   kind: 'paver',
+        l2: 0.514, col: 0.320, ade: 0.800, nds: 0.383, map: 0.447 },
+      { label: 'PAVER (90K)',                 p: 93986,   kind: 'paver',
+        l2: 0.596, col: 0.220, ade: 0.782, nds: 0.397, map: 0.433 },
+      { label: 'Detection',                   p: 3013983, kind: 'task',
+        l2: 0.515, col: 0.240, ade: 0.798, nds: 0.365, map: 0.406 },
+      { label: 'Map',                         p: 2910001, kind: 'task',
+        l2: 0.694, col: 0.333, ade: 0.857, nds: 0.331, map: 0.391 },
+      { label: 'Occupancy',                   p: 3561600, kind: 'task',
+        l2: 0.646, col: 0.320, ade: 0.905, nds: 0.336, map: 0.393 },
+      { label: 'Detection + Map',             p: 5923984, kind: 'task',
+        l2: 0.504, col: 0.190, ade: 0.805, nds: 0.361, map: 0.397 },
+      { label: 'Detection + Map + Occupancy', p: 9485584, kind: 'task',
+        l2: 0.577, col: 0.270, ade: 0.798, nds: 0.356, map: 0.420 }
     ]
   },
   horizon: {
@@ -391,69 +408,89 @@ function chartTransfer(host){
 }
 
 /* ── 3. auxiliary capacity ────────────────────────────────────────────── */
-function chartCapacity(host){
+function chartCapacity(host, metricKey){
+  const C = D.capacity;
+  const meta = C.metrics.find(m => m[0] === metricKey) || C.metrics[0];
+  const [key, label, lower] = meta;                    /* direction drives everything */
+  const ref = C.ref[key];
   const W = 760, H = 480, L = 80, R = 34, T = 44, B = 74;
-  const svg = frame(host, W, H, 'Detection NDS against the number of auxiliary pretraining parameters on a logarithmic axis');
+  const svg = frame(host, W, H,
+    `${label} against the number of auxiliary pretraining parameters on a logarithmic axis`);
   const lo = 4e3, hi = 2.6e7;
   const x = v => L + (W - L - R) * (Math.log10(v) - Math.log10(lo)) / (Math.log10(hi) - Math.log10(lo));
-  const yd = [0.315, 0.412];
+  /* the axis is rebuilt per metric: NDS and planning L2 share no scale */
+  const all = C.pts.map(p => p[key]).concat([ref]);
+  const span = Math.max(...all) - Math.min(...all) || 1;
+  const yd = [Math.min(...all) - span * 0.22, Math.max(...all) + span * 0.22];
   const y = v => (H - B) - (H - B - T) * (v - yd[0]) / (yd[1] - yd[0]);
+  const dec = Math.max(...all) < 1 ? 3 : 2;
 
   const defs = el('defs', {}, svg);
   const band = el('linearGradient', { id: 'cap-band', x1: '0', x2: '1' }, defs);
   el('stop', { offset: '0%', 'stop-color': 'var(--paver)', 'stop-opacity': '0.16' }, band);
   el('stop', { offset: '100%', 'stop-color': 'var(--paver)', 'stop-opacity': '0' }, band);
-
-  /* PAVER's whole budget lives in this band: three decades to the left of the rest */
   el('rect', { x: L, y: T, width: x(1.4e5) - L, height: H - B - T, fill: 'url(#cap-band)' }, svg);
 
   [1e4, 1e5, 1e6, 1e7].forEach(t => {
     el('line', { x1: x(t), x2: x(t), y1: T, y2: H - B, class: 'grid' }, svg);
     const g = el('text', { x: x(t), y: H - B + 26, class: 'tick mid' }, svg);
-    g.append(document.createTextNode('10'));
+    el('tspan', { text: '10' }, g);
     el('tspan', { dy: -6, 'font-size': '10', text: String(Math.round(Math.log10(t))) }, g);
   });
-  for (let v = 0.32; v <= 0.4051; v += 0.02) {
+  /* round ticks inside the range: stepping from the data minimum gave values
+     like 0.687 and 0.612, which read as noise rather than as an axis */
+  const raw = (yd[1] - yd[0]) / 4;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw) || mag * 10;
+  for (let v = Math.ceil(yd[0] / step) * step; v <= yd[1] + 1e-9; v += step) {
     el('line', { x1: L, x2: W - R, y1: y(v), y2: y(v), class: 'grid' }, svg);
-    el('text', { x: L - 14, y: y(v) + 4, class: 'tick end', text: fmt(v, 2) }, svg);
+    el('text', { x: L - 14, y: y(v) + 4, class: 'tick end',
+      text: fmt(Number(v.toFixed(10)), dec) }, svg);
   }
-  spines(svg, L, R, T, B, W, H);
-  el('text', { x: (L + W - R) / 2, y: H - 12, class: 'axis mid', text: 'Auxiliary pretraining parameters ↓' }, svg);
-  el('text', { x: 13, y: (T + H - B) / 2, class: 'axis mid', transform: `rotate(-90 13 ${(T + H - B) / 2})`,
-    text: 'Detection NDS ↑' }, svg);
+  el('text', { x: (L + W - R) / 2, y: H - 12, class: 'axis mid',
+    text: 'Auxiliary pretraining parameters ↓' }, svg);
+  el('text', { x: 13, y: (T + H - B) / 2, class: 'axis mid',
+    transform: `rotate(-90 13 ${(T + H - B) / 2})`, text: label + (lower ? ' ↓' : ' ↑') }, svg);
 
-  el('line', { x1: L, x2: W - R, y1: y(D.capacity.ref), y2: y(D.capacity.ref), class: 'ref' }, svg);
-  el('text', { x: W - R - 6, y: y(D.capacity.ref) - 9, class: 'reflab end', text: 'no pretraining' }, svg);
+  el('line', { x1: L, x2: W - R, y1: y(ref), y2: y(ref), class: 'ref' }, svg);
+  el('text', { x: W - R - 6, y: y(ref) - 9, class: 'reflab end', text: 'no pretraining' }, svg);
 
-  /* the gap that matters: same NDS, three orders of magnitude apart */
-  const head = D.capacity.pts.find(p => p.label === 'PAVER (10K)');
-  const rival = D.capacity.pts.reduce((a, b) => (b.kind === 'task' && b.nds > a.nds) ? b : a,
-    { nds: -1, p: 1, kind: 'task' });
-  if (head && rival.p > 1) {
+  /* the gap that matters: the cheapest head against the best task-supervised one */
+  const better = (a, b) => lower ? a < b : a > b;
+  const head = C.pts.find(p => p.label === 'PAVER (10K)');
+  const rival = C.pts.filter(p => p.kind === 'task')
+    .reduce((a, b) => (a && better(a[key], b[key])) ? a : b, null);
+  if (head && rival && better(head[key], rival[key])) {
     const yy = T + 16;
     el('path', { d: `M${x(head.p)},${yy} L${x(rival.p)},${yy}`, class: 'gapline' }, svg);
     el('path', { d: `M${x(head.p)},${yy - 5} L${x(head.p)},${yy + 5}`, class: 'gapline' }, svg);
     el('path', { d: `M${x(rival.p)},${yy - 5} L${x(rival.p)},${yy + 5}`, class: 'gapline' }, svg);
     el('text', { x: (x(head.p) + x(rival.p)) / 2, y: yy - 10, class: 'gaplab mid',
-      text: `${Math.round(rival.p / head.p)}× fewer parameters, higher NDS` }, svg);
+      text: `${Math.round(rival.p / head.p)}× fewer parameters, better ${label.replace(/ \(.*\)/, '')}` }, svg);
   }
 
-  D.capacity.pts.forEach(p => {
+  const place = labelPlacer({ x1: L + 4, y1: T + 2, x2: W - 4, y2: H - B - 2 });
+  C.pts.forEach(p => place.reserve(x(p.p) - 10, y(p[key]) - 10, x(p.p) + 10, y(p[key]) + 10));
+
+  C.pts.forEach(p => {
     const isPaver = p.kind === 'paver';
     const headline = p.label === 'PAVER (10K)';
     const g = el('g', { class: 'pt ' + p.kind + (headline ? ' ours' : '') }, svg);
-    if (isPaver) halo(g, x(p.p), y(p.nds), headline ? 9.5 : 7, 'var(--paver)');
+    if (isPaver) halo(g, x(p.p), y(p[key]), headline ? 9.5 : 7, 'var(--paver)');
     if (isPaver) {
-      el('circle', { cx: x(p.p), cy: y(p.nds), r: headline ? 9.5 : 7,
+      el('circle', { cx: x(p.p), cy: y(p[key]), r: headline ? 9.5 : 7,
         fill: 'var(--paver)', stroke: '#fff', 'stroke-width': headline ? 2.4 : 1.8 }, g);
     } else {
-      el('circle', { cx: x(p.p), cy: y(p.nds), r: 6, fill: 'none', stroke: 'var(--fg-3)', 'stroke-width': 2 }, g);
+      el('circle', { cx: x(p.p), cy: y(p[key]), r: 6, fill: 'none',
+        stroke: 'var(--fg-3)', 'stroke-width': 2 }, g);
     }
-    const anchor = p.p > 2e6 ? 'end' : 'start';
-    el('text', { x: x(p.p) + (anchor === 'end' ? -16 : 16), y: y(p.nds) + 4,
-      class: (isPaver ? 'plab strong ' : 'plab dim ') + anchor, text: p.label }, g);
-    hoverable(g, `<b>${p.label}</b><br>NDS ${fmt(p.nds, 4)}<br>${p.p.toLocaleString()} auxiliary parameters` +
-      `<br>${fmt((p.nds - D.capacity.ref) / D.capacity.ref * 100, 1)}% against no pretraining`);
+    const lp = place.place(x(p.p), y(p[key]), p.label, 13, 16);
+    el('text', { x: lp.x, y: lp.y,
+      class: (isPaver ? 'plab strong ' : 'plab dim ') + lp.anchor, text: p.label }, g);
+    const rel = (p[key] - ref) / ref * 100;
+    hoverable(g, `<b>${p.label}</b><br>${label} ${fmt(p[key], dec)}<br>` +
+      `${p.p.toLocaleString()} auxiliary parameters<br>` +
+      `${fmt(rel, 1)}% against no pretraining`);
   });
   animate(svg);
 }
@@ -599,7 +636,7 @@ function chartSchedule(host, family){
   animate(svg);
 }
 
-window.PAVER_CHARTS = { dataTable, chartCost, chartTransfer, chartCapacity, chartHorizon, chartClosed, chartSchedule, D };
+window.PAVER_CHARTS = { dataTable, chartCost, chartTransfer, chartCapacity, chartHorizon, chartClosed, chartSchedule, D, CAPACITY_METRICS: D.capacity.metrics };
 
 /* ══ analysis charts driven by data.js ════════════════════════════════════
  * Values follow the checkpoint provenance recorded for the paper.

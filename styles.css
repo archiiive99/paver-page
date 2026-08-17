@@ -1315,3 +1315,12 @@ th.sorted { color: var(--fg); }
 /* the arrow is decoration; the state is announced through aria-sort */
 @media print { th.sortable::after { content: ""; } }
 @media (prefers-reduced-motion: reduce) { th.sortable::after { transition: none; } }
+
+/* the speed switch sits at the end of the replay transport */
+.wvtransport #routeSpeed { margin-left: auto; flex: 0 0 auto; }
+.wvtransport #routeSpeed button { height: 26px; padding: 0 var(--s3);
+                                  font-size: var(--fs-label); }
+@media (max-width: 620px) {
+  .wvtransport { flex-wrap: wrap; }
+  .wvtransport #routeSpeed { margin-left: 0; }
+}
