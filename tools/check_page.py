@@ -66,6 +66,32 @@ def check_no_bar_overflow(dom: str) -> list[str]:
     return bad
 
 
+def check_text_inside_viewbox(dom: str) -> list[str]:
+    """A label placer that falls back without clamping runs text off the canvas."""
+    bad = []
+    for m in re.finditer(r'<svg([^>]*)>(.*?)</svg>', dom, re.S):
+        head, body = m.group(1), m.group(2)
+        vb = re.search(r'viewBox="0 0 ([\d.]+) ([\d.]+)"', head)
+        if not vb:
+            continue
+        width = float(vb.group(1))
+        for t in re.finditer(r"<text([^>]*)>([^<]*)</text>", body):
+            attrs, text = t.group(1), t.group(2).strip()
+            if not text or "rotate" in attrs:
+                continue
+            xm = re.search(r'x="([-\d.]+)"', attrs)
+            if not xm:
+                continue
+            x = float(xm.group(1))
+            size = 13 if "reflab" in attrs else (12.5 if "hint" in attrs else 11)
+            w = len(text) * size * 0.52
+            left = x - w / 2 if "mid" in attrs else (x - w if "end" in attrs else x)
+            if left < -0.5 or left + w > width + 0.5:
+                bad.append(f"{text!r} spans {left:.0f}..{left + w:.0f} "
+                           f"in a {width:.0f}-wide viewBox")
+    return bad
+
+
 def check_no_text_collisions(dom: str) -> list[str]:
     """Labels pinned to one side of their mark collide in dense regions."""
     bad = []
@@ -161,6 +187,7 @@ def check_accessible_names(dom: str) -> list[str]:
 
 CHECKS = [
     ("bars stay inside the plot", check_no_bar_overflow),
+    ("labels stay inside the plot", check_text_inside_viewbox),
     ("no overlapping chart labels", check_no_text_collisions),
     ("value labels sit outside bars", check_value_labels_outside_bars),
     ("no card inside a card", check_no_nested_cards),

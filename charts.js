@@ -37,7 +37,7 @@ const D = {
     { label: 'VAD-Tiny',         l2: 0.6621, col: 0.5133, fam: 'Tiny',  ours: false },
     { label: 'VAD-Tiny + PAVER', l2: 0.6027, col: 0.1867, fam: 'Tiny',  ours: true },
     { label: 'VAD-Base',         l2: 0.7419, col: 0.3067, fam: 'Base',  ours: false },
-    { label: 'VAD-Base + PAVER', l2: 0.5611, col: 0.4000, fam: 'Base',  ours: true },
+    { label: 'VAD-Base + PAVER', l2: 0.5619, col: 0.4010, fam: 'Base',  ours: true },
     { label: 'GenAD',            l2: 0.5911, col: 0.3700, fam: 'GenAD', ours: false },
     { label: 'GenAD + PAVER',    l2: 0.5366, col: 0.2100, fam: 'GenAD', ours: true },
     { label: 'VAD-Tiny + UniPAD', l2: 0.7700, col: 0.3200, fam: 'other', reported: true, params: 6411021 },
@@ -60,12 +60,12 @@ const D = {
   horizon: {
     L2:  { unit: 'm', better: 'lower', rows: [
       { model: 'VAD-Tiny', base: [0.35, 0.63, 1.01], paver: [0.32, 0.58, 0.92] },
-      { model: 'VAD-Base', base: [0.41, 0.71, 1.10], paver: [0.30, 0.53, 0.85] },
+      { model: 'VAD-Base', base: [0.41, 0.71, 1.10], paver: [0.30, 0.54, 0.85] },
       { model: 'GenAD',    base: [0.33, 0.56, 0.88], paver: [0.28, 0.51, 0.82] }
     ]},
     Collision: { unit: '%', better: 'lower', rows: [
       { model: 'VAD-Tiny', base: [0.38, 0.45, 0.71], paver: [0.09, 0.15, 0.32] },
-      { model: 'VAD-Base', base: [0.20, 0.29, 0.43], paver: [0.26, 0.43, 0.61] },
+      { model: 'VAD-Base', base: [0.20, 0.29, 0.43], paver: [0.24, 0.41, 0.55] },
       { model: 'GenAD',    base: [0.21, 0.34, 0.56], paver: [0.09, 0.18, 0.35] }
     ]}
   },
@@ -253,13 +253,35 @@ function labelPlacer(bounds) {
         { x: cx + gap, y: cy + gap + size * 0.6, anchor: 'start' },
         { x: cx - gap, y: cy + gap + size * 0.6, anchor: 'end' }
       ];
+      const leftOf = o => o.anchor === 'start' ? o.x : o.anchor === 'end' ? o.x - w : o.x - w / 2;
       for (const o of options) {
-        const x1 = o.anchor === 'start' ? o.x : o.anchor === 'end' ? o.x - w : o.x - w / 2;
+        const x1 = leftOf(o);
         const box = { x1, y1: o.y - h, x2: x1 + w, y2: o.y + 3 };
         if (inside(box) && !taken.some(t => overlaps(box, t))) { taken.push(box); return o; }
       }
-      const o = options[0];
-      taken.push({ x1: o.x, y1: o.y - h, x2: o.x + w, y2: o.y + 3 });
+      /* Nothing fit. Falling back to the first candidate unconditionally let a
+         long label run off the canvas, which is worse than any overlap. Score
+         the candidates, take the least bad, and pull it back inside. */
+      let best = options[0], bestCost = Infinity;
+      for (const o of options) {
+        const x1 = leftOf(o);
+        const box = { x1, y1: o.y - h, x2: x1 + w, y2: o.y + 3 };
+        const spill = bounds
+          ? Math.max(0, bounds.x1 - box.x1) + Math.max(0, box.x2 - bounds.x2) +
+            Math.max(0, bounds.y1 - box.y1) + Math.max(0, box.y2 - bounds.y2)
+          : 0;
+        const hits = taken.filter(t => overlaps(box, t)).length;
+        const cost = spill * 4 + hits;                 /* leaving the plot costs most */
+        if (cost < bestCost) { bestCost = cost; best = o; }
+      }
+      const o = { ...best };
+      if (bounds) {
+        let x1 = Math.min(Math.max(leftOf(o), bounds.x1), Math.max(bounds.x1, bounds.x2 - w));
+        o.x = o.anchor === 'start' ? x1 : o.anchor === 'end' ? x1 + w : x1 + w / 2;
+        o.y = Math.min(Math.max(o.y, bounds.y1 + h), bounds.y2);
+      }
+      const x1 = leftOf(o);
+      taken.push({ x1, y1: o.y - h, x2: x1 + w, y2: o.y + 3 });
       return o;
     }
   };
@@ -1028,7 +1050,7 @@ const RADAR = {
       ours: { l2: 0.56, col: 0.40, ade: 0.69, mr: 0.09, nds: 0.45, map: 0.50 }
     },
     'GenAD': {
-      base: { l2: 0.59, col: 0.37, ade: 0.90, mr: 0.13, nds: 0.26, map: 0.46 },
+      base: { l2: 0.59, col: 0.37, ade: 0.87, mr: 0.14, nds: 0.26, map: 0.46 },
       ours: { l2: 0.54, col: 0.21, ade: 0.80, mr: 0.11, nds: 0.28, map: 0.44 }
     }
   }
@@ -1118,7 +1140,7 @@ const ROWSETS = {
     metrics: [['divider', 'Divider AP', false], ['ped', 'Ped. crossing AP', false],
               ['boundary', 'Boundary AP', false], ['map', 'Map mAP', false]],
     rows: [
-      { label: 'VAD-Tiny', fam: 'VAD-Tiny', divider: 0.42, ped: 0.31, boundary: 0.46, map: 0.40 },
+      { label: 'VAD-Tiny', fam: 'VAD-Tiny', divider: 0.48, ped: 0.32, boundary: 0.46, map: 0.42 },
       { label: 'VAD-Tiny + PAVER', fam: 'VAD-Tiny', ours: true, divider: 0.48, ped: 0.34, boundary: 0.49, map: 0.44 },
       { label: 'VAD-Base', fam: 'VAD-Base', divider: 0.53, ped: 0.44, boundary: 0.53, map: 0.50 },
       { label: 'VAD-Base + PAVER', fam: 'VAD-Base', ours: true, divider: 0.53, ped: 0.44, boundary: 0.52, map: 0.50 },
@@ -1161,7 +1183,7 @@ const ROWSETS = {
               ['mr', 'Motion MR', true], ['nds', 'Detection NDS', false], ['map', 'Map mAP', false]],
     rows: [
       { label: 'Neither', l2: 0.662, col: 0.513, ade: 0.905, fde: 1.250, mr: 0.135, nds: 0.338, map: 0.419 },
-      { label: 'Mask only', l2: 0.655, col: 0.520, ade: 0.808, fde: 1.084, mr: 0.115, nds: 0.396, map: 0.443 },
+      { label: 'Mask only', l2: 0.655, col: 0.523, ade: 0.808, fde: 1.084, mr: 0.115, nds: 0.396, map: 0.443 },
       { label: 'Action state only', l2: 0.705, col: 0.550, ade: 0.797, fde: 1.080, mr: 0.123, nds: 0.388, map: 0.445 },
       { label: 'Both, PAVER', ours: true, l2: 0.603, col: 0.187, ade: 0.803, fde: 1.086, mr: 0.121, nds: 0.397, map: 0.439 }
     ]
