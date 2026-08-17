@@ -57,7 +57,7 @@
       <a href="#headline" data-covers="headline scene abstract idea overview">Overview</a>
       <a href="#method" data-covers="method">Method</a>
       <a href="#results" data-covers="results closedloop ablations">Results</a>
-      <a href="#qualitative" data-covers="qualitative analysis galleries">Analysis</a>
+      <a href="#analysis" data-covers="analysis">Analysis</a>
       <a href="#supptables" data-covers="supptables downloads">Resources</a>
     </nav>
     <button class="btn icon" id="theme" aria-label="Switch theme" aria-pressed="false"><span aria-hidden="true" id="themeIcon"></span></button>
@@ -486,31 +486,6 @@
     </div>
   </section>
 
-  <section id="qualitative" aria-labelledby="qualitative-h">
-    <div class="wrap">
-      <header class="shead">
-        <span class="label">Qualitative</span>
-        <h2 id="qualitative-h">What the encoder attends to</h2>
-        <p class="lead">Gradient attribution for one head at a time, traced back to the camera it came from. Predictions for any scene are in the 3D Visualizer above; panels here open at their original render size in a zoomable viewer.</p>
-      </header>
-      <div class="stack">
-      <div class="card" id="fig7">
-      <div class="chead"><div class="titles"><span class="kicker">Paper figure 7</span><h3>Grad-CAM attribution</h3></div><div class="actions"><div class="chips" id="gcamTabs" role="tablist" aria-label="Attribution head"></div></div>
-      </div>
-      <p class="lead">Attributing the selected head back to the front camera. On the BEV features, PAVER concentrates on objects that constrain the planned motion.</p>
-      <div class="colhead q3"><span>Input image</span><span>VAD-Tiny</span><span>+ PAVER</span></div><div class="frame"><div class="grid-figure q3" id="gcam1"></div><div class="hairline"></div><div class="grid-figure q3" id="gcam2"></div></div>
-    </div>
-      <div class="card" id="figgcam3">
-        <div class="chead"><div class="titles"><span class="kicker">Gallery</span><h3>Attribution per front camera</h3></div><div class="actions"><div class="chips" id="gcam3Heads" role="tablist" aria-label="Head"></div></div>
-        </div>
-        <p class="lead">Five scenes, the three front cameras, and five attribution targets. Each pair of rows is the scratch model above and the PAVER-initialized model below, so the shift in what the encoder attends to is visible per camera rather than only on the front view.</p>
-        <div class="chips" id="gcam3Tabs" role="tablist" aria-label="Scene"></div>
-        <div id="gcam3Body"></div>
-      </div>
-      </div>
-    </div>
-  </section>
-
   <section id="analysis" aria-labelledby="analysis-h">
     <div class="wrap">
       <header class="shead">
@@ -529,22 +504,6 @@
     </div>
   </section>
 
-  <section id="galleries" aria-labelledby="galleries-h">
-    <div class="wrap">
-      <header class="shead">
-        <span class="label">Supplementary galleries</span>
-        <h2 id="galleries-h">Matched pretraining galleries</h2>
-        <p class="lead">Matched scenes under each pretraining supervision, and measured LiDAR targets against monocular pseudo-LiDAR for the same frame.</p>
-      </header>
-      <div class="stack">
-      <div class="card" id="gallery">
-      <div class="chead"><div class="titles"><span class="kicker">Gallery</span><h3>Map-supervised pretraining</h3></div><div class="actions"><div class="chips" id="galTabs" role="tablist" aria-label="Gallery"></div></div>
-      </div>
-      <div class="chips"><label class="sr" for="galFilter">Filter scenes</label><input type="search" id="galFilter" placeholder="Filter by scene id" autocomplete="off"><span class="meta" id="galCount"></span></div><div class="stack" id="galBody"></div><div class="chips"><button class="btn" id="galMore">Load more scenes</button></div>
-    </div>
-      </div>
-    </div>
-  </section>
   <section id="supptables" aria-labelledby="supptables-h">
     <div class="wrap">
       <header class="shead">

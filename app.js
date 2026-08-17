@@ -617,25 +617,7 @@ const METHOD_FIGURES = [
    same nuScenes scenes with the same two models, interactively and at any
    scene, so the baked-in image dump was a second, worse copy of it. */
 
-(function gradcam() {
-  const heads = [['bev', 'BEV features'], ['planning', 'Planning head'],
-                 ['detection', 'Detection head'], ['map', 'Map head']];
-  const host = $('#gcamTabs');
-  function draw(kind, push) {
-    [1, 2].forEach(r => {
-      const row = $('#gcam' + r);
-      row.innerHTML = '';
-      [['input', 'input image'], ['scratch', 'VAD-Tiny'], ['paver', 'VAD-Tiny + PAVER']].forEach(([who, label]) => {
-        const f = who === 'input' ? `r${r}_input.png` : `r${r}_${who}_${kind}.png`;
-        row.appendChild(img('assets/gradcam/' + f, `Row ${r}, ${label}`, `${label} · ${kind}`));
-      });
-    });
-    markTabs(host, kind);
-    if (push) setParam('cam', kind);
-  }
-  chipTabs(host, heads, draw);
-  draw(getParam('cam', 'bev'));
-})();
+
 
 
 /* Tables 7 and 8 are built here because their cells carry accessible marks */
@@ -1055,133 +1037,10 @@ addEventListener('DOMContentLoaded', () => {
 
 
   /* three-camera Grad-CAM gallery */
-  (function gradcamThree() {
-    const tabs = $('#gcam3Tabs'), heads = $('#gcam3Heads'), body = $('#gcam3Body');
-    if (!tabs || !M.gradcam3cam) return;
-    const HEADS = [['bev', 'BEV features'], ['planning', 'Planning'], ['detection', 'Detection'],
-                   ['map', 'Map'], ['motion', 'Motion']];
-    const CAMS = [['front_left', 'Front left'], ['front', 'Front'], ['front_right', 'Front right']];
-    let scene = getParam('g3', M.gradcam3cam[0].id);
-    let head = getParam('g3h', 'bev');
-    function draw(push) {
-      const sc = M.gradcam3cam.find(s => s.id === scene) || M.gradcam3cam[0];
-      body.innerHTML = '';
-      const colhead = document.createElement('div');
-      colhead.className = 'colhead q3';
-      CAMS.forEach(([, label]) => {
-        const s = document.createElement('span');
-        s.textContent = label;
-        colhead.appendChild(s);
-      });
-      const frame = document.createElement('div');
-      frame.className = 'frame flat';
-      const plate = document.createElement('div');
-      plate.className = 'plate';
-      frame.appendChild(plate);
-      [['input', 'Input'], ['scratch_' + head, 'VAD-Tiny'], ['paver_' + head, '+ PAVER']]
-        .forEach(([variant, label], i) => {
-          if (i) plate.appendChild(Object.assign(document.createElement('div'), { className: 'hairline' }));
-          const row = document.createElement('div');
-          row.className = 'grid-figure q3';
-          CAMS.forEach(([cam, camLabel]) => {
-            const file = (sc.cams[cam] || {})[variant];
-            if (!file) return;
-            row.appendChild(img(`assets/gradcam3cam/${file}`, `${label}, ${camLabel}`,
-              `${label} · ${camLabel} · ${head} · ${sc.id}`));
-          });
-          plate.appendChild(row);
-        });
-      const legend = document.createElement('p');
-      legend.className = 'caption';
-      legend.textContent = 'Rows: input, VAD-Tiny attribution, VAD-Tiny + PAVER attribution.';
-      body.append(colhead, frame, legend);
-      markTabs(tabs, sc.id);
-      markTabs(heads, head);
-      if (push) { setParam('g3', sc.id); setParam('g3h', head); }
-    }
-    chipTabs(tabs, M.gradcam3cam.map((s, i) => [s.id, 'Scene ' + (i + 1)]), (k, p) => { scene = k; draw(p); });
-    chipTabs(heads, HEADS, (k, p) => { head = k; draw(p); });
-    draw();
-  })();
+  
 
   /* supplementary galleries */
-  (function galleries() {
-    const GAL = [
-      ['map', 'Map', 'Map-supervised pretraining',
-       ['input_cameras', 'gt', 'map_only', 'detection_map', 'detection_map_occupancy'],
-       'Matched scenes under map-only and combined map pretraining.'],
-      ['occupancy', 'Occupancy', 'Occupancy-supervised pretraining',
-       ['input_cameras', 'gt', 'occupancy_only', 'detection_map_occupancy'],
-       'Matched scenes under occupancy-only and combined pretraining.'],
-      ['pseudo_lidar', 'Pseudo-LiDAR', 'Pseudo-LiDAR target quality',
-       ['camera', 'measured', 'pseudo', 'measured_oblique', 'pseudo_oblique'],
-       'Measured LiDAR targets against monocular pseudo-LiDAR targets for the same scene, top-down and oblique.']
-    ];
-    const PAGE = 4;
-    const tabs = $('#galTabs'), body = $('#galBody'), card = $('#gallery');
-    let key = getParam('gal', 'map'), shown = PAGE, query = '';
-
-    function scenes() {
-      return (M.qual_supp[key] || []).filter(s => !query || s.id.toLowerCase().includes(query));
-    }
-    function draw(push) {
-      const spec = GAL.find(g => g[0] === key) || GAL[0];
-      key = spec[0];
-      $('h3', card).textContent = spec[2];
-      let cap = $('.caption', card);
-      if (!cap) { cap = document.createElement('p'); cap.className = 'caption'; card.appendChild(cap); }
-      cap.textContent = spec[4];
-      const all = scenes(), page = all.slice(0, shown);
-      $('#galCount').textContent = `${page.length} of ${all.length} scenes`;
-      if (!all.length) {
-        body.innerHTML = '<p class="empty">No scene matches that filter. Clear the box to see them all.</p>';
-        $('#galMore').hidden = true;
-        markTabs(tabs, key);
-        if (push) setParam('gal', key);
-        return;
-      }
-      body.innerHTML = '';
-      page.forEach(sc => {
-        const wrap = document.createElement('div');
-        wrap.className = 'scene';
-        const sid = document.createElement('span');
-        sid.className = 'sid';
-        sid.textContent = sc.id;
-        const strip = document.createElement('div');
-        strip.className = 'strip';
-        spec[3].filter(v => sc.variants[v]).forEach(v => {
-          const fig = document.createElement('figure');
-          fig.appendChild(img(`assets/qual_supp/${key}/${sc.variants[v]}`,
-            `${sc.id}, ${v.replace(/_/g, ' ')}`, `${sc.id} · ${v}`));
-          const fc = document.createElement('figcaption');
-          fc.textContent = v.replace(/_/g, ' ');
-          fig.appendChild(fc);
-          strip.appendChild(fig);
-        });
-        wrap.append(sid, strip);
-        body.appendChild(wrap);
-      });
-      $('#galMore').hidden = shown >= all.length;
-      if (!$('#galMore').hidden) $('#galMore').textContent = `Load ${Math.min(PAGE, all.length - shown)} more`;
-      markTabs(tabs, key);
-      if (push) setParam('gal', key);
-    }
-    chipTabs(tabs, GAL.map(g => [g[0], g[1]]), (k, push) => { key = k; shown = PAGE; draw(push); });
-    $('#galMore').addEventListener('click', () => {
-      const first = shown;
-      shown += PAGE;
-      draw();
-      const scenes = $$('.scene', body);
-      if (scenes[first]) { scenes[first].setAttribute('tabindex', '-1'); scenes[first].focus(); }
-      announce(`${Math.min(shown, scenes.length)} scenes shown`);
-    });
-    let timer = null;
-    $('#galFilter').addEventListener('input', e => {
-      clearTimeout(timer);
-      timer = setTimeout(() => { query = e.target.value.trim().toLowerCase(); shown = PAGE; draw(); }, 160);
-    });
-    draw();
-  })();
+  
 });
 
 /* ── 3D inference viewer ──────────────────────────────────────────────────
@@ -1928,3 +1787,100 @@ addEventListener('DOMContentLoaded', () => {
     await load(first.token, false);
   })();
 })();
+
+/* ── sortable tables ──────────────────────────────────────────────────────
+ * Every column name becomes a sort control. A comparison table is read by
+ * ranking one column, and doing that by eye across twenty rows is the part
+ * readers were doing manually.
+ * Rows keep their identity: the row header travels with its cells, and the
+ * "ours" tint and per-family rules follow the row rather than the position.
+ */
+function sortableTables(scope) {
+  $$('table', scope || document).forEach(table => {
+    if (table.dataset.sortable) return;
+    const head = table.tHead && table.tHead.rows[table.tHead.rows.length - 1];
+    const body = table.tBodies[0];
+    if (!head || !body || body.rows.length < 3) return;
+    table.dataset.sortable = '1';
+
+    /* the original order is a deliberate grouping, so it stays reachable */
+    const original = [...body.rows];
+
+    const cellText = (row, index) => {
+      const cells = [...row.cells];
+      const cell = cells[index];
+      return cell ? cell.textContent.trim() : '';
+    };
+    /* a value column may hold "0.51", "58.79", "n/a" or "--"; missing values
+       sort last in both directions rather than pretending to be zero */
+    const parse = text => {
+      const cleaned = text.replace(/−/g, '-').replace(/[^\d.\-]/g, '');
+      const value = parseFloat(cleaned);
+      return Number.isFinite(value) && /\d/.test(text) ? value : null;
+    };
+
+    [...head.cells].forEach((th, index) => {
+      if (!th.textContent.trim()) return;
+      th.tabIndex = 0;
+      th.setAttribute('role', 'columnheader');
+      th.setAttribute('aria-sort', 'none');
+      th.classList.add('sortable');
+      th.title = 'Sort by this column';
+
+      const apply = () => {
+        const state = th.getAttribute('aria-sort');
+        const next = state === 'none' ? 'descending'
+                   : state === 'descending' ? 'ascending' : 'none';
+        [...head.cells].forEach(other => {
+          other.setAttribute('aria-sort', 'none');
+          other.classList.remove('sorted');
+        });
+        th.setAttribute('aria-sort', next);
+
+        if (next === 'none') {
+          original.forEach(row => body.appendChild(row));
+          announce('Original row order restored');
+          return;
+        }
+        th.classList.add('sorted');
+        const direction = next === 'ascending' ? 1 : -1;
+        const rows = [...body.rows];
+        const numeric = rows.every(row => {
+          const text = cellText(row, index);
+          return !text || parse(text) !== null;
+        });
+        rows.sort((a, b) => {
+          const ta = cellText(a, index), tb = cellText(b, index);
+          if (numeric) {
+            const va = parse(ta), vb = parse(tb);
+            if (va === null && vb === null) return 0;
+            if (va === null) return 1;          /* blanks last, always */
+            if (vb === null) return -1;
+            return (va - vb) * direction;
+          }
+          return ta.localeCompare(tb, undefined, { numeric: true }) * direction;
+        });
+        rows.forEach(row => body.appendChild(row));
+        announce(`Sorted by ${th.textContent.trim()}, ${next}`);
+      };
+
+      th.addEventListener('click', apply);
+      th.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); apply(); }
+      });
+    });
+  });
+}
+sortableTables();
+/* tables also arrive later: the supplement group, the route table and anything a
+   pane reveals. One observer covers every future insertion. */
+new MutationObserver(records => {
+  for (const record of records) {
+    for (const node of record.addedNodes) {
+      if (node.nodeType !== 1) continue;
+      if (node.matches('table') || node.querySelector('table')) {
+        sortableTables(node.matches('table') ? node.parentNode : node);
+      }
+    }
+  }
+}).observe(document.body, { childList: true, subtree: true });
