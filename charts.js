@@ -451,8 +451,9 @@ function chartCapacity(host, metricKey){
   }
   el('text', { x: (L + W - R) / 2, y: H - 12, class: 'axis mid',
     text: 'Auxiliary pretraining parameters ↓' }, svg);
-  el('text', { x: 13, y: (T + H - B) / 2, class: 'axis mid',
+  const ax = el('text', { x: 13, y: (T + H - B) / 2, class: 'axis mid',
     transform: `rotate(-90 13 ${(T + H - B) / 2})`, text: label + (lower ? ' ↓' : ' ↑') }, svg);
+  el('title', { text: lower ? 'lower is better' : 'higher is better' }, ax);
 
   el('line', { x1: L, x2: W - R, y1: y(ref), y2: y(ref), class: 'ref' }, svg);
   el('text', { x: W - R - 6, y: y(ref) - 9, class: 'reflab end', text: 'no pretraining' }, svg);

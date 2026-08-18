@@ -54,7 +54,8 @@
     <span class="barname" aria-hidden="true">PAVER</span>
     <nav id="nav" class="segbar navbar" aria-label="Sections">
       <span class="thumb hidden" aria-hidden="true"></span>
-      <a href="#headline" data-covers="headline scene abstract idea overview">Overview</a>
+      <a href="#headline" data-covers="headline abstract idea overview">Overview</a>
+      <a href="#scenes" data-covers="scenes">Scenes</a>
       <a href="#method" data-covers="method">Method</a>
       <a href="#results" data-covers="results closedloop ablations">Results</a>
       <a href="#analysis" data-covers="analysis">Analysis</a>
@@ -104,6 +105,34 @@
       </div>
     </div>
   </div>
+
+  <section id="scenes" aria-labelledby="scenes-h">
+    <div class="wrap">
+      <header class="shead">
+        <span class="label">nuScenes</span>
+        <h2 id="scenes-h">The same scene under three architectures</h2>
+        <p class="lead">Six surround cameras with predicted boxes and futures above, the attribution the encoder produced below. Three scenes were chosen because all three architectures are exercised by them; each architecture then has its own ten.</p>
+      </header>
+      <div class="stack">
+        <div class="card" id="qvcommon">
+          <div class="chead"><div class="titles"><span class="kicker">Shared scenes</span><h3>Three scenes, three architectures</h3></div>
+            <div class="actions"><span class="field"><label class="lbl" for="qvSceneSel">Scene</label><span class="select"><select id="qvSceneSel"></select></span></span></div>
+          </div>
+          <p class="lead" id="qvSceneNote"></p>
+          <div class="segbar center" id="qvArch" role="tablist" aria-label="Architecture"></div>
+          <div class="qvstage" id="qvStage"></div>
+        </div>
+        <div class="card" id="qvtop">
+          <div class="chead"><div class="titles"><span class="kicker">Per architecture</span><h3>Ten scenes for each architecture</h3></div>
+            <div class="actions"><div class="segbar" id="qvTopArch" role="tablist" aria-label="Architecture"></div></div>
+          </div>
+          <p class="lead">The ten validation scenes where each architecture gains most from PAVER pretraining. The lists overlap only where a scene is hard for more than one decoder.</p>
+          <div class="actions"><span class="field"><label class="lbl" for="qvTopSel">Scene</label><span class="select"><select id="qvTopSel"></select></span></span></div>
+          <div class="qvstage" id="qvTopStage"></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section id="headline" aria-labelledby="headline-h">
     <div class="wrap">
@@ -157,7 +186,7 @@
       </header>
       <div class="card" id="viewer3d">
         <div class="chead">
-          <div class="titles"><span class="kicker">Interactive</span><h3>3D Visualizer</h3></div>
+          <div class="titles"><span class="kicker">Scene explorer</span><h3>3D Visualizer</h3></div>
           <div class="actions">
             <span class="field"><label class="lbl" for="wvArchSel">Architecture</label><span class="select"><select id="wvArchSel"></select></span></span>
             <span class="field"><label class="lbl" for="wvFrame">Scene</label><span class="select"><select id="wvFrame"></select></span></span>

@@ -116,8 +116,7 @@ h1, h2, h3, h4 { margin: 0; line-height: var(--lh-tight); letter-spacing: -0.024
 p { margin: 0; }
 ul, ol { margin: 0; padding-left: 1.25em; }
 img, video, svg { display: block; max-width: 100%; }
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; text-underline-offset: 3px; }
+a { color: var(--accent); text-decoration: none; }a:hover, a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
 
@@ -217,10 +216,8 @@ h3 { font-size: var(--fs-h3); line-height: 1.28; }
   background: rgb(var(--surface) / var(--surface-hi));
   border: 1px solid rgb(var(--line) / var(--line-a));
   color: var(--fg);
-}
-.btn:hover { text-decoration: none; border-color: rgb(var(--line) / calc(var(--line-a) * 2)); }
-.btn.solid { background: var(--fg); color: var(--bg); border-color: transparent; font-weight: 600; }
-.btn.solid:hover { opacity: 0.88; }
+}.btn:hover, .btn:focus-visible { text-decoration: none; border-color: rgb(var(--line) / calc(var(--line-a) * 2)); }
+.btn.solid { background: var(--fg); color: var(--bg); border-color: transparent; font-weight: 600; }.btn.solid:hover, .btn.solid:focus-visible { opacity: 0.88; }
 .btn.icon { padding: 0; width: 40px; height: 40px; justify-content: center; }
 
 /* the legacy .seg block is gone: every tab group is a .segbar built by chipTabs */
@@ -230,8 +227,7 @@ h3 { font-size: var(--fs-h3); line-height: 1.28; }
         border-radius: var(--radius-pill); font: 500 var(--fs-meta)/1 var(--sans);
         color: var(--fg-2); cursor: pointer;
         background: rgb(var(--surface) / var(--surface-hi));
-        border: 1px solid rgb(var(--line) / var(--line-a)); }
-.chip:hover { color: var(--fg); text-decoration: none; }
+        border: 1px solid rgb(var(--line) / var(--line-a)); }.chip:hover, .chip:focus-visible { color: var(--fg); text-decoration: none; }
 .chip[aria-selected="true"] { background: var(--fg); color: var(--bg); border-color: transparent; }
 
 .tag { display: inline-flex; align-items: center; padding: var(--s1) var(--s3);
@@ -257,8 +253,7 @@ h3 { font-size: var(--fs-h3); line-height: 1.28; }
   min-width: 230px; border-radius: var(--radius);
   background: rgb(var(--surface) / var(--surface-hi));
   border: 1px solid rgb(var(--line) / calc(var(--line-a) * 1.6));
-}
-.select select:hover { border-color: rgb(var(--line) / calc(var(--line-a) * 2.6)); }
+}.select select:hover, .select select:focus-visible { border-color: rgb(var(--line) / calc(var(--line-a) * 2.6)); }
 .select select option { background: var(--solid); color: var(--fg); }
 
 input[type="search"] {
@@ -269,8 +264,7 @@ input[type="search"] {
 }
 
 details.fold > summary { cursor: pointer; font-size: var(--fs-meta); color: var(--fg-3);
-                         padding-block: var(--s2); }
-details.fold > summary:hover { color: var(--fg); }
+                         padding-block: var(--s2); }details.fold > summary:hover, details.fold > summary:focus-visible { color: var(--fg); }
 details.fold[open] > summary { margin-bottom: var(--s3); }
 
 /* ── header ───────────────────────────────────────────────────────────── */
@@ -292,8 +286,7 @@ nav.navbar a {
   border-radius: var(--radius-pill); white-space: nowrap;
   font-size: var(--fs-meta); font-weight: 500; color: var(--fg-3);
   transition: color var(--t-slow) ease;
-}
-nav.navbar a:hover { color: var(--fg-2); text-decoration: none; }
+}nav.navbar a:hover, nav.navbar a:focus-visible { color: var(--fg-2); text-decoration: none; }
 nav.navbar a[aria-current="true"] { color: var(--fg); font-weight: 600; }
 #menu { display: none; }
 @media (max-width: 1000px) {
@@ -416,10 +409,9 @@ tbody td, tbody th {
   border-bottom: 1px solid rgb(var(--line) / calc(var(--line-a) * 0.35));
 }
 tbody th { font-weight: 500; text-align: left; color: var(--fg); }
-tbody tr:last-child td, tbody tr:last-child th { border-bottom: 0; }
-
-/* scanning a row across ten columns needs the row to stay visible */
-tbody tr:hover td, tbody tr:hover th { background: rgb(var(--line) / 0.05); }
+tbody tr:last-child td, tbody tr:last-child th { border-bottom: 0; }/* scanning a row across ten columns needs the row to stay visible */
+tbody tr:hover td, /* scanning a row across ten columns needs the row to stay visible */
+tbody tr:focus-visible td, tbody tr:hover th, tbody tr:focus-visible th { background: rgb(var(--line) / 0.05); }
 
 /* ours: a left rule carries the emphasis, so the tint can stay quiet enough
    for the numbers on top of it to keep their contrast */
@@ -440,8 +432,7 @@ b.win { font-weight: 700; color: var(--fg); }
 /* the method column stays readable while the metrics scroll under it */
 th.stick, td.stick { position: sticky; left: 0; z-index: var(--z-sticky); background: var(--table-bg); }
 tbody tr.ours th.stick { background: color-mix(in srgb, var(--paver) 8%, var(--table-bg)); }
-tbody tr.sweep th.stick { background: color-mix(in srgb, var(--paver) 3.5%, var(--table-bg)); }
-tbody tr:hover th.stick { background: color-mix(in srgb, var(--fg) 5%, var(--table-bg)); }
+tbody tr.sweep th.stick { background: color-mix(in srgb, var(--paver) 3.5%, var(--table-bg)); }tbody tr:hover th.stick, tbody tr:focus-visible th.stick { background: color-mix(in srgb, var(--fg) 5%, var(--table-bg)); }
 
 /* a value the source does not provide reads as absent, not as zero */
 td .na { color: var(--fg-3); font-variant-numeric: normal; }
@@ -571,9 +562,7 @@ pre.bib { margin: 0; padding: var(--s4); border-radius: var(--radius); overflow-
 .kpi .k-plot .ours  { fill: var(--paver); }
 .kpi .k-plot .k-name { font: 500 12px var(--sans); fill: var(--fg-3); }
 .kpi .k-plot .k-name.hi { fill: var(--paver); }
-.kpi .k-bar { cursor: default; }
-.kpi .k-bar:hover .base { opacity: 0.8; }
-.kpi .k-bar:hover .track { fill: rgb(var(--line) / calc(var(--line-a) * 1.6)); }
+.kpi .k-bar { cursor: default; }.kpi .k-bar:hover .base, .kpi .k-bar:focus-visible .base { opacity: 0.8; }.kpi .k-bar:hover .track, .kpi .k-bar:focus-visible .track { fill: rgb(var(--line) / calc(var(--line-a) * 1.6)); }
 .kpi .k-plot .base, .kpi .k-plot .ours { transform-box: fill-box; transform-origin: 0% 50%; }
 .kpi:not(.run) .base, .kpi:not(.run) .ours { transform: scaleX(0); }
 .kpi.run .base, .kpi.run .ours { transform: none; transition: transform 0.85s cubic-bezier(0.2, 0.75, 0.2, 1); }
@@ -633,8 +622,7 @@ pre.bib { margin: 0; padding: var(--s4); border-radius: var(--radius); overflow-
   border-radius: var(--radius-pill);
   font-size: var(--fs-meta); font-weight: 500; color: var(--fg-2);
   transition: color var(--t-slow) ease;
-}
-.segbar button:hover { color: var(--fg); }
+}.segbar button:hover, .segbar button:focus-visible { color: var(--fg); }
 .segbar button[aria-selected="true"] { color: var(--fg); font-weight: 650; }
 @media (prefers-reduced-motion: reduce) { .segbar .thumb { transition: none; } }
 
@@ -784,8 +772,7 @@ img, .frame, .plate, .ambient, .scene img, video {
   border-radius: 10px; cursor: pointer;
   box-shadow: 0 1px 2px rgb(16 26 46 / 0.05);
   transition: border-color var(--t-base), box-shadow var(--t-base);
-}
-.strigger:hover { border-color: rgb(var(--line) / calc(var(--line-a) * 2.6)); }
+}.strigger:hover, .strigger:focus-visible { border-color: rgb(var(--line) / calc(var(--line-a) * 2.6)); }
 .strigger[aria-expanded="true"] { border-color: var(--accent);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
 .strigger .slabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -985,9 +972,7 @@ img, .frame, .plate, .ambient, .scene img, video {
   transition: transform var(--t-base) cubic-bezier(.34, 1.3, .38, 1);
 }
 .wvsw .lb { font: 500 var(--fs-meta)/1 var(--sans); color: var(--fg-3);
-            transition: color var(--t-base) ease; }
-.wvsw:hover .tr { background: rgb(var(--line) / 0.28); }
-.wvsw:hover .lb { color: var(--fg-2); }
+            transition: color var(--t-base) ease; }.wvsw:hover .tr, .wvsw:focus-visible .tr { background: rgb(var(--line) / 0.28); }.wvsw:hover .lb, .wvsw:focus-visible .lb { color: var(--fg-2); }
 .wvsw input:checked + .tr { background: var(--accent); }
 .wvsw input:checked + .tr::after { transform: translateX(12px); }
 .wvsw input:checked ~ .lb { color: var(--fg); }
@@ -1046,8 +1031,7 @@ img, .frame, .plate, .ambient, .scene img, video {
   box-shadow: inset 0 1px 0.5px rgb(255 255 255 / 0.45),
               0 1px 2px rgb(16 26 46 / 0.22), 0 6px 14px -8px var(--accent);
   transition: transform var(--t-base) cubic-bezier(.34, 1.3, .38, 1), filter var(--t-base);
-}
-.wvplay:hover { filter: brightness(1.07); }
+}.wvplay:hover, .wvplay:focus-visible { filter: brightness(1.07); }
 .wvplay:active { transform: scale(0.94); }
 .wvplay svg { width: 16px; height: 16px; fill: currentColor; }
 .wvplay .ic-pause { display: none; }
@@ -1069,8 +1053,7 @@ img, .frame, .plate, .ambient, .scene img, video {
           background: var(--solid); border: 1.5px solid var(--accent);
           box-shadow: 0 1px 3px rgb(16 26 46 / 0.28);
           transition: left var(--t-fast) linear, transform var(--t-base); }
-.wvtrack.scrubbing .wvknob { transition: transform var(--t-base); transform: scale(1.18); }
-.wvtrack:hover .wvknob { transform: scale(1.12); }
+.wvtrack.scrubbing .wvknob { transition: transform var(--t-base); transform: scale(1.18); }.wvtrack:hover .wvknob, .wvtrack:focus-visible .wvknob { transform: scale(1.12); }
 .wvtrack:focus-visible { outline: none; }
 .wvtrack:focus-visible .wvknob {
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 26%, transparent); }
@@ -1088,8 +1071,7 @@ img, .frame, .plate, .ambient, .scene img, video {
   border-radius: 8px; background: none; color: var(--fg-3);
   font: 500 var(--fs-meta)/1 var(--sans); font-variant-numeric: tabular-nums;
   transition: color var(--t-base), background var(--t-base);
-}
-.wvspeed button:hover { color: var(--fg-2); background: rgb(var(--line) / 0.07); }
+}.wvspeed button:hover, .wvspeed button:focus-visible { color: var(--fg-2); background: rgb(var(--line) / 0.07); }
 .wvspeed button[aria-pressed="true"] {
   color: var(--fg); font-weight: 700; background: rgb(var(--line) / 0.09);
 }
@@ -1116,8 +1098,7 @@ img, .frame, .plate, .ambient, .scene img, video {
 /* a disabled tab looked exactly like an enabled one, so a mode that is not
    available for the selected architecture read as merely unselected */
 .segbar button:disabled,
-.btn:disabled { opacity: 0.42; cursor: not-allowed; }
-.segbar button:disabled:hover { color: var(--fg-2); }
+.btn:disabled { opacity: 0.42; cursor: not-allowed; }.segbar button:disabled:hover, .segbar button:disabled:focus-visible { color: var(--fg-2); }
 
 /* every control acknowledges the press, not just the play button */
 .btn:active:not(:disabled),
@@ -1161,8 +1142,7 @@ img[data-failed] { object-fit: contain; background: var(--seg-track);
   text-decoration: underline; text-underline-offset: 0.18em;
   text-decoration-thickness: from-font;
   text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
-}
-.lead a:hover, .caption a:hover, .foot a:hover, p a:not(.btn):hover {
+}.lead a:hover, .lead a:focus-visible, .caption a:hover, .caption a:focus-visible, .foot a:hover, .foot a:focus-visible, p a:not(.btn):hover, p a:not(.btn):focus-visible {
   text-decoration-color: currentColor;
 }
 
@@ -1179,8 +1159,7 @@ input[type="search"]::-webkit-search-cancel-button {
   width: 14px; height: 14px; cursor: pointer;
   background: currentColor; opacity: 0.45;
   mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8" stroke="black" stroke-width="2" fill="none"/></svg>') center/contain no-repeat;
-}
-input[type="search"]::-webkit-search-cancel-button:hover { opacity: 0.9; }
+}input[type="search"]::-webkit-search-cancel-button:hover, input[type="search"]::-webkit-search-cancel-button:focus-visible { opacity: 0.9; }
 
 /* readers who ask for less motion get none of it, not just less of it */
 @media (prefers-reduced-motion: reduce) {
@@ -1331,11 +1310,9 @@ th.sortable::after {
   font-size: 0.85em; line-height: 1;
   color: var(--fg-3); opacity: 0.45;
   transition: opacity var(--t-fast) ease, color var(--t-fast) ease;
-}
-th.sortable:hover::after { opacity: 0.9; }
+}th.sortable:hover::after, th.sortable:focus-visible::after { opacity: 0.9; }
 th.sortable[aria-sort="ascending"]::after  { content: "\2191"; opacity: 1; color: var(--paver); }
-th.sortable[aria-sort="descending"]::after { content: "\2193"; opacity: 1; color: var(--paver); }
-th.sortable:hover { color: var(--fg); }
+th.sortable[aria-sort="descending"]::after { content: "\2193"; opacity: 1; color: var(--paver); }th.sortable:hover, th.sortable:focus-visible { color: var(--fg); }
 th.sortable:focus-visible { outline: 2px solid var(--paver); outline-offset: -2px; }
 th.sorted { color: var(--fg); }
 
@@ -1368,9 +1345,20 @@ th.sorted { color: var(--fg); }
    carry the same weight as the numbers around it */
 .scroller td { text-align: right; font-variant-numeric: tabular-nums lining-nums; }
 .scroller td:first-child, .scroller th[scope="row"] { text-align: left; }
-.scroller td.na { color: var(--fg-3); }
-
-/* the row highlight stopped at the frozen first column, so a wide row lit up
+.scroller td.na { color: var(--fg-3); }/* the row highlight stopped at the frozen first column, so a wide row lit up
    everywhere except where the reader was looking */
-tbody tr:hover th.stick, tbody tr:hover td.stick { background: var(--table-hover); }
-tbody tr:hover td { background: var(--table-hover); }
+tbody tr:hover th.stick, so a wide row lit up
+   everywhere except where the reader was looking */
+tbody tr:focus-visible th.stick, tbody tr:hover td.stick, tbody tr:focus-visible td.stick { background: var(--table-hover); }tbody tr:hover td, tbody tr:focus-visible td { background: var(--table-hover); }
+
+/* ── nuScenes qualitative clips ───────────────────────────────────────────
+   The clips are a 6-camera grid over an attribution grid, so they are tall and
+   wide at once; the stage keeps their aspect and never lets the page scroll
+   sideways to fit one. */
+.qvstage { margin-top: var(--s4); border-radius: var(--radius); overflow: hidden;
+           background: #000; }
+.qvstage video { display: block; width: 100%; height: auto; }
+.qvstage .empty { margin: 0; padding: var(--s7); text-align: center;
+                  color: var(--fg-3); background: var(--surface-solid, var(--solid)); }
+#qvSceneNote { margin-top: var(--s3); }
+#qvArch { margin-top: var(--s4); }

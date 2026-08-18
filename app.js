@@ -526,13 +526,13 @@ function enhanceSelects(scope) { $$('.select > select', scope || document).forEa
 /* ── static content ───────────────────────────────────────────────────── */
 /* Figure 2 is featured in the idea section, so the method walkthrough starts at Figure 3. */
 const METHOD_FIGURES = [
-  ['fig3', 'Figure 3', 'PAVER overview', 'overview5',
+  ['fig3', 'Paper figure 3', 'PAVER overview', 'overview5',
    'A single LiDAR sweep is rasterized into free, occupied and unknown cells, and rule-based ego motions are rolled out over it. The camera-derived BEV features along each corridor are replaced by a shared mask token before the head predicts the two target ratios.',
    'PAVER constructs sparse action targets from a LiDAR sweep, masks the action corridors in the camera-derived BEV features with a shared learnable token, and predicts the targets conditioned on the corresponding action state.'],
-  ['fig4', 'Figure 4', 'Two-stage training protocol', 'training_method',
+  ['fig4', 'Paper figure 4', 'Two-stage training protocol', 'training_method',
    'Stage 1 trains only the BEV encoder and the auxiliary head. Stage 2 discards the head, reinitializes every task decoder, and runs the downstream recipe unchanged, so the comparison isolates initialization.',
    'Only the pretrained BEV encoder transfers; every task decoder is reinitialized.'],
-  ['fig5', 'Figure 5', 'Sparse action-target construction', 'soft_labels5',
+  ['fig5', 'Paper figure 5', 'Sparse action-target construction', 'soft_labels5',
    'Each candidate state is queried at K lateral positions across the vehicle width. Risk is the fraction of those queries on measured returns and Unknown the fraction on cells no ray supports, so both targets describe only what the sensor observed.',
    'LiDAR rays provide Risk and Unknown targets for action-indexed queries; \u201cSafe\u201d denotes free space.']
 ];
@@ -1976,3 +1976,80 @@ new MutationObserver(records => {
     }
   }
 }).observe(document.body, { childList: true, subtree: true });
+
+/* ── nuScenes qualitative clips ───────────────────────────────────────────
+ * Three scenes every architecture is exercised by, then ten per architecture.
+ * One player at a time: the clips are 1920 wide and loading three at once on a
+ * phone is a worse trade than a switch.
+ */
+(function qualVideos() {
+  const COMMON = [
+    ['scene-0556', 'Left turn across oncoming traffic, with a pedestrian in the crossing.'],
+    ['scene-0345', 'Right turn past a work zone, with a scooter and cones in the lane.'],
+    ['scene-0905', 'Rain, a pedestrian crossing ahead, a truck alongside and a work zone.']
+  ];
+  const ARCH = [['vad_tiny', 'VAD-Tiny'], ['vad_base', 'VAD-Base'], ['genad', 'GenAD']];
+  const TOP = {
+    vad_tiny: ['0559','0556','0330','0093','0780','1065','1073','0278','0103','0097'],
+    vad_base: ['0556','0559','0924','0562','0916','0093','0780','0106','0910','0345'],
+    genad:    ['1073','0922','0905','0917','0904','1071','0105','0967','0330','0345']
+  };
+  const NAME = Object.fromEntries(ARCH);
+
+  function stage(host, src, label) {
+    host.innerHTML =
+      `<video controls preload="metadata" playsinline poster="${src.replace('.mp4', '.jpg')}"
+              aria-label="${label}"></video>`;
+    const v = $('video', host);
+    v.src = src;
+    v.playbackRate = 0.5;                 /* rendered at 12 fps from a 2 Hz capture */
+    v.addEventListener('error', () => {
+      host.innerHTML = `<p class="empty">This clip could not be loaded.</p>`;
+    }, { once: true });
+  }
+
+  /* shared scenes */
+  const sel = $('#qvSceneSel'), note = $('#qvSceneNote'), archBar = $('#qvArch'), st = $('#qvStage');
+  if (sel && archBar && st) {
+    let scene = getParam('scene', COMMON[0][0]);
+    if (!COMMON.some(c => c[0] === scene)) scene = COMMON[0][0];
+    let arch = getParam('scene-arch', 'vad_tiny');
+    if (!NAME[arch]) arch = 'vad_tiny';
+    sel.innerHTML = COMMON.map(([s]) =>
+      `<option value="${s}">Scene ${s.replace('scene-', '')}</option>`).join('');
+    const paint = push => {
+      sel.value = scene;
+      note.textContent = (COMMON.find(c => c[0] === scene) || COMMON[0])[1];
+      markTabs(archBar, arch);
+      stage(st, `assets/qualvid/common/${scene}/${arch}.mp4`,
+        `${NAME[arch]} on ${scene.replace('scene-', 'nuScenes scene ')}`);
+      if (push) { setParam('scene', scene); setParam('scene-arch', arch); }
+    };
+    chipTabs(archBar, ARCH, (k, push) => { arch = k; paint(push); announce(NAME[k]); });
+    sel.addEventListener('change', () => { scene = sel.value; paint(true); });
+    paint(false);
+  }
+
+  /* per-architecture top ten */
+  const tArch = $('#qvTopArch'), tSel = $('#qvTopSel'), tSt = $('#qvTopStage');
+  if (tArch && tSel && tSt) {
+    let arch = getParam('top-arch', 'vad_tiny');
+    if (!TOP[arch]) arch = 'vad_tiny';
+    let scene = getParam('top-scene', TOP[arch][0]);
+    const paint = push => {
+      if (!TOP[arch].includes(scene)) scene = TOP[arch][0];
+      /* ascending, so the list reads as scene numbers rather than as a ranking
+         the page never explains */
+      tSel.innerHTML = [...TOP[arch]].sort().map(s =>
+        `<option value="${s}">Scene ${s}</option>`).join('');
+      tSel.value = scene;
+      markTabs(tArch, arch);
+      stage(tSt, `assets/qualvid/top10/${arch}/scene-${scene}.mp4`,
+        `${NAME[arch]} on nuScenes scene ${scene}`);
+      if (push) { setParam('top-arch', arch); setParam('top-scene', scene); }
+    };
+    chipTabs(tArch, ARCH, (k, push) => { arch = k; paint(push); announce(NAME[k]); });
+    tSel.addEventListener('change', () => { scene = tSel.value; paint(true); });
+    paint(false);
+  }
+})();
