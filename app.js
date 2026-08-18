@@ -1368,7 +1368,7 @@ addEventListener('DOMContentLoaded', () => {
       over.src = gcSrc(frame.sampleToken, name);
       over.style.opacity = String(fade);
       over.draggable = false;
-      over.alt = `BEV attribution for ${exp ? exp.name : imgSlot} on the ` +
+      over.alt = `BEV Grad-CAM for ${exp ? exp.name : imgSlot} on the ` +
                  `${pretty.replace(/_/g, ' ').toLowerCase()} camera`;
       onImgError(over);
       const tag = document.createElement('span');
