@@ -15,11 +15,10 @@
 })();
 </script>
 <link rel="canonical" href="https://archiiive99.github.io/paver-page/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%23209EFF%22/%3E%3Ctext x=%2216%22 y=%2222%22 font-family=%22Helvetica,Arial%22 font-size=%2216%22 font-weight=%22bold%22 fill=%22white%22 text-anchor=%22middle%22%3EP%3C/text%3E%3C/svg%3E">
 <link rel="preload" href="assets/font/Lato-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/font/Lato-Semibold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/font/Lato-Bold.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/w/fig/teaser_final3.webp" as="image" type="image/webp">
+<link rel="preload" href="assets/social/preview.jpg" as="image" type="image/webp">
 <style>
 @font-face{font-family:"LatoLocal";src:url("assets/font/Lato-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"LatoLocal";src:url("assets/font/Lato-Semibold.woff2") format("woff2");font-weight:600;font-display:swap}
@@ -30,11 +29,11 @@
 <meta property="og:title" content="PAVER · Planning-Aligned BEV Encoder Pretraining">
 <meta property="og:description" content="Sparse action-conditioned pretraining targets for the BEV encoder of an end-to-end driving stack.">
 <meta property="og:url" content="https://archiiive99.github.io/paver-page/">
-<meta property="og:image" content="https://archiiive99.github.io/paver-page/assets/w/fig/teaser_final3.webp">
-<meta property="og:image:alt" content="Training time and planning accuracy of PAVER against baselines">
+<meta property="og:image" content="https://archiiive99.github.io/paver-page/assets/social/preview.jpg">
+<meta property="og:image:alt" content="Six surround cameras with predictions above the Grad-CAM of the BEV features">
 <meta name="twitter:card" content="summary_large_image">
-<meta property="og:image:width" content="2400">
-<meta property="og:image:height" content="1260">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="PAVER">
 <meta name="twitter:creator" content="@archiiive99">
@@ -45,10 +44,10 @@
 "author":[{"@type":"Person","name":"Jaeha Song"},{"@type":"Person","name":"Soonmin Hwang"}],
 "affiliation":{"@type":"Organization","name":"Hanyang University"},
 "url":"https://archiiive99.github.io/paver-page/",
-"image":"https://archiiive99.github.io/paver-page/assets/w/fig/teaser_final3.webp",
+"image":"https://archiiive99.github.io/paver-page/assets/social/preview.jpg",
 "abstract":"A single pretraining stage supervises the bird’s-eye-view representation where planning reads it, using sparse action-conditioned targets read off one LiDAR sweep."}
 </script>
-<meta name="twitter:image" content="https://archiiive99.github.io/paver-page/assets/w/fig/teaser_final3.webp">
+<meta name="twitter:image" content="https://archiiive99.github.io/paver-page/assets/social/preview.jpg">
 <meta name="theme-color" content="#e9edf3" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#070809" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#0e1116" media="(prefers-color-scheme: dark)">
@@ -88,7 +87,7 @@
   <div class="hero">
     <div class="wrap">
       <div class="chips">
-        <span class="tag accent">Preprint</span>
+        
       </div>
       <h1>Planning-Aligned Pretraining of BEV Representations with Sparse Action-Conditioned Targets for End-to-End Autonomous Driving</h1>
       <div class="authors">
@@ -97,21 +96,21 @@
       </div>
       <p class="lead">One pretraining stage supervises the bird&rsquo;s-eye-view representation where planning reads it, from targets read off a single LiDAR sweep. No driving annotation, no teacher, no change downstream.</p>
       <div class="chips">
-        <a class="btn solid" href="assets/paper/paver_main.pdf" target="_blank" rel="noopener">Paper</a>
-        <a class="btn" href="assets/paper/paver_supplement.pdf" target="_blank" rel="noopener">Supplementary</a>
-        <a class="btn" href="#closedloop">Closed-loop videos</a>
+        <a class="btn solid" href="assets/paper/paver_main.pdf" target="_blank" rel="noopener">Paper</a><a class="btn" href="https://github.com/archiiive99/paver" target="_blank" rel="noopener">Code</a>
+        
+        
       </div>
       <div class="kpis">
         <div class="card kpi">
           <span class="k-label">Collision rate</span>
           <div class="k-row"><span class="k-from">0.51%</span><span class="k-arrow">&rarr;</span><span class="k-to">0.19%</span></div>
-          <span class="tag ok">&minus;63% relative</span>
+          <span class="tag ok">&minus;63%</span>
           <span class="k-note">VAD-Tiny at epoch 30, averaged over the 1, 2 and 3 second horizons.</span>
         </div>
         <div class="card kpi">
           <span class="k-label">Total training time</span>
           <div class="k-row"><span class="k-from">21.3h</span><span class="k-arrow">&rarr;</span><span class="k-to">13.6h</span></div>
-          <span class="tag ok">1.57&times; faster, 7.7&nbsp;h saved</span>
+          <span class="tag ok">1.57&times; faster</span>
           <span class="k-note">VAD-Tiny on four RTX&nbsp;5090 GPUs, including the 20 pretraining epochs.</span>
         </div>
         <div class="card kpi">
@@ -133,7 +132,7 @@
       </header>
       <div class="stack">
         <div class="card lead-card" id="qvcommon">
-          <div class="chead"><div class="titles"><span class="kicker">Clips</span><h3>Teaser video</h3></div>
+          <div class="chead"><div class="titles"><span class="kicker">Scenes</span><h3>Teaser video</h3></div>
             <div class="actions">
               <span class="field"><label class="lbl" for="qvSceneSel">Scene</label><span class="select"><select id="qvSceneSel"></select></span></span>
             </div>
@@ -199,7 +198,7 @@
       </header>
       <div class="card" id="viewer3d">
         <div class="chead">
-          <div class="titles"><span class="kicker">Interactive</span><h3>3D Visualizer</h3></div>
+          <div class="titles"><span class="kicker">Explorer</span><h3>3D Visualizer</h3></div>
           <div class="actions">
             <span class="field"><label class="lbl" for="wvArchSel">Architecture</label><span class="select"><select id="wvArchSel"></select></span></span>
             <span class="field"><label class="lbl" for="wvFrame">Scene</label><span class="select"><select id="wvFrame"></select></span></span>
@@ -276,7 +275,7 @@
   <section id="idea" aria-labelledby="idea-h">
     <div class="wrap">
       <header class="shead">
-        <span class="label">The idea</span>
+        <span class="label">Supervision</span>
         <h2 id="idea-h">Pretraining supervision</h2>
         <p class="lead">Where each family of driving pretraining puts its supervision, and what that costs in annotation and auxiliary capacity.</p>
       </header>
@@ -458,8 +457,9 @@
   <section id="ablations" aria-labelledby="ablations-h">
     <div class="wrap">
       <header class="shead">
-        <span class="label">Ablations</span>
+        <span class="label">What each part buys</span>
         <h2 id="ablations-h">Ablations</h2>
+        <p class="lead">What the objective, the mask and the fine-tuning budget each contribute.</p>
       </header>
       <div class="stack">
       <div class="card" id="table7">
@@ -560,7 +560,7 @@
   <div class="cols-2">
       <div class="card" id="files">
       <div class="chead"><div class="titles"><span class="kicker">Downloads</span><h3>Files</h3></div><div class="actions"></div></div>
-      <div class="chips"><a class="btn solid" href="assets/paper/paver_main.pdf" target="_blank" rel="noopener">Main paper</a><a class="btn" href="assets/paper/paver_supplement.pdf" target="_blank" rel="noopener">Supplementary material</a></div>
+      <div class="chips"><a class="btn solid" href="assets/paper/paver_main.pdf" target="_blank" rel="noopener">Main paper</a></div>
     </div>
       <div class="card" id="cite">
       <div class="chead"><div class="titles"><span class="kicker">BibTeX</span><h3>Citation</h3></div><div class="actions"></div></div>

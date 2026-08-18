@@ -1785,7 +1785,8 @@ addEventListener('DOMContentLoaded', () => {
       return num(a) - num(b) || String(a.sceneName || '').localeCompare(String(b.sceneName || ''));
     });
     sel.innerHTML = rows.map(f => {
-      const base = f.sceneName || `scene ${f.scene.slice(0, 8)}`;
+      const raw = f.sceneName || `scene ${f.scene.slice(0, 8)}`;
+      const base = raw.replace(/^scene[-\s]?/i, 'Scene ');
       const n = (seen.get(base) || 0) + 1;
       seen.set(base, n);
       return `<option value="${f.token}">${base}${n > 1 ? ` (${n})` : ''}</option>`;
@@ -2052,7 +2053,7 @@ function sortableTables(scope) {
     status.textContent = rest();
     if (wrap.parentNode) {
       if (worthTools) wrap.parentNode.insertBefore(tools, wrap);
-      wrap.parentNode.insertBefore(status, wrap);
+      if (worthTools) wrap.parentNode.insertBefore(status, wrap);
     }
 
     const cellText = (row, index) => {
