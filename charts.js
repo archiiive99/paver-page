@@ -314,8 +314,12 @@ function chartTransfer(host){
   const defs = el('defs', {}, svg);
   /* the good corner is lit, so the reader knows which way is better without reading */
   const wash = el('radialGradient', { id: 'tw-good', cx: '0%', cy: '100%', r: '95%' }, defs);
-  el('stop', { offset: '0%', 'stop-color': 'var(--paver)', 'stop-opacity': '0.16' }, wash);
-  el('stop', { offset: '65%', 'stop-color': 'var(--paver)', 'stop-opacity': '0.03' }, wash);
+  /* the corner reads as "better", so it carries most of the tint; the far side is
+     left alone and the ramp keeps enough stops to avoid a visible disc edge */
+  el('stop', { offset: '0%',  'stop-color': 'var(--paver)', 'stop-opacity': '0.34' }, wash);
+  el('stop', { offset: '22%', 'stop-color': 'var(--paver)', 'stop-opacity': '0.22' }, wash);
+  el('stop', { offset: '45%', 'stop-color': 'var(--paver)', 'stop-opacity': '0.10' }, wash);
+  el('stop', { offset: '68%', 'stop-color': 'var(--paver)', 'stop-opacity': '0.035' }, wash);
   el('stop', { offset: '100%', 'stop-color': 'var(--paver)', 'stop-opacity': '0' }, wash);
   const mk = el('marker', { id: 'tw-head', viewBox: '0 0 12 12', refX: 9, refY: 6,
     markerWidth: 5.5, markerHeight: 5.5, orient: 'auto-start-reverse' }, defs);
@@ -453,18 +457,27 @@ function chartCapacity(host, metricKey){
   el('line', { x1: L, x2: W - R, y1: y(ref), y2: y(ref), class: 'ref' }, svg);
   el('text', { x: W - R - 6, y: y(ref) - 9, class: 'reflab end', text: 'no pretraining' }, svg);
 
-  /* the gap that matters: the cheapest head against the best task-supervised one */
+  /* The parameter gap holds on every metric, so the bracket is always drawn; only
+     the claim changes. Saying "better" where the task-supervised head actually
+     wins would be a lie, so that case reports the shortfall instead. */
   const better = (a, b) => lower ? a < b : a > b;
   const head = C.pts.find(p => p.label === 'PAVER (10K)');
   const rival = C.pts.filter(p => p.kind === 'task')
     .reduce((a, b) => (a && better(a[key], b[key])) ? a : b, null);
-  if (head && rival && better(head[key], rival[key])) {
+  if (head && rival) {
     const yy = T + 16;
+    const ratio = Math.round(rival.p / head.p);
+    const name = label.replace(/ \(.*\)/, '');
+    const wins = better(head[key], rival[key]);
+    const delta = Math.abs(head[key] - rival[key]);
     el('path', { d: `M${x(head.p)},${yy} L${x(rival.p)},${yy}`, class: 'gapline' }, svg);
     el('path', { d: `M${x(head.p)},${yy - 5} L${x(head.p)},${yy + 5}`, class: 'gapline' }, svg);
     el('path', { d: `M${x(rival.p)},${yy - 5} L${x(rival.p)},${yy + 5}`, class: 'gapline' }, svg);
-    el('text', { x: (x(head.p) + x(rival.p)) / 2, y: yy - 10, class: 'gaplab mid',
-      text: `${Math.round(rival.p / head.p)}× fewer parameters, better ${label.replace(/ \(.*\)/, '')}` }, svg);
+    el('text', { x: (x(head.p) + x(rival.p)) / 2, y: yy - 10,
+      class: 'gaplab mid' + (wins ? '' : ' even'),
+      text: wins
+        ? `${ratio}\u00d7 fewer parameters, better ${name}`
+        : `${ratio}\u00d7 fewer parameters, within ${fmt(delta, dec)} ${name}` }, svg);
   }
 
   const place = labelPlacer({ x1: L + 4, y1: T + 2, x2: W - 4, y2: H - B - 2 });

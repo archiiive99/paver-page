@@ -7,10 +7,23 @@ const $  = (s, r) => (r || document).querySelector(s);
 const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
 const root = document.documentElement;
 const params = new URL(location.href).searchParams;
-const getParam = (k, d) => params.get(k) || d;
+/* Shared links used to read ?as=..&ch=..&cs=..&fc=..&wa=..&wc=.., which tells a
+   reader nothing about what was selected. Each switch now writes a readable name
+   and still answers to the short one, so links already sent out keep working. */
+const PARAM_ALIAS = {
+  as: 'action-state', ch: 'channel', cs: 'coverage', fc: 'focus', hz: 'horizon',
+  tm: 'target-metric', wa: 'view-arch', wc: 'view-camera', wf: 'view-frame',
+  ws: 'view-scene', cap: 'capacity-metric', pm: 'metric', sched: 'schedule',
+  supp: 'tables', cm: 'component-metric', mm: 'map-metric', mtm: 'method-metric',
+  sm: 'strategy-metric'
+};
+const getParam = (k, d) =>
+  params.get(PARAM_ALIAS[k] || k) || params.get(k) || d;
 function setParam(k, v) {
   const u = new URL(location.href);
-  u.searchParams.set(k, v);
+  const name = PARAM_ALIAS[k] || k;
+  u.searchParams.set(name, v);
+  if (name !== k) u.searchParams.delete(k);      /* never carry both spellings */
   history.replaceState(null, '', u);
 }
 
@@ -718,12 +731,14 @@ addEventListener('DOMContentLoaded', () => {
     })();
 
     /* the same numbers as a table, behind the header toggle */
+    /* the caption sits after the table, like every other one on the page: inside
+       the tabular it competed with the card title and scrolled away sideways */
     const table = (caption, head, rows) =>
-      `<div class="scroller"><table><caption>${caption}</caption>
+      `<div class="scroller"><table>
         <thead><tr>${head.map((x, i) => `<th scope="col"${i ? '' : ' class="stick"'}>${x}</th>`).join('')}</tr></thead>
         <tbody>${rows.map(r => `<tr${r.ours ? ' class="ours"' : ''}>` +
           r.cells.map((c, i) => i ? `<td>${c}</td>` : `<th class="stick" scope="row">${c}</th>`).join('') +
-          '</tr>').join('')}</tbody></table></div>`;
+          '</tr>').join('')}</tbody></table></div><p class="tcap">${caption}</p>`;
     const D2 = C.D;
     $('#costTable').innerHTML = table(
       'Total training time including the PAVER pretraining epochs, four RTX 5090 GPUs.',
@@ -733,7 +748,7 @@ addEventListener('DOMContentLoaded', () => {
     $('#glanceTable').innerHTML =
       table('Average planning L2 and collision rate over 1, 2 and 3 seconds.',
         ['Configuration', 'L2 (m) ↓', 'Collision (%) ↓', 'Auxiliary parameters'],
-        D2.transfer.map(p => ({ ours: p.ours, cells: [p.label, p.l2.toFixed(2), p.col.toFixed(2),
+        D2.transfer.map(p => ({ ours: p.ours, cells: [p.label, p.l2.toFixed(3), p.col.toFixed(3),
           p.params ? p.params.toLocaleString() : (p.ours ? '10,258' : '0')] }))) +
       table('Auxiliary parameter count against detection NDS after transfer.',
         ['Pretraining', 'Parameters', 'NDS ↑'],
@@ -1830,7 +1845,20 @@ addEventListener('DOMContentLoaded', () => {
  * Rows keep their identity: the row header travels with its cells, and the
  * "ours" tint and per-family rules follow the row rather than the position.
  */
+/* A header cell is a header for the cells beside or beneath it whether or not the
+   table is long enough to be worth sorting, so this runs on every table. Cells
+   that are genuinely empty spacers in a category row are left alone. */
+function labelHeaderCells(scope) {
+  $$('table', scope || document).forEach(table => {
+    $$('th', table).forEach(th => {
+      if (th.hasAttribute('scope') || !th.textContent.trim()) return;
+      th.setAttribute('scope', th.parentNode.parentNode.tagName === 'THEAD' ? 'col' : 'row');
+    });
+  });
+}
+
 function sortableTables(scope) {
+  labelHeaderCells(scope);
   $$('table', scope || document).forEach(table => {
     if (table.dataset.sortable) return;
     const head = table.tHead && table.tHead.rows[table.tHead.rows.length - 1];
@@ -1840,6 +1868,16 @@ function sortableTables(scope) {
 
     /* the original order is a deliberate grouping, so it stays reachable */
     const original = [...body.rows];
+
+    /* the table says how many rows it holds and how it is currently ordered,
+       because aria-sort is invisible and the caret alone does not say "click
+       again to reverse, a third time to restore" */
+    const status = document.createElement('p');
+    status.className = 'tstate';
+    const wrap = table.closest('.scroller') || table;
+    const rest = () => `${original.length} rows \u00b7 click a column name to sort`;
+    status.textContent = rest();
+    if (wrap.parentNode) wrap.parentNode.insertBefore(status, wrap);
 
     const cellText = (row, index) => {
       const cells = [...row.cells];
@@ -1860,7 +1898,13 @@ function sortableTables(scope) {
       th.setAttribute('role', 'columnheader');
       th.setAttribute('aria-sort', 'none');
       th.classList.add('sortable');
-      th.title = 'Sort by this column';
+      /* every header used to carry the same sentence, which told a reader
+         hovering one column nothing about that column */
+      const name = th.textContent.replace(/[\u2191\u2193\u2195]/g, '').trim();
+      th.title = `Sort by ${name || 'this column'}`;
+      /* a column header is a header for the cells beneath it, and most of these
+         were missing that relationship entirely */
+      if (!th.hasAttribute('scope')) th.setAttribute('scope', 'col');
 
       const apply = () => {
         const state = th.getAttribute('aria-sort');
@@ -1872,9 +1916,15 @@ function sortableTables(scope) {
         });
         th.setAttribute('aria-sort', next);
 
+        /* sorting reorders rows under the reader; without this the viewport
+           jumps to wherever the table happens to be after the reflow */
+        const keepTop = wrap.scrollTop, keepLeft = wrap.scrollLeft;
+        const restore = () => { wrap.scrollTop = keepTop; wrap.scrollLeft = keepLeft; };
         if (next === 'none') {
           original.forEach(row => body.appendChild(row));
+          status.textContent = rest();
           announce('Original row order restored');
+          restore();
           return;
         }
         th.classList.add('sorted');
@@ -1896,7 +1946,12 @@ function sortableTables(scope) {
           return ta.localeCompare(tb, undefined, { numeric: true }) * direction;
         });
         rows.forEach(row => body.appendChild(row));
-        announce(`Sorted by ${th.textContent.trim()}, ${next}`);
+        const label = th.textContent.replace(/[\u2191\u2193\u2195]/g, '').trim();
+        status.textContent = `${original.length} rows \u00b7 sorted by ${label}, ` +
+          `${next === 'ascending' ? 'lowest first' : 'highest first'} \u00b7 ` +
+          `click again to ${next === 'ascending' ? 'restore the original order' : 'reverse'}`;
+        announce(`Sorted by ${label}, ${next}`);
+        restore();
       };
 
       th.addEventListener('click', apply);
@@ -1907,6 +1962,8 @@ function sortableTables(scope) {
   });
 }
 sortableTables();
+/* the manifest-driven sections build their tables after this module runs */
+addEventListener('load', () => sortableTables());
 /* tables also arrive later: the supplement group, the route table and anything a
    pane reveals. One observer covers every future insertion. */
 new MutationObserver(records => {
