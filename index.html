@@ -345,7 +345,7 @@
           </tbody>
         </table></div>
         <p class="tcap">Planning error and collision rate at each prediction horizon.</p>
-        <p class="foot"><sup>†</sup> Reproduced results.</p></div>
+        </div>
     </div>
       <div class="card" id="table5">
       <div class="chead"><div class="titles"><span class="kicker">Paper table 6</span><h3>Reconstruction-based pretraining</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
@@ -354,7 +354,7 @@
       <div class="pane" data-pane="chart"><div class="chips" id="methodsTabs" role="tablist" aria-label="Metric"></div><div id="chartMethods"></div></div><div class="pane" data-pane="table" hidden>      <div class="scroller"><table>
         
         <thead><tr class="grp"><th class="stick"></th><th></th><th></th><th colspan="3" scope="colgroup">L2 (m) ↓</th><th colspan="3" scope="colgroup">Col. (%) ↓</th></tr>
-        <tr><th class="stick" scope="col">Method</th><th scope="col">Target</th><th scope="col">#Params ↓</th><th scope="col">1s</th><th scope="col">2s</th><th scope="col">3s</th><th scope="col">1s</th><th scope="col">2s</th><th scope="col">3s</th></tr></thead>
+        <tr><th class="stick" scope="col">Method</th><th scope="col">Target</th><th scope="col">Auxiliary parameters ↓</th><th scope="col">1s</th><th scope="col">2s</th><th scope="col">3s</th><th scope="col">1s</th><th scope="col">2s</th><th scope="col">3s</th></tr></thead>
         <tbody>
           <tr><th class="stick" scope="row">VAD-Tiny<sup>†</sup></th><td>—</td><td>0.00M</td><td>0.46</td><td>0.76</td><td>1.12</td><td>0.21</td><td>0.35</td><td>0.58</td></tr>
           <tr><th class="stick" scope="row">+ UniPAD<sup>‡</sup></th><td>RGB, Depth</td><td>6.41M</td><td>0.45</td><td>0.75</td><td>1.11</td><td>0.19</td><td>0.31</td><td>0.46</td></tr>
@@ -366,7 +366,7 @@
         </tbody>
       </table></div>
         <p class="tcap">Comparison against reconstruction-based driving pretraining at matched downstream budgets.</p>
-      <p class="foot">#Params reports temporary auxiliary parameters. RGB denotes camera-color reconstruction and Depth denotes LiDAR-projected sparse metric-depth reconstruction. <sup>†</sup> Reproduced results. <sup>‡</sup> Reported results.</p></div>
+      <p class="foot">Auxiliary parameters are temporary and discarded after pretraining. RGB denotes camera-color reconstruction and Depth denotes LiDAR-projected sparse metric-depth reconstruction. <sup>†</sup> Reproduced results. <sup>‡</sup> Reported results.</p></div>
     </div>
       <div class="card" id="table3">
       <div class="chead"><div class="titles"><span class="kicker">Paper table 3</span><h3>Map prediction results</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
@@ -402,7 +402,7 @@
           </tbody>
         </table></div>
         <p class="tcap">Replacing the LiDAR target source with monocular pseudo-LiDAR.</p>
-        <p class="foot"><sup>†</sup> Reproduced results.</p></div>
+        </div>
       </div>
       </div>
     </div>
@@ -426,12 +426,12 @@
           <tbody>
             <tr><th class="stick" scope="row">UniAD-Tiny</th><td>48.45</td><td>60.96</td><td>0.85</td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td><b class="win">58.79</b></td><td><b class="win">79.06</b></td><td>0.79</td></tr>
-            <tr class="sep"><th class="stick" scope="row">GenAD<a href="#fn-genad"><sup>‡</sup></a></th><td>34.53</td><td><abbr title="not reported in the GenAD paper">n/a</abbr></td><td><abbr title="not reported in the GenAD paper">n/a</abbr></td></tr>
+            <tr class="sep"><th class="stick" scope="row">GenAD<a href="#fn-genad"><sup>‡</sup></a></th><td>34.53</td><td><abbr class="na" title="not reported in the GenAD paper">none</abbr></td><td><abbr class="na" title="not reported in the GenAD paper">none</abbr></td></tr>
             <tr class="ours"><th class="stick" scope="row">+ Ours</th><td><b class="win">49.07</b></td><td>58.95</td><td>0.90</td></tr>
           </tbody>
         </table></div>
         <p class="tcap">Closed-loop driving on Town05 Long, 9 routes with one repetition.</p>
-        <p class="foot" id="fn-genad">DS, RC, and IS denote Driving Score, Route Completion, and Infraction Score. n/a marks a metric the source does not report. <sup>‡</sup> Reported by GenAD.</p></div>
+        <p class="foot" id="fn-genad">DS, RC, and IS denote Driving Score, Route Completion, and Infraction Score. none marks a value the source does not report. <sup>‡</sup> Reported by GenAD.</p></div>
     </div>
       <div class="card" id="routes">
       <div class="chead"><div class="titles"><span class="kicker">Replays</span><h3>Route replays</h3></div><div class="actions"></div></div>
@@ -470,7 +470,7 @@
       <div class="pane" data-pane="chart"><div class="chips" id="strategyTabs" role="tablist" aria-label="Metric"></div><div id="chartStrategy"></div></div><div class="pane" data-pane="table" hidden>      <div class="scroller"><table>
         
         <thead><tr class="grp"><th class="stick" colspan="4" scope="colgroup">Pretraining supervision</th><th></th><th colspan="2" scope="colgroup">Plan.</th><th scope="col">Mot.</th><th scope="col">Det.</th><th scope="col">Map</th></tr>
-        <tr><th class="stick" scope="col">Det.</th><th scope="col">Map</th><th scope="col">Occ.</th><th scope="col">Act.</th><th scope="col">#Params ↓</th><th scope="col">L2 (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">Col. (%) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">ADE (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <abbr class="dir" title="higher is better">↑</abbr></th><th scope="col"><abbr title="mean Average Precision">mAP</abbr> ↑</th></tr></thead>
+        <tr><th class="stick" scope="col">Det.</th><th scope="col">Map</th><th scope="col">Occ.</th><th scope="col">Act.</th><th scope="col">Auxiliary parameters ↓</th><th scope="col">L2 (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">Col. (%) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col">ADE (m) <abbr class="dir" title="lower is better">↓</abbr></th><th scope="col"><abbr title="nuScenes Detection Score">NDS</abbr> <abbr class="dir" title="higher is better">↑</abbr></th><th scope="col"><abbr title="mean Average Precision">mAP</abbr> ↑</th></tr></thead>
         <tbody id="t7body"></tbody>
       </table></div>
         <p class="tcap">Pretraining supervision against auxiliary-head budget.</p>

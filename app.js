@@ -1095,7 +1095,7 @@ addEventListener('DOMContentLoaded', () => {
     sel.innerHTML = paired.map(r => {
       const o = (OUTCOME[r.id] || {}).paver || [];
       const tail = '';   /* the outcome belongs on the clip, not in the chooser */
-      return `<option value="${r.id}">Route ${r.id} \u00b7 ${r.scenario}${tail}</option>`;
+      return `<option value="${r.id}">Route ${r.id} \u00b7 ${r.scenario}</option>`;
     }).join('');
     sel.addEventListener('change', () => {
       show(sel.value, true);
