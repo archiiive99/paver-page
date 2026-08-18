@@ -894,7 +894,7 @@ addEventListener('DOMContentLoaded', () => {
   /* interactive analysis views */
   const VIEWS = [
     ['traj', 'Trajectories', 'Downstream trajectories',
-     'Each VAD-Tiny experiment across downstream epochs. Pick a metric, and select legend entries to isolate runs.'],
+     'Every VAD-Tiny experiment across downstream epochs.'],
     ['pathways', 'What the head uses', 'Input interventions on the PAVER head',
      'Each row removes or shuffles one input and reports how much the head loss grows. A bar whose interval clears zero means the head demonstrably relies on that input; the dominance of the zero-action intervention is what makes the objective action-conditioned rather than a static occupancy readout.'],
     ['targets', 'Target composition', 'What the sparse targets actually contain',
