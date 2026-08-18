@@ -126,8 +126,12 @@ function showTip(html, ev){
 }
 function hideTip(){ if (tip) tip.classList.remove('on'); }
 
+let tipOwner = null;
+addEventListener('pointerdown', e => {                 /* tap elsewhere dismisses */
+  if (tipOwner && !tipOwner.contains(e.target)) { hideTip(); tipOwner = null; }
+}, true);
 function hoverable(node, html){
-  node.addEventListener('pointerenter', e => showTip(html, e));
+  node.addEventListener('pointerenter', e => { tipOwner = node; showTip(html, e); });
   node.addEventListener('pointermove', e => showTip(html, e));
   node.addEventListener('pointerleave', hideTip);
   node.setAttribute('tabindex', '0');
@@ -151,7 +155,19 @@ function frame(host, w, h, label){
 const animObs = new IntersectionObserver(es => es.forEach(e => {
   if (e.isIntersecting) { e.target.classList.add('run'); animObs.unobserve(e.target); }
 }), { rootMargin: '-8% 0px -8% 0px' });
-function animate(svg){ if (REDUCED) svg.classList.add('run'); else animObs.observe(svg); }
+/* A metric switch rebuilds the SVG while the card is already on screen, so the
+   observer never fires for it and the new chart appeared in its pre-animation
+   state. If the host is in view, run immediately. */
+function animate(svg) {
+  if (REDUCED) { svg.classList.add('run'); return; }
+  /* observe regardless: skipping it left a chart that was visible but whose
+     frame never landed with no path to ever animate */
+  animObs.observe(svg);
+  const box = svg.getBoundingClientRect();
+  if (box.top < innerHeight && box.bottom > 0) {
+    requestAnimationFrame(() => { svg.classList.add('run'); animObs.unobserve(svg); });
+  }
+}
 
 /* Charts carry an aria-label, which tells a screen reader what a picture is
  * about but not what it says. This renders the same numbers as a table so the
@@ -400,6 +416,10 @@ function chartTransfer(host){
     } else {
       el('circle', { cx: x(p.l2), cy: y(p.col), r, fill: 'none', stroke: 'var(--fg-3)', 'stroke-width': 2 }, g);
     }
+    hoverable(g, `<b>${p.label}</b><br>Planning L2 ${fmt(p.l2, 3)} m` +
+      `<br>Collision ${fmt(p.col, 3)}%` +
+      (p.params ? `<br>${p.params.toLocaleString()} auxiliary parameters` : '') +
+      (p.reported ? '<br>as reported by its authors' : ''));
     const lp = place.place(x(p.l2), y(p.col), p.label, p.ours ? 14 : 13);
     el('text', { x: lp.x, y: lp.y,
       class: (p.ours ? 'plab strong ' : 'plab dim ') + lp.anchor, text: p.label }, g);
@@ -1316,6 +1336,9 @@ function chartRows(host, setKey, metricKey) {
     rect.style.setProperty('--w', w + 'px');
     el('text', { x: L + w + 10, y: y + rh / 2 + 4, class: 'val start',
       text: fmt(r[key], decimals) }, g);
+    hoverable(g, `<b>${r.label}</b><br>${label} ${fmt(r[key], decimals)}` +
+      (isRef ? '<br>reference for this block'
+             : `<br>${fmt((r[key] - ref[key]) / ref[key] * 100, 1)}% against the baseline`));
 
     /* delta against the reference, informative on every row rather than only the winner */
     if (!isRef) {
