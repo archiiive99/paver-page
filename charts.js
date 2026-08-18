@@ -369,7 +369,7 @@ function chartTransfer(host){
   el('text', { x: 13, y: (T + H - B) / 2, class: 'axis mid', transform: `rotate(-90 13 ${(T + H - B) / 2})`,
     text: 'Collision rate (%) ↓' }, svg);
   /* the page uses hollow for anything that is not ours; saying so inside the
-     chart keeps it from being read against another figure's convention */
+     chart keeps it from being read against another figure’s convention */
   el('circle', { cx: W - R - 150, cy: T - 12, r: 5, fill: 'none',
     stroke: 'var(--fg-3)', 'stroke-width': 2 }, svg);
   el('text', { x: W - R - 140, y: T - 8, class: 'hint start', text: 'baseline' }, svg);
@@ -525,7 +525,7 @@ function chartCapacity(host, metricKey){
       text: wins
         ? `${ratio}\u00d7 fewer parameters, better ${name}`
         : `${ratio}\u00d7 fewer parameters, within ${fmt(delta, dec)} ${name}` }, svg);
-    el('title', { text: `PAVER's 10K head against ${rival.label}, the best ` +
+    el('title', { text: `PAVER’s 10K head against ${rival.label}, the best ` +
       `task-supervised objective on ${name}` }, gl);
   }
 
@@ -1484,7 +1484,10 @@ function chartRouteTrace(host, routeId, channel) {
     .filter(p => (route.policies[p][channel === 'brake' ? 'brake' : 'speed'] || []).length > 1);
   const key = channel === 'brake' ? 'brake' : 'speed';
   const W = 720, H = 330, L = 76, R = 168, T = 22, B = 58;
-  const svg = frame(host, W, H, `${key} over simulated time on route ${routeId}`);
+  /* the channel key is a data field ('speed', 'brake'), so it reached the
+     accessible name in lower case and mid-sentence */
+  const svg = frame(host, W, H,
+    `${key.charAt(0).toUpperCase() + key.slice(1)} over simulated time on route ${routeId}`);
   const rows = policies.flatMap(p => route.policies[p][key]);
   const tmax = Math.max(...rows.map(r => r[0])) * 1.02;
   const vmax = Math.max(...rows.map(r => r[1])) * 1.12 || 1;

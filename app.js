@@ -1256,7 +1256,7 @@ addEventListener('DOMContentLoaded', () => {
 
   /* One <img> per URL, reused across frames. Requests are issued in order of
    * distance from the playhead and only a few at a time: firing all 240 images
-   * of a clip at once fills the browser's six connections with frames nobody is
+   * of a clip at once fills the browser’s six connections with frames nobody is
    * looking at, so scrubbing waited behind them. */
   const MAX_INFLIGHT = 8;
   let inflight = 0;
@@ -1384,7 +1384,7 @@ addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* the surround view: six cameras with the model's boxes projected onto them */
+  /* the surround view: six cameras with the model’s boxes projected onto them */
   function buildCams() {
     if (camMode === 'attn') return buildAttn();
     const host = $('#wvCams');
@@ -1643,7 +1643,7 @@ addEventListener('DOMContentLoaded', () => {
    * planning L2 for this frame, and `plan_obj_box_col` averaged over 1, 2 and
    * 3 s, so any value above zero means the planned ego box overlapped a
    * vehicle or pedestrian occupancy cell at some horizon. Frames outside the
-   * evaluator's 5,119-frame planning population report neither. */
+   * evaluator’s 5,119-frame planning population report neither. */
   const l2of = m => (m ? (m.l2Eval != null ? m.l2Eval : m.l2) : null);
 
   /* Written for the pair at once. The highlight marks pretraining winning this
@@ -1987,7 +1987,7 @@ function identifyTables(scope) {
   $$('table', scope || document).forEach(table => {
     if (table.id) { takenTableIds.add(table.id); return; }
     const holder = table.closest('[id]');
-    /* one container can hold two tables, so the holder's id alone is not unique.
+    /* one container can hold two tables, so the holder’s id alone is not unique.
        The set rather than getElementById, because a table built off-document is
        not findable there yet. */
     const base = holder ? `${holder.id}--table` : 'table';
