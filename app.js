@@ -2172,10 +2172,12 @@ new MutationObserver(records => {
  * shared scenes lead it and are marked.
  */
 (function qualVideos() {
+  /* The caption says what the clip is evidence for, not what is in frame: the
+     agents that bound the manoeuvre are what the attribution should sit on. */
   const COMMON = [
-    ['0556', 'Left turn across oncoming traffic, with a pedestrian in the crossing.'],
-    ['0345', 'Right turn past a work zone, with a scooter and cones in the lane.'],
-    ['0905', 'Rain, a pedestrian crossing ahead, a truck alongside and a work zone.']
+    ['0556', 'Turning left across oncoming traffic with a pedestrian in the crossing. PAVER holds its attribution on the two agents that bound the turn.'],
+    ['0345', 'Turning right past a work zone. PAVER keeps the scooter and the cone line in view, which is what sets the drivable gap.'],
+    ['0905', 'Rain, a crossing pedestrian and a truck alongside. PAVER stays on the agents that constrain the path rather than spreading over the scene.']
   ];
   const ARCH = [['vad_tiny', 'VAD-Tiny'], ['vad_base', 'VAD-Base'], ['genad', 'GenAD']];
   const RATES = [['0.25', '0.25\u00d7'], ['0.5', '0.5\u00d7'], ['1', '1\u00d7']];
@@ -2268,11 +2270,11 @@ new MutationObserver(records => {
     sel.value = scene;
     markTabs(archBar, arch);
     note.textContent = NOTE[scene] ||
-      `One of the ten validation scenes where ${NAME[arch]} gains most from PAVER.`;
+      `${NAME[arch]} gains most from PAVER on this scene of the ten.`;
     stage.dataset.state = 'loading';
     const src = srcFor(arch, scene);
     stage.innerHTML = `<video playsinline muted loop preload="metadata"
-      poster="${src.replace('.mp4', '.jpg')}" preload="none"
+      poster="${src.replace('.mp4', '.jpg')}"
       aria-label="${NAME[arch]} on nuScenes scene ${scene}"></video>`;
     video = $('video', stage);
     video.src = src;
