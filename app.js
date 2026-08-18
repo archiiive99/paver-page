@@ -1961,9 +1961,26 @@ function labelHeaderCells(scope) {
   });
 }
 
+/* Not one of the sixteen tables carried an id, so the sort a link asked for
+   could never be matched to a table. Derive a stable one from the nearest
+   identified ancestor, falling back to document order. */
+let tableSeq = 0;
+function identifyTables(scope) {
+  $$('table', scope || document).forEach(table => {
+    if (table.id) return;
+    const holder = table.closest('[id]');
+    /* one container can hold two tables, so the holder's id alone is not unique */
+    let base = holder ? `${holder.id}--table` : `table-${++tableSeq}`;
+    let id = base, n = 1;
+    while (document.getElementById(id)) id = `${base}-${++n}`;
+    table.id = id;
+  });
+}
+
 function sortableTables(scope) {
   labelHeaderCells(scope);
   typeButtons(scope);
+  identifyTables(scope);
   $$('table', scope || document).forEach(table => {
     if (table.dataset.sortable) return;
     const head = table.tHead && table.tHead.rows[table.tHead.rows.length - 1];
@@ -2039,7 +2056,7 @@ function sortableTables(scope) {
          were missing that relationship entirely */
       if (!th.hasAttribute('scope')) th.setAttribute('scope', 'col');
 
-      const apply = () => {
+      const apply = (silent) => {
         const state = th.getAttribute('aria-sort');
         const next = state === 'none' ? 'descending'
                    : state === 'descending' ? 'ascending' : 'none';
@@ -2080,8 +2097,12 @@ function sortableTables(scope) {
         });
         rows.forEach(row => body.appendChild(row));
         const label = th.textContent.replace(/[\u2191\u2193\u2195]/g, '').trim();
-        if (table.id) setParam('sort', `${table.id}:${index}:${next[0]}`);
-        status.textContent = `${original.length} rows \u00b7 sorted by ${label}, ` +
+        if (table.id && !silent) setParam('sort', `${table.id}:${index}:${next[0]}`);
+        const visible = original.filter(r => !r.hidden).length;
+        const scope = visible === original.length
+          ? `${original.length} rows`
+          : `${visible} of ${original.length} rows`;
+        status.textContent = `${scope} \u00b7 sorted by ${label}, ` +
           `${next === 'ascending' ? 'lowest first' : 'highest first'} \u00b7 ` +
           `click again to ${next === 'ascending' ? 'restore the original order' : 'reverse'}`;
         announce(`Sorted by ${label}, ${next}`);
@@ -2089,6 +2110,16 @@ function sortableTables(scope) {
       };
 
       th.addEventListener('click', apply);
+      /* the URL carried a sort that nothing ever restored, so a shared link
+         opened in the authored order while claiming otherwise */
+      const want = getParam('sort', '');
+      if (want && table.id) {
+        const [wid, widx, wdir] = want.split(':');
+        if (wid === table.id && Number(widx) === index) {
+          const steps = wdir === 'd' ? 1 : 2;          /* descending, then ascending */
+          for (let s = 0; s < steps; s++) apply(true);
+        }
+      }
       th.addEventListener('keydown', e => {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); apply(); }
       });
@@ -2235,13 +2266,15 @@ new MutationObserver(records => {
     video.addEventListener('play',  () => play.classList.add('playing'));
     video.addEventListener('pause', () => play.classList.remove('playing'));
     video.addEventListener('ended', () => play.classList.remove('playing'));
-    /* 27: a failed clip can be asked for again rather than staying dead */
-    stage.addEventListener('click', e => {
-      if (stage.dataset.state === 'failed') draw(false);
-    });
+
     if (push) { setParam('arch-clip', arch); setParam('scene', scene); }
   }
 
+  /* 27: a failed clip can be asked for again. Registered once — stage survives
+     every draw, so putting this inside draw() stacked a listener per switch. */
+  stage.addEventListener('click', () => {
+    if (stage.dataset.state === 'failed') draw(false);
+  });
   chipTabs(archBar, ARCH, (k, push) => { arch = k; draw(push, true); });
   sel.addEventListener('change', () => { scene = sel.value; draw(true); });
   const step = delta => {

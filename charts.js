@@ -164,12 +164,15 @@ const animObs = new IntersectionObserver(es => es.forEach(e => {
 /* A metric switch rebuilds the SVG while the card is already on screen, so the
    observer never fires for it and the new chart appeared in its pre-animation
    state. If the host is in view, run immediately. */
-let animatedOnce = false;
+/* Per host, not global: a single flag meant every chart below the fold stopped
+   animating on scroll-in two and a half seconds after load. What should not
+   replay is the same chart being rebuilt by its own switch. */
+const animatedHosts = new WeakSet();
 function animate(svg) {
-  /* the reveal earns its keep the first time; after that a metric switch is a
-     redraw the reader asked for and should simply be there */
-  if (REDUCED || animatedOnce) { svg.classList.add('run'); return; }
-  setTimeout(() => { animatedOnce = true; }, 2500);
+  const host = svg.parentNode;
+  const seen = host && animatedHosts.has(host);
+  if (host) animatedHosts.add(host);
+  if (REDUCED || seen) { svg.classList.add('run'); return; }
   /* observe regardless: skipping it left a chart that was visible but whose
      frame never landed with no path to ever animate */
   animObs.observe(svg);
