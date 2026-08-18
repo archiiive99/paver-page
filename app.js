@@ -259,6 +259,10 @@ function chipTabs(host, items, onPick) {
     b.addEventListener('click', () => { onPick(key, true); announceSwitch(host, key); });
     host.appendChild(b);
   });
+  /* 2: the buttons are replaced on every call but the host is not, so binding
+     the roving-focus handler each time stacked them. */
+  if (host.dataset.keysBound) return;
+  host.dataset.keysBound = '1';
   host.addEventListener('keydown', e => {
     if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
     const tabs = $$('[role="tab"], [role="radio"]', host);
@@ -351,6 +355,11 @@ addEventListener('DOMContentLoaded', () => {
       });
     };
     addEventListener('scroll', paint, { passive: true });
+    addEventListener('resize', paint);
+    addEventListener('hashchange', paint);
+    /* the document grows as clips and images settle, which moves both the rule
+       and which section counts as current */
+    if (window.ResizeObserver) new ResizeObserver(paint).observe(document.body);
     paint();
   }, { once: true });
 })();
@@ -1172,7 +1181,16 @@ addEventListener('DOMContentLoaded', () => {
         seek(to / d);
       });
       window.__routePaint = paint;
-      setInterval(() => { if (!dragging) paint(); }, 200);
+      /* 1: this ran every 200 ms for the life of the page, including while the
+         card was off screen and while nothing was playing. Drive it from the
+         clips instead, and only while the card is visible. */
+      let tick = null;
+      const start = () => { if (!tick) tick = setInterval(() => { if (!dragging) paint(); }, 200); };
+      const stop  = () => { if (tick) { clearInterval(tick); tick = null; } };
+      new IntersectionObserver(es => {
+        es.forEach(e => (e.isIntersecting ? start() : stop()));
+      }, { rootMargin: '120px' }).observe($('#routeTransport') || document.body);
+      addEventListener('pagehide', stop);
     })();
     show(paired.some(r => r.id === getParam('route', '25857')) ? getParam('route', '25857') : paired[0].id);
   })();
@@ -1964,15 +1982,18 @@ function labelHeaderCells(scope) {
 /* Not one of the sixteen tables carried an id, so the sort a link asked for
    could never be matched to a table. Derive a stable one from the nearest
    identified ancestor, falling back to document order. */
-let tableSeq = 0;
+const takenTableIds = new Set();
 function identifyTables(scope) {
   $$('table', scope || document).forEach(table => {
-    if (table.id) return;
+    if (table.id) { takenTableIds.add(table.id); return; }
     const holder = table.closest('[id]');
-    /* one container can hold two tables, so the holder's id alone is not unique */
-    let base = holder ? `${holder.id}--table` : `table-${++tableSeq}`;
+    /* one container can hold two tables, so the holder's id alone is not unique.
+       The set rather than getElementById, because a table built off-document is
+       not findable there yet. */
+    const base = holder ? `${holder.id}--table` : 'table';
     let id = base, n = 1;
-    while (document.getElementById(id)) id = `${base}-${++n}`;
+    while (takenTableIds.has(id) || document.getElementById(id)) id = `${base}-${++n}`;
+    takenTableIds.add(id);
     table.id = id;
   });
 }
@@ -2072,7 +2093,9 @@ function sortableTables(scope) {
         const restore = () => { wrap.scrollTop = keepTop; wrap.scrollLeft = keepLeft; };
         if (next === 'none') {
           original.forEach(row => body.appendChild(row));
-          status.textContent = rest();
+          const left = original.filter(r => !r.hidden).length;
+          status.textContent = left === original.length ? rest()
+            : `${left} of ${original.length} rows \u00b7 original order`;
           announce('Original row order restored');
           restore();
           return;
@@ -2236,9 +2259,12 @@ new MutationObserver(records => {
     const shared = list.filter(s => commonIds.includes(s));
     const own = list.filter(s => !commonIds.includes(s));
     const opts = g => g.map(s => `<option value="${s}">Scene ${s}</option>`).join('');
-    sel.innerHTML =
+    const markup =
       `<optgroup label="Shared by all three">${opts(shared)}</optgroup>` +
       (own.length ? `<optgroup label="${NAME[arch]} gains most">${opts(own)}</optgroup>` : '');
+    /* 4, 5: rebuilding an unchanged list closes the select if it is open and
+       throws away where a screen reader was in it */
+    if (sel.dataset.list !== markup) { sel.innerHTML = markup; sel.dataset.list = markup; }
     sel.value = scene;
     markTabs(archBar, arch);
     note.textContent = NOTE[scene] ||

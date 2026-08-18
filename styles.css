@@ -1521,3 +1521,7 @@ nav#nav a[aria-current="true"] { color: var(--fg); font-weight: 650; }
 /* 35: the log axis had a decade grid and nothing between, so an order of
    magnitude read the same as a factor of two */
 .chart .grid.minor { opacity: 0.45; stroke-dasharray: 2 3; }
+
+/* 12: a failed clip can be retried by clicking it, which nothing said */
+.qvstage[data-state="failed"] { cursor: pointer; }
+.qvstage[data-state="failed"]::after { content: "This clip could not be loaded — click to retry"; }
