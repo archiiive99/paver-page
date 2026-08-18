@@ -1365,7 +1365,10 @@ tbody tr:focus-visible th.stick, tbody tr:hover td.stick, tbody tr:focus-visible
 .qvstage .empty { margin: 0; padding: var(--s7); text-align: center;
                   color: var(--fg-3); background: var(--surface-solid, var(--solid)); }
 #qvSceneNote { margin-top: var(--s3); }
-#qvArch { margin-top: var(--s4); }
+/* the architecture switch is the card's primary control, so it sits on its
+   own line under the header rather than crowding the scene select */
+#qvArch { margin-top: var(--s5); }
+#qvSceneNote { margin-top: var(--s3); }
 
 
 /* ── audit: 10, 21, 30, 44, 47 ────────────────────────────────────────────
