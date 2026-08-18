@@ -345,8 +345,6 @@ function chartTransfer(host){
   el('text', { x: W - R - 68, y: T - 8, class: 'hint start', text: 'reported' }, svg);
   el('circle', { cx: W - R - 6, cy: T - 12, r: 5, fill: 'var(--paver)' }, svg);
   el('text', { x: W - R + 4, y: T - 8, class: 'hint start', text: 'ours' }, svg);
-  el('text', { x: L + 12, y: H - B - 14, class: 'goodlab start', text: 'better' }, svg);
-  el('path', { d: `M${L + 12},${H - B - 34} l0,-14 m0,14 l-5,-6 m5,6 l5,-6`, class: 'goodarrow' }, svg);
 
   const place = labelPlacer({ x1: L + 4, y1: T + 2, x2: W - R - 4, y2: H - B - 2 });
 

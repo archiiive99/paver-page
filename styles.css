@@ -674,8 +674,6 @@ pre.bib { margin: 0; padding: var(--s4); border-radius: var(--radius); overflow-
                   stroke-width: 3.5px; stroke-linejoin: round; }
 .chart .plab.strong { fill: var(--fg); font-weight: 700; font-size: 13.5px; }
 .chart .plab.dim { fill: var(--fg-3); font-weight: 500; font-size: 12.5px; }
-.chart .goodlab { fill: var(--paver); font: 600 12.5px var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
-.chart .goodarrow { stroke: var(--paver); stroke-width: 2; fill: none; stroke-linecap: round; opacity: 0.8; }
 .chart .gapline { stroke: var(--paver); stroke-width: 1.6; fill: none; opacity: 0.7; }
 .chart .gaplab { fill: var(--paver); font: 700 13px var(--sans); }
 .chart:not(.run) .twarrow, .chart:not(.run) .twarrow-glow { opacity: 0; }
@@ -1324,3 +1322,10 @@ th.sorted { color: var(--fg); }
   .wvtransport { flex-wrap: wrap; }
   .wvtransport #routeSpeed { margin-left: 0; }
 }
+
+/* A metric switch that belongs to the plot above it: centred under the chart,
+   with the stack gap pulled in so it reads as part of the figure rather than
+   as the next block down. */
+.segbar.center { margin-left: auto; margin-right: auto; }
+.stack > .segbar.tight { margin-top: calc(var(--s5) * -1 + var(--s2)); }
+.pane > .segbar.tight, .pane > .chips.tight { margin-top: var(--s2); }
