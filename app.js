@@ -997,7 +997,7 @@ addEventListener('DOMContentLoaded', () => {
                 p.rc == null ? 'n/a' : p.rc.toFixed(2),
                 p.outcome || p.status || '', p.dur == null ? '' : p.dur.toFixed(0) + ' s']
       }));
-      C2.dataTable(host, `Route ${route}, ${rec.scenario}.`,
+      C2.dataTable(host, `Completion, speed and brake for route ${route}, ${rec.scenario}.`,
         ['Policy', 'Driving score', 'Route completion', 'Outcome', 'Duration'], rows);
     }
 
@@ -1031,14 +1031,14 @@ addEventListener('DOMContentLoaded', () => {
     const NAME = { 'uniadtiny.mp4': 'UniAD-Tiny', 'uniadtiny_paver.mp4': 'UniAD-Tiny + PAVER' };
     const OUTCOME = {
       '24759': { base: ['blocked'], paver: ['blocked'] },
-      '25318': { base: ['1 collision', 'timeout'], paver: ['2 collisions', 'route complete'] },
-      '25381': { base: ['route complete'], paver: ['route complete'] },
-      '25857': { base: ['timeout'], paver: ['route complete'] },
-      '25955': { base: ['route complete'], paver: ['2 collisions', 'route complete'] },
-      '26396': { base: ['route complete'], paver: ['route complete'] },
-      '26956': { base: ['timeout'], paver: ['1 collision', 'route complete'] },
-      '26966': { base: ['timeout'], paver: ['timeout'] },
-      '27506': { base: ['7 collisions'], paver: ['timeout'] }
+      '25318': { base: ['1 collision', 'Timeout'], paver: ['2 collisions', 'Route complete'] },
+      '25381': { base: ['Route complete'], paver: ['Route complete'] },
+      '25857': { base: ['Timeout'], paver: ['Route complete'] },
+      '25955': { base: ['Route complete'], paver: ['2 collisions', 'Route complete'] },
+      '26396': { base: ['Route complete'], paver: ['Route complete'] },
+      '26956': { base: ['Timeout'], paver: ['1 collision', 'Route complete'] },
+      '26966': { base: ['Timeout'], paver: ['Timeout'] },
+      '27506': { base: ['7 collisions'], paver: ['Timeout'] }
     };
     const cls = t => /complete/.test(t) ? 'ok' : (/collision/.test(t) ? 'bad' : 'warn');
     let players = [];
@@ -1072,8 +1072,7 @@ addEventListener('DOMContentLoaded', () => {
            <video preload="metadata" playsinline muted poster="assets/video/posters/${r.id}_${file.replace('.mp4','')}.jpg"
                   aria-label="Closed-loop replay of route ${r.id}, ${r.scenario}, ${NAME[file] || file}"></video>
            <div class="chips">${outcome.map(t => `<span class="tag ${cls(t)}">${t}</span>`).join('')}</div>
-           <p class="caption">Front camera and top-down view of route ${r.id}, ${r.scenario}, driven by
-             ${NAME[file] || file}. Driving Score ${score.split(' / ')[0]}, Route Completion ${score.split(' / ')[1]}.</p>`;
+           <p class="caption">Front camera and top-down view, ${NAME[file] || file}.</p>`;
         const vid = $('video', card);
     card.dataset.state = 'loading';
     vid.addEventListener('loadeddata', () => { card.dataset.state = 'ready'; }, { once: true });
@@ -1095,7 +1094,7 @@ addEventListener('DOMContentLoaded', () => {
     }
     sel.innerHTML = paired.map(r => {
       const o = (OUTCOME[r.id] || {}).paver || [];
-      const tail = o[o.length - 1] ? ` \u2014 ${o[o.length - 1]}` : '';
+      const tail = '';   /* the outcome belongs on the clip, not in the chooser */
       return `<option value="${r.id}">Route ${r.id} \u00b7 ${r.scenario}${tail}</option>`;
     }).join('');
     sel.addEventListener('change', () => {
@@ -1219,7 +1218,7 @@ addEventListener('DOMContentLoaded', () => {
   const LAYERS = [['det', 'Boxes', true], ['map', 'Vector map', true],
                   ['motion', 'Motion', true], ['plan', 'Plan', true],
                   ['gt', 'Ground truth', false]];
-  const CAMS = [['behind', 'Behind'], ['top', 'Top down'], ['front', 'Front'], ['free', 'Free']];
+  const CAMS = [['behind', 'Behind'], ['top', 'Top down'], ['front', 'Front'], ['free', 'Orbit']];
 
   const layers = {};
   LAYERS.forEach(([k, , on]) => (layers[k] = on));
@@ -1688,8 +1687,9 @@ addEventListener('DOMContentLoaded', () => {
     const hz = manifest.frameRateHz || 2;
     const n = clip ? clip.tokens.length : 0;
     const t = n > 1 ? at / (n - 1) : 0;
-    $('#wvNow').textContent = (at / hz).toFixed(1);
-    $('#wvDur').textContent = ((n - 1) / hz).toFixed(1);
+    const mmss = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+    $('#wvNow').textContent = mmss(at / hz);
+    $('#wvDur').textContent = mmss((n - 1) / hz);
     $('#wvFill').style.width = (t * 100) + '%';
     $('#wvKnob').style.left = (t * 100) + '%';
     const track = $('#wvTrack');
