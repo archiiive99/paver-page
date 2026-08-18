@@ -1408,3 +1408,12 @@ section[id] > .wrap > .shead { scroll-margin-top: calc(var(--bar-h) + var(--s5))
   content: "This clip could not be loaded"; display: block;
   font-size: var(--fs-label); color: var(--fg-3);
 }
+
+/* 13: charts only scaled with the viewport, so at phone width every label was
+   rendered at a third of its intended size. Below the breakpoint the SVG keeps
+   a readable minimum and the container scrolls instead of shrinking further. */
+@media (max-width: 640px) {
+  .card > [id^="chart"], .pane > [id^="chart"] { overflow-x: auto; }
+  .card > [id^="chart"] > svg, .pane > [id^="chart"] > svg { min-width: 560px; }
+  .qvstage video { min-width: 0; }
+}

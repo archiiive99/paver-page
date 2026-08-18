@@ -17,15 +17,27 @@ const PARAM_ALIAS = {
   supp: 'tables', cm: 'component-metric', mm: 'map-metric', mtm: 'method-metric',
   sm: 'strategy-metric'
 };
-const getParam = (k, d) =>
-  params.get(PARAM_ALIAS[k] || k) || params.get(k) || d;
+/* the first value a switch asks for is its default, and a default never needs
+   to appear in a shared link */
+const PARAM_DEFAULT = {};
+const getParam = (k, d) => {
+  if (PARAM_DEFAULT[k] === undefined) PARAM_DEFAULT[k] = d;
+  return params.get(PARAM_ALIAS[k] || k) || params.get(k) || d;
+};
 function setParam(k, v) {
   const u = new URL(location.href);
   const name = PARAM_ALIAS[k] || k;
-  u.searchParams.set(name, v);
+  /* a switch left on its default adds nothing to a shared link, and seventeen of
+     them turned a clean URL into a wall of text after a few clicks */
+  if (PARAM_DEFAULT[k] !== undefined && String(PARAM_DEFAULT[k]) === String(v)) {
+    u.searchParams.delete(name);
+  } else {
+    u.searchParams.set(name, v);
+  }
   if (name !== k) u.searchParams.delete(k);      /* never carry both spellings */
   history.replaceState(null, '', u);
 }
+
 
 /* ── theme ────────────────────────────────────────────────────────────── */
 (function theme() {
