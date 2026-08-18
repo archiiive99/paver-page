@@ -495,7 +495,7 @@ function chartCapacity(host, metricKey){
     el('path', { d: `M${x(head.p)},${yy - 5} L${x(head.p)},${yy + 5}`, class: 'gapline' }, svg);
     el('path', { d: `M${x(rival.p)},${yy - 5} L${x(rival.p)},${yy + 5}`, class: 'gapline' }, svg);
     el('text', { x: (x(head.p) + x(rival.p)) / 2, y: yy - 10,
-      class: 'gaplab mid' + (wins ? '' : ' even'),
+      class: 'gaplab mid',
       text: wins
         ? `${ratio}\u00d7 fewer parameters, better ${name}`
         : `${ratio}\u00d7 fewer parameters, within ${fmt(delta, dec)} ${name}` }, svg);

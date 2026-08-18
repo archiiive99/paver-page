@@ -668,8 +668,8 @@ pre.bib { margin: 0; padding: var(--s4); border-radius: var(--radius); overflow-
 .chart .plab.dim { fill: var(--fg-3); font-weight: 500; font-size: 12.5px; }
 .chart .gapline { stroke: var(--paver); stroke-width: 1.6; fill: none; opacity: 0.7; }
 .chart .gaplab { fill: var(--paver); font: 700 var(--fs-chart-label) var(--sans); }
-/* the same bracket, reporting a shortfall rather than a win */
-.chart .gaplab.even { fill: var(--fg-2); font-weight: 600; }
+/* the wording already says whether it is a win; recolouring it as well made
+   the same annotation look like two different things */
 .chart:not(.run) .twarrow, .chart:not(.run) .twarrow-glow { opacity: 0; }
 .chart.run .twarrow { opacity: 1; transition: opacity var(--t-slow) ease var(--t-slow); }
 .chart.run .twarrow-glow { opacity: 0.16; transition: opacity var(--t-slow) ease var(--t-slow); }
@@ -1388,3 +1388,8 @@ tbody tr:focus-visible th.stick, tbody tr:hover td.stick, tbody tr:focus-visible
 .card.lead-card { box-shadow: var(--shadow-lift, var(--shadow)); }
 
 section[id] > .wrap > .shead { scroll-margin-top: calc(var(--bar-h) + var(--s5)); }
+
+/* 16: a missing measurement is not a measurement, so it is set quieter and
+   carries the reason rather than leaving the reader to guess */
+.na { color: var(--fg-3); font-variant: small-caps; letter-spacing: 0.02em;
+      text-decoration: none; border-bottom: 1px dotted rgb(var(--line) / 0.5); }
