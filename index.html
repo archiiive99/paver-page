@@ -77,7 +77,7 @@
         <span class="names"><a class="author" href="https://www.linkedin.com/in/archiiive99/" target="_blank" rel="noopener">Jaeha Song</a> &nbsp;&middot;&nbsp; <a class="author" href="https://soonminhwang.github.io/" target="_blank" rel="noopener">Soonmin Hwang</a></span>
         <span class="affil">Hanyang University</span>
       </div>
-      <p class="lead">One pretraining stage supervises the bird&rsquo;s-eye-view representation exactly where planning reads it, using targets read off a single LiDAR sweep. It adds 10,258 auxiliary parameters that are discarded afterwards, needs no driving-task annotation and no teacher model, and leaves the downstream architecture untouched.</p>
+      <p class="lead">One pretraining stage supervises the bird&rsquo;s-eye-view representation exactly where planning reads it, using targets read off a single LiDAR sweep. It needs no driving-task annotation and no teacher model, and leaves the downstream architecture untouched.</p>
       <div class="chips">
         <a class="btn solid" href="assets/paper/paver_main.pdf" target="_blank" rel="noopener">Paper</a>
         <a class="btn" href="assets/paper/paver_supplement.pdf" target="_blank" rel="noopener">Supplementary</a>
@@ -114,7 +114,7 @@
         <p class="lead">Six surround cameras with predicted boxes and futures above, the attribution the encoder produced below. Three scenes were chosen because all three architectures are exercised by them; each architecture then has its own ten.</p>
       </header>
       <div class="stack">
-        <div class="card" id="qvcommon">
+        <div class="card lead-card" id="qvcommon">
           <div class="chead"><div class="titles"><span class="kicker">Shared scenes</span><h3>Three scenes, three architectures</h3></div>
             <div class="actions"><span class="field"><label class="lbl" for="qvSceneSel">Scene</label><span class="select"><select id="qvSceneSel"></select></span></span></div>
           </div>
@@ -137,7 +137,7 @@
   <section id="headline" aria-labelledby="headline-h">
     <div class="wrap">
       <h2 id="headline-h" class="sr">Headline results</h2>
-      <div class="card" id="glance">
+      <div class="card lead-card" id="glance">
       <div class="chead"><div class="titles"><span class="kicker">Transfer</span><h3>Planning transfer and auxiliary capacity</h3></div><div class="actions"></div></div>
       <p class="lead">Left: arrows run from each baseline to the same architecture pretrained with PAVER; hollow markers are reconstruction-based pretraining as reported by its authors. Right: the selected metric against auxiliary parameter count on a logarithmic axis, with the no-pretraining baseline as the dashed rule.</p>
       <div class="pane" data-pane="chart"><div class="stack"><div id="chartTransfer"></div><div id="chartCapacity"></div><div class="chips center tight" id="capacityTabs" role="tablist" aria-label="Metric"></div></div></div>

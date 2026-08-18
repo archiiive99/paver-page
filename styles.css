@@ -54,6 +54,7 @@
   --solid:     #0e1116;
   --plot-bg:   #191d25;
   --shadow:    0 14px 34px -14px rgb(0 0 0 / 0.55), 0 1px 1px rgb(0 0 0 / 0.30);
+  --shadow-lift: 0 22px 48px -18px rgb(0 0 0 / 0.70), 0 2px 3px rgb(0 0 0 / 0.34);
   --sheen:     0.22;
   --baseline:  #e0a458;
   --seg-track: rgb(255 255 255 / 0.05);
@@ -86,6 +87,7 @@
   --solid:     #ffffff;
   --plot-bg:   #fbfcfd;
   --shadow:    0 10px 30px -12px rgb(16 26 46 / 0.16), 0 1px 2px rgb(16 26 46 / 0.05);
+  --shadow-lift: 0 18px 44px -16px rgb(16 26 46 / 0.26), 0 2px 4px rgb(16 26 46 / 0.09);
   --sheen:     0.7;
   --baseline:  #9a6512;
   --seg-track: rgb(14 20 30 / 0.045);
@@ -1362,3 +1364,27 @@ tbody tr:focus-visible th.stick, tbody tr:hover td.stick, tbody tr:focus-visible
                   color: var(--fg-3); background: var(--surface-solid, var(--solid)); }
 #qvSceneNote { margin-top: var(--s3); }
 #qvArch { margin-top: var(--s4); }
+
+
+/* ── audit: 10, 21, 30, 44, 47 ────────────────────────────────────────────
+   10: the scrollbar on a table was thin enough to miss, so a table wider than
+       its column looked complete. Give it a visible track on hover.
+   21: several series were separated by colour alone; the dashed reference and
+       hollow markers now also differ in weight so the distinction survives
+       greyscale and the common colour-vision deficiencies.
+   44: 23 cards all carried the same elevation, so nothing led. The two cards a
+       reader should start from are raised; the rest sit flat.
+   47: a section heading landed under the sticky header when linked to. */
+.scroller { scrollbar-width: thin; }
+.scroller:hover { scrollbar-color: rgb(var(--line) / 0.5) transparent; }
+.scroller::-webkit-scrollbar { height: 10px; }
+.scroller::-webkit-scrollbar-thumb { background: rgb(var(--line) / 0.35);
+                                     border-radius: 99px; }
+.scroller:hover::-webkit-scrollbar-thumb { background: rgb(var(--line) / 0.55); }
+
+.chart .ref { stroke-width: 1.6; }
+.pt.rep circle { stroke-dasharray: 3 2.5; }
+
+.card.lead-card { box-shadow: var(--shadow-lift, var(--shadow)); }
+
+section[id] > .wrap > .shead { scroll-margin-top: calc(var(--bar-h) + var(--s5)); }

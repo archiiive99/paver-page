@@ -224,7 +224,7 @@ function chipTabs(host, items, onPick) {
         b.setAttribute('aria-controls', live.id);
       }
     }
-    b.addEventListener('click', () => onPick(key, true));
+    b.addEventListener('click', () => { onPick(key, true); announceSwitch(host, key); });
     host.appendChild(b);
   });
   host.addEventListener('keydown', e => {
@@ -258,6 +258,14 @@ function announce(msg) {
   const live = $('#live');
   if (live) live.textContent = msg;
 }
+/* 34: a switch that redraws a figure produced no spoken feedback, so a screen
+   reader user could not tell that anything had changed. */
+function announceSwitch(host, key) {
+  const btn = $$('[role="tab"], [role="radio"]', host).find(b => b.dataset.k === key);
+  const group = host.getAttribute('aria-label');
+  if (btn) announce(`${group ? group + ': ' : ''}${btn.textContent.trim()}`);
+}
+
 function markTabs(host, key) {
   const radios = $$('[role="radio"]', host);
   host.setAttribute('role', radios.length ? 'radiogroup' : 'tablist');
