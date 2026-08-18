@@ -161,7 +161,9 @@ section { padding-block: 56px 0; scroll-margin-top: calc(var(--bar-h) + var(--s5
 section > .wrap > * + * { margin-top: var(--s5); }
 
 .shead { display: flex; flex-direction: column; gap: var(--s3); max-width: 78ch; }
-.shead + * { margin-top: var(--s6) !important; }
+/* wins on specificity rather than on !important: the rule it has to beat is
+   `section > .wrap > * + *`, so matching that shape is enough */
+section > .wrap > .shead + * { margin-top: var(--s6); }
 .label {
   display: inline-flex; align-items: center; gap: var(--s2);
   font: 600 var(--fs-label)/1 var(--sans);
