@@ -1393,3 +1393,18 @@ section[id] > .wrap > .shead { scroll-margin-top: calc(var(--bar-h) + var(--s5))
    carries the reason rather than leaving the reader to guess */
 .na { color: var(--fg-3); font-variant: small-caps; letter-spacing: 0.02em;
       text-decoration: none; border-bottom: 1px dotted rgb(var(--line) / 0.5); }
+
+/* 36: the selected speed is stated, so pressing it while paused still reads */
+.wvtransport[data-rate]::after {
+  content: attr(data-rate) "\00d7"; font-size: var(--fs-label); color: var(--fg-3);
+  font-variant-numeric: tabular-nums;
+}
+/* 37: a clip that has not decoded a frame yet shows it is working */
+.vpanel[data-state="loading"] video { opacity: 0.55; }
+.vpanel[data-state="loading"]::before {
+  content: "Loading"; display: block; font-size: var(--fs-label); color: var(--fg-3);
+}
+.vpanel[data-state="failed"]::before {
+  content: "This clip could not be loaded"; display: block;
+  font-size: var(--fs-label); color: var(--fg-3);
+}

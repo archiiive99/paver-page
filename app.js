@@ -989,7 +989,11 @@ addEventListener('DOMContentLoaded', () => {
            <div class="chips">${outcome.map(t => `<span class="tag ${cls(t)}">${t}</span>`).join('')}</div>
            <p class="caption">Front camera and top-down view of route ${r.id}, ${r.scenario}, driven by
              ${NAME[file] || file}. Driving Score ${score.split(' / ')[0]}, Route Completion ${score.split(' / ')[1]}.</p>`;
-        $('video', card).src = `assets/video/route${r.id}/${file}`;
+        const vid = $('video', card);
+    card.dataset.state = 'loading';
+    vid.addEventListener('loadeddata', () => { card.dataset.state = 'ready'; }, { once: true });
+    vid.addEventListener('error', () => { card.dataset.state = 'failed'; }, { once: true });
+    vid.src = `assets/video/route${r.id}/${file}`;
         grid.appendChild(card);
         players.push($('video', card));
       });
@@ -1028,6 +1032,10 @@ addEventListener('DOMContentLoaded', () => {
         routeRate = parseFloat(key);
         players.forEach(v => { v.playbackRate = routeRate; });
         markTabs(host, key);
+        /* pressing a speed while paused changed nothing visible, so the choice
+           looked like it had not registered */
+        const t = $('#routeTransport');
+        if (t) { t.dataset.rate = key; }
         if (push) { setParam('speed', key); announce(`Playback speed ${key} times`); }
       };
       chipTabs(host, RATES, pick);
@@ -1720,6 +1728,8 @@ addEventListener('DOMContentLoaded', () => {
         if (push) setParam('cm2', k);
       });
       const attn = $$('button', bar).find(b => b.dataset.k === 'attn');
+      /* a title attribute is invisible to touch and to the keyboard, so the
+         reason is written next to the control as well */
       const reason = (manifest.gradcam && manifest.gradcam.architectures[arch] || {}).reason ||
         'no verified complete run';
       if (attn) {
