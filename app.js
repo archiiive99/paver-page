@@ -6,6 +6,15 @@
 const $  = (s, r) => (r || document).querySelector(s);
 const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
 const root = document.documentElement;
+/* Restored before the query string is parsed: doing it on DOMContentLoaded was
+   too late, because every switch had already read its value. */
+(function restoreState() {
+  if (location.search) return;                 /* an explicit link always wins */
+  try {
+    const saved = localStorage.getItem('paver-state');
+    if (saved) history.replaceState(null, '', location.pathname + '?' + saved + location.hash);
+  } catch (e) {}
+})();
 const params = new URL(location.href).searchParams;
 /* Shared links used to read ?as=..&ch=..&cs=..&fc=..&wa=..&wc=.., which tells a
    reader nothing about what was selected. Each switch now writes a readable name
@@ -24,6 +33,16 @@ const getParam = (k, d) => {
   if (PARAM_DEFAULT[k] === undefined) PARAM_DEFAULT[k] = d;
   return params.get(PARAM_ALIAS[k] || k) || params.get(k) || d;
 };
+/* 33: the theme survived a reload and nothing else did. Selections live in the
+   URL so they can be shared; mirroring them locally means returning to the page
+   without a link still restores what was being looked at. */
+const REMEMBER = 'paver-state';
+function saveState() {
+  try {
+    const u = new URL(location.href);
+    localStorage.setItem(REMEMBER, u.searchParams.toString());
+  } catch (e) {}
+}
 function setParam(k, v) {
   const u = new URL(location.href);
   const name = PARAM_ALIAS[k] || k;
@@ -36,6 +55,7 @@ function setParam(k, v) {
   }
   if (name !== k) u.searchParams.delete(k);      /* never carry both spellings */
   history.replaceState(null, '', u);
+  saveState();
 }
 
 
