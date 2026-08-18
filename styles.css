@@ -1451,3 +1451,70 @@ section[id] > .wrap > .shead { scroll-margin-top: calc(var(--bar-h) + var(--s5))
 @media (prefers-reduced-transparency: reduce) {
   .qvnav { backdrop-filter: none; background: rgb(6 9 14 / 0.85); }
 }
+
+/* ── print (audit 1–6) ────────────────────────────────────────────────────
+   A page printed for review should carry the figures and tables and nothing a
+   reader cannot operate on paper. */
+@media print {
+  .qvnav, .wvtransport, .tstate, #qvSpeed { display: none !important; }
+  .qvframe { break-inside: avoid; }
+  .qvstage video { max-height: 12cm; }
+  /* 3: the printed sheet says which selection it was taken from */
+  .card > .chead .titles::after {
+    content: attr(data-state); display: block; font-size: 9pt; color: #555;
+  }
+  /* 4: a link is useless on paper unless it says where it goes */
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 8.5pt; color: #555; }
+  a[href^="#"]::after { content: ""; }
+  /* 5: a chart split across a page boundary is unreadable */
+  .chart, figure, .scroller, .card { break-inside: avoid; }
+  section { break-before: auto; }
+  /* 6: a dark theme on paper wastes ink and prints grey text on grey */
+  :root, :root[data-theme="dark"] {
+    --bg: #ffffff; --fg: #111318; --fg-2: #333a45; --fg-3: #5a6270;
+    --surface: 255 255 255; --surface-a: 1; --solid: #ffffff;
+    --table-bg: #ffffff; --table-line: #cfd5dd; --line: 17 19 24; --line-a: 0.22;
+  }
+  body { background: #fff !important; }
+  .aurora { display: none !important; }
+}
+
+/* 32: columns hold different decimal counts, so the decimal points did not line
+   up even with tabular figures. Right-aligning the cell is what actually
+   aligns the point when every value in a column shares its precision. */
+.scroller td { font-feature-settings: "tnum" 1, "lnum" 1; }
+/* 31: the tinted row is the pretrained one, said once per table rather than
+   left for the reader to infer from the colour */
+tbody tr.ours th[scope="row"]::after {
+  content: ""; }
+.tstate .legend { color: var(--fg-3); }
+
+/* 30, 31: the filter and the row-tint key sit above the table, on one line */
+.ttools { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap;
+          margin-bottom: var(--s2); }
+.tfilter { flex: 0 1 15rem; min-height: 34px; padding: 0 var(--s3);
+           border-radius: var(--radius-sm, 8px); color: var(--fg);
+           background: var(--table-bg); font-size: var(--fs-label);
+           border: 1px solid rgb(var(--line) / var(--line-a)); }
+.tfilter:focus-visible { outline: 2px solid var(--paver); outline-offset: 1px; }
+.tkey { font-size: var(--fs-label); color: var(--fg-3); }
+.tkey::before { content: ""; display: inline-block; width: 12px; height: 12px;
+                margin-right: 6px; vertical-align: -1px; border-radius: 3px;
+                background: var(--ours-tint, rgb(32 158 255 / 0.14));
+                box-shadow: inset 2px 0 0 var(--paver); }
+@media print { .ttools { display: none !important; } }
+@media (pointer: coarse) { .tfilter { min-height: 44px; } }
+
+/* 43: how far down the page is, as a rule under the header */
+.readbar { position: fixed; top: var(--bar-h); left: 0; height: 2px; width: 0;
+           background: var(--paver); z-index: var(--z-header); pointer-events: none;
+           transition: width var(--t-fast) linear; }
+@media print { .readbar { display: none !important; } }
+@media (prefers-reduced-motion: reduce) { .readbar { transition: none; } }
+
+/* 40: the current section is spoken as well as shown */
+nav#nav a[aria-current="true"] { color: var(--fg); font-weight: 650; }
+
+/* 35: the log axis had a decade grid and nothing between, so an order of
+   magnitude read the same as a factor of two */
+.chart .grid.minor { opacity: 0.45; stroke-dasharray: 2 3; }

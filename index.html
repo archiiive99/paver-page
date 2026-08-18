@@ -17,6 +17,8 @@
 <link rel="canonical" href="https://archiiive99.github.io/paver-page/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%23209EFF%22/%3E%3Ctext x=%2216%22 y=%2222%22 font-family=%22Helvetica,Arial%22 font-size=%2216%22 font-weight=%22bold%22 fill=%22white%22 text-anchor=%22middle%22%3EP%3C/text%3E%3C/svg%3E">
 <link rel="preload" href="assets/font/Lato-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/font/Lato-Semibold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/font/Lato-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/w/fig/teaser_final3.webp" as="image" type="image/webp">
 <style>
 @font-face{font-family:"LatoLocal";src:url("assets/font/Lato-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
@@ -31,6 +33,21 @@
 <meta property="og:image" content="https://archiiive99.github.io/paver-page/assets/w/fig/teaser_final3.webp">
 <meta property="og:image:alt" content="Training time and planning accuracy of PAVER against baselines">
 <meta name="twitter:card" content="summary_large_image">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="PAVER">
+<meta name="twitter:creator" content="@archiiive99">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"ScholarlyArticle",
+"headline":"Planning-Aligned Pretraining of BEV Representations with Sparse Action-Conditioned Targets for End-to-End Autonomous Driving",
+"author":[{"@type":"Person","name":"Jaeha Song"},{"@type":"Person","name":"Soonmin Hwang"}],
+"affiliation":{"@type":"Organization","name":"Hanyang University"},
+"url":"https://archiiive99.github.io/paver-page/",
+"image":"https://archiiive99.github.io/paver-page/assets/w/fig/teaser_final3.webp",
+"abstract":"A single pretraining stage supervises the bird's-eye-view representation where planning reads it, using sparse action-conditioned targets read off one LiDAR sweep."}
+</script>
 <meta name="twitter:image" content="https://archiiive99.github.io/paver-page/assets/w/fig/teaser_final3.webp">
 <meta name="theme-color" content="#e9edf3" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#070809" media="(prefers-color-scheme: dark)">
@@ -45,7 +62,7 @@
 <script src="app.js" defer></script>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
+<a class="skip" href="#main">Skip to content</a><a class="skip" href="#results">Skip to results</a><a class="skip" href="#supptables">Skip to tables</a>
 <div class="aurora" id="aurora"><i></i><i></i><i></i></div>
 
 <header class="bar">
@@ -127,7 +144,7 @@
             <div class="qvstage" id="qvStage"></div>
             <button class="qvnav next" id="qvSceneNext" type="button" aria-label="Next scene"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
           </div>
-          <div class="wvtransport" id="qvTransport"><button class="wvplay" id="qvPlay" type="button" aria-label="Play or pause"><svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><div class="wvtrack" id="qvTrack" role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="wvrail"><div class="wvfill" id="qvFill"></div></div><div class="wvknob" id="qvKnob"></div></div><span class="wvclock"><b id="qvNow">0:00</b><i>/</i><span id="qvDur">0:00</span></span><div class="chips" id="qvSpeed" role="tablist" aria-label="Playback speed"></div></div>
+          <p class="tcap" id="qvHelp">The track takes arrow keys to step, Shift with an arrow for a longer step, Home and End for the ends, and Space to play. Switching architecture holds the current instant, so the same moment can be read under each decoder.</p><div class="wvtransport" id="qvTransport" aria-describedby="qvHelp"><button class="wvplay" id="qvPlay" type="button" aria-label="Play or pause"><svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><div class="wvtrack" id="qvTrack" role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="wvrail"><div class="wvfill" id="qvFill"></div></div><div class="wvknob" id="qvKnob"></div></div><span class="wvclock"><b id="qvNow">0:00</b><i>/</i><span id="qvDur">0:00</span></span><div class="chips" id="qvSpeed" role="tablist" aria-label="Playback speed"></div></div>
         </div>
       </div>
     </div>

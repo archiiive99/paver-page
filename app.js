@@ -311,6 +311,50 @@ function markTabs(host, key) {
 }
 addEventListener('resize', () => $$('.segbar').forEach(moveThumb));
 
+/* 41: an in-page link moved the view and not the focus, so the next Tab went
+   back to the top of the document. */
+addEventListener('DOMContentLoaded', () => {
+  $$('a[href^="#"]').forEach(a => a.addEventListener('click', () => {
+    const t = document.getElementById(a.getAttribute('href').slice(1));
+    if (!t) return;
+    t.setAttribute('tabindex', '-1');
+    setTimeout(() => t.focus({ preventScroll: true }), 0);
+  }));
+}, { once: true });
+
+/* 40, 43: the nav showed the current section with a thumb and told a screen
+   reader nothing; a rule across the top says how far down the page is. */
+(function progressAndCurrent() {
+  const bar = document.createElement('div');
+  bar.className = 'readbar';
+  bar.setAttribute('aria-hidden', 'true');
+  addEventListener('DOMContentLoaded', () => {
+    document.body.appendChild(bar);
+    const links = $$('nav#nav a[href^="#"]');
+    const paint = () => {
+      const h = document.documentElement;
+      const max = h.scrollHeight - innerHeight;
+      bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0).toFixed(2) + '%';
+      let active = null;
+      links.forEach(a => {
+        const covers = (a.dataset.covers || a.getAttribute('href').slice(1)).split(/\s+/);
+        if (covers.some(id => {
+          const s = document.getElementById(id);
+          if (!s) return false;
+          const b = s.getBoundingClientRect();
+          return b.top <= innerHeight * 0.35 && b.bottom > innerHeight * 0.35;
+        })) active = a;
+      });
+      links.forEach(a => {
+        if (a === active) a.setAttribute('aria-current', 'true');
+        else a.removeAttribute('aria-current');
+      });
+    };
+    addEventListener('scroll', paint, { passive: true });
+    paint();
+  }, { once: true });
+})();
+
 /* chart / table switches use the identical component as every other tab group */
 function bindSegments(scope) {
   $$('.seg[role="tablist"]', scope || document).forEach(seg => {
@@ -1901,6 +1945,13 @@ addEventListener('DOMContentLoaded', () => {
 /* A header cell is a header for the cells beside or beneath it whether or not the
    table is long enough to be worth sorting, so this runs on every table. Cells
    that are genuinely empty spacers in a category row are left alone. */
+/* 45: a button with no type is a submit button, which is only harmless while
+   nothing on the page is a form. */
+function typeButtons(scope) {
+  $$('button:not([type])', scope || document).forEach(b => b.type = 'button');
+}
+addEventListener('DOMContentLoaded', () => typeButtons());
+
 function labelHeaderCells(scope) {
   $$('table', scope || document).forEach(table => {
     $$('th', table).forEach(th => {
@@ -1912,6 +1963,7 @@ function labelHeaderCells(scope) {
 
 function sortableTables(scope) {
   labelHeaderCells(scope);
+  typeButtons(scope);
   $$('table', scope || document).forEach(table => {
     if (table.dataset.sortable) return;
     const head = table.tHead && table.tHead.rows[table.tHead.rows.length - 1];
@@ -1925,12 +1977,40 @@ function sortableTables(scope) {
     /* the table says how many rows it holds and how it is currently ordered,
        because aria-sort is invisible and the caret alone does not say "click
        again to reverse, a third time to restore" */
+    /* 30: a filter beats scrolling a nineteen-row table for one configuration */
+    const tools = document.createElement('div');
+    tools.className = 'ttools';
+    const filter = document.createElement('input');
+    filter.type = 'search';
+    filter.className = 'tfilter';
+    filter.placeholder = 'Filter rows';
+    filter.setAttribute('aria-label', 'Filter table rows');
+    filter.addEventListener('input', () => {
+      const q = filter.value.trim().toLowerCase();
+      let shown = 0;
+      original.forEach(row => {
+        const hit = !q || row.textContent.toLowerCase().includes(q);
+        row.hidden = !hit;
+        if (hit) shown++;
+      });
+      status.textContent = q ? `${shown} of ${original.length} rows match “${filter.value}”`
+                             : rest();
+    });
+    tools.appendChild(filter);
+    if (table.querySelector('tr.ours')) {
+      const key = document.createElement('span');
+      key.className = 'tkey';
+      key.textContent = 'Tinted row: pretrained with PAVER';
+      tools.appendChild(key);
+    }
+
     const status = document.createElement('p');
     status.className = 'tstate';
     const wrap = table.closest('.scroller') || table;
     const rest = () => `${original.length} rows \u00b7 click a column name to sort`;
     status.textContent = rest();
-    if (wrap.parentNode) wrap.parentNode.insertBefore(status, wrap);
+    if (wrap.parentNode) { wrap.parentNode.insertBefore(tools, wrap);
+                           wrap.parentNode.insertBefore(status, wrap); }
 
     const cellText = (row, index) => {
       const cells = [...row.cells];
@@ -2000,6 +2080,7 @@ function sortableTables(scope) {
         });
         rows.forEach(row => body.appendChild(row));
         const label = th.textContent.replace(/[\u2191\u2193\u2195]/g, '').trim();
+        if (table.id) setParam('sort', `${table.id}:${index}:${next[0]}`);
         status.textContent = `${original.length} rows \u00b7 sorted by ${label}, ` +
           `${next === 'ascending' ? 'lowest first' : 'highest first'} \u00b7 ` +
           `click again to ${next === 'ascending' ? 'restore the original order' : 'reverse'}`;
@@ -2116,35 +2197,52 @@ new MutationObserver(records => {
   });
   markTabs(speed, String(rate));
 
-  function draw(push) {
+  function draw(push, keepTime) {
+    const at = keepTime && video && video.duration ? video.currentTime : 0;
+    const wasPlaying = keepTime && video && !video.paused;
     const list = scenes();
     if (!list.includes(scene)) scene = list[0];
-    sel.innerHTML = list.map(s =>
-      `<option value="${s}">Scene ${s}${commonIds.includes(s) ? ' \u00b7 shared' : ''}</option>`).join('');
+    const shared = list.filter(s => commonIds.includes(s));
+    const own = list.filter(s => !commonIds.includes(s));
+    const opts = g => g.map(s => `<option value="${s}">Scene ${s}</option>`).join('');
+    sel.innerHTML =
+      `<optgroup label="Shared by all three">${opts(shared)}</optgroup>` +
+      (own.length ? `<optgroup label="${NAME[arch]} gains most">${opts(own)}</optgroup>` : '');
     sel.value = scene;
     markTabs(archBar, arch);
     note.textContent = NOTE[scene] ||
       `One of the ten validation scenes where ${NAME[arch]} gains most from PAVER.`;
     stage.dataset.state = 'loading';
     const src = srcFor(arch, scene);
-    stage.innerHTML = `<video playsinline preload="metadata" poster="${src.replace('.mp4', '.jpg')}"
+    stage.innerHTML = `<video playsinline muted loop preload="metadata"
+      poster="${src.replace('.mp4', '.jpg')}" preload="none"
       aria-label="${NAME[arch]} on nuScenes scene ${scene}"></video>`;
     video = $('video', stage);
     video.src = src;
     video.playbackRate = rate;
     play.classList.remove('playing');
     video.addEventListener('loadedmetadata', () => {
-      stage.dataset.state = 'ready'; video.playbackRate = rate; paint();
+      stage.dataset.state = 'ready';
+      video.playbackRate = rate;
+      /* the same instant of the same scene under another architecture is the
+         comparison this card exists for, so the position survives the switch */
+      if (at) video.currentTime = Math.min(at, video.duration - 0.05);
+      if (wasPlaying) video.play();
+      paint();
     }, { once: true });
     video.addEventListener('error', () => { stage.dataset.state = 'failed'; }, { once: true });
     video.addEventListener('timeupdate', paint);
     video.addEventListener('play',  () => play.classList.add('playing'));
     video.addEventListener('pause', () => play.classList.remove('playing'));
     video.addEventListener('ended', () => play.classList.remove('playing'));
+    /* 27: a failed clip can be asked for again rather than staying dead */
+    stage.addEventListener('click', e => {
+      if (stage.dataset.state === 'failed') draw(false);
+    });
     if (push) { setParam('arch-clip', arch); setParam('scene', scene); }
   }
 
-  chipTabs(archBar, ARCH, (k, push) => { arch = k; draw(push); });
+  chipTabs(archBar, ARCH, (k, push) => { arch = k; draw(push, true); });
   sel.addEventListener('change', () => { scene = sel.value; draw(true); });
   const step = delta => {
     const list = scenes();

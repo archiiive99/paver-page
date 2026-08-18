@@ -122,6 +122,9 @@ function showTip(html, ev){
   let x = ev.clientX + pad, y = ev.clientY + pad;
   if (x + r.width > innerWidth - 8) x = ev.clientX - r.width - pad;
   if (y + r.height > innerHeight - 8) y = ev.clientY - r.height - pad;
+  /* 36: flipping is not enough near a corner, where both sides overflow */
+  x = Math.max(8, Math.min(x, innerWidth - r.width - 8));
+  y = Math.max(8, Math.min(y, innerHeight - r.height - 8));
   t.style.left = x + 'px'; t.style.top = y + 'px';
 }
 function hideTip(){ if (tip) tip.classList.remove('on'); }
@@ -130,6 +133,9 @@ let tipOwner = null;
 addEventListener('pointerdown', e => {                 /* tap elsewhere dismisses */
   if (tipOwner && !tipOwner.contains(e.target)) { hideTip(); tipOwner = null; }
 }, true);
+/* 37: Escape closes the tip, which was otherwise only dismissible by pointing
+   somewhere else — impossible from the keyboard. */
+addEventListener('keydown', e => { if (e.key === 'Escape') { hideTip(); tipOwner = null; } });
 function hoverable(node, html){
   node.addEventListener('pointerenter', e => { tipOwner = node; showTip(html, e); });
   node.addEventListener('pointermove', e => showTip(html, e));
@@ -158,8 +164,12 @@ const animObs = new IntersectionObserver(es => es.forEach(e => {
 /* A metric switch rebuilds the SVG while the card is already on screen, so the
    observer never fires for it and the new chart appeared in its pre-animation
    state. If the host is in view, run immediately. */
+let animatedOnce = false;
 function animate(svg) {
-  if (REDUCED) { svg.classList.add('run'); return; }
+  /* the reveal earns its keep the first time; after that a metric switch is a
+     redraw the reader asked for and should simply be there */
+  if (REDUCED || animatedOnce) { svg.classList.add('run'); return; }
+  setTimeout(() => { animatedOnce = true; }, 2500);
   /* observe regardless: skipping it left a chart that was visible but whose
      frame never landed with no path to ever animate */
   animObs.observe(svg);
@@ -454,6 +464,13 @@ function chartCapacity(host, metricKey){
   el('rect', { x: L, y: T, width: x(1.4e5) - L, height: H - B - T, fill: 'url(#cap-band)' }, svg);
 
   [1e4, 1e5, 1e6, 1e7].forEach(t => {
+    /* 35: without the 2..9 ticks a decade looked like any other gap */
+    for (let k = 2; k <= 9; k++) {
+      const v = t * k;
+      if (v > 4e3 && v < 2.6e7) {
+        el('line', { x1: x(v), x2: x(v), y1: T, y2: H - B, class: 'grid minor' }, svg);
+      }
+    }
     el('line', { x1: x(t), x2: x(t), y1: T, y2: H - B, class: 'grid' }, svg);
     const g = el('text', { x: x(t), y: H - B + 26, class: 'tick mid' }, svg);
     el('tspan', { text: '10' }, g);
