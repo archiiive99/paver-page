@@ -1620,7 +1620,13 @@ addEventListener('DOMContentLoaded', () => {
       `<span class="wvkey"><i style="background:${dash ? 'none' : col};` +
       `${dash ? `border-top:2px dashed ${col};height:0` : ''}"></i>${txt}</span>`;
     $('#wvLegend').innerHTML =
-      [...cls].sort().map(c => chip(WV.CLS[c] || '#9ca3af', c.replace(/_/g, ' '))).join('') +
+      /* frequency order, so the classes that matter in a driving scene lead */
+      [...cls].sort((a, b) => {
+        const RANK = ['car', 'pedestrian', 'truck', 'bicycle', 'motorcycle',
+                      'bus', 'barrier', 'traffic_cone', 'construction_vehicle', 'trailer'];
+        const ra = RANK.indexOf(a), rb = RANK.indexOf(b);
+        return (ra < 0 ? 99 : ra) - (rb < 0 ? 99 : rb) || a.localeCompare(b);
+      }).map(c => chip(WV.CLS[c] || '#9ca3af', c.replace(/_/g, ' '))).join('') +
       [...mapCls].sort().map(c => chip(WV.MAP_CLS[c], WV.MAP_NAME[c] || c, c === 'divider')).join('') +
       `<span class="wvkey"><i class="ramp"></i>Planned trajectory</span>` +
       chip(ink(), 'Recorded future', true) + chip(WV.EGO, 'Ego vehicle');
