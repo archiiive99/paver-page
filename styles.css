@@ -1417,3 +1417,15 @@ section[id] > .wrap > .shead { scroll-margin-top: calc(var(--bar-h) + var(--s5))
   .card > [id^="chart"] > svg, .pane > [id^="chart"] > svg { min-width: 560px; }
   .qvstage video { min-width: 0; }
 }
+
+/* the scene select with a step either side, so moving one scene does not mean
+   opening a menu */
+.stepper { display: inline-flex; align-items: stretch; gap: var(--s2); }
+.stepper .step { min-width: 34px; padding: 0; }
+@media (pointer: coarse) { .stepper .step { min-width: 44px; } }
+.qvstage[data-state="loading"] video { opacity: 0.6; }
+.qvstage[data-state="failed"]::after {
+  content: "This clip could not be loaded"; display: block; padding: var(--s7);
+  text-align: center; color: var(--fg-3);
+}
+#qvTransport, #qvTopTransport { margin-top: var(--s3); }
