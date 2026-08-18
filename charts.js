@@ -461,10 +461,16 @@ function chartCapacity(host, metricKey){
   const dec = Math.max(...all) < 1 ? 3 : 2;
 
   const defs = el('defs', {}, svg);
-  const band = el('linearGradient', { id: 'cap-band', x1: '0', x2: '1' }, defs);
-  el('stop', { offset: '0%', 'stop-color': 'var(--paver)', 'stop-opacity': '0.16' }, band);
-  el('stop', { offset: '100%', 'stop-color': 'var(--paver)', 'stop-opacity': '0' }, band);
-  el('rect', { x: L, y: T, width: x(1.4e5) - L, height: H - B - T, fill: 'url(#cap-band)' }, svg);
+  /* Fewer parameters is always to the left; which vertical end is better depends
+     on the metric, so the wash is anchored at that corner rather than being a
+     left-to-right band that ignores the y axis entirely. */
+  const goodY = lower ? '100%' : '0%';
+  const wash = el('radialGradient',
+    { id: 'cap-good', cx: '0%', cy: goodY, r: '105%' }, defs);
+  [['0%', '0.34'], ['22%', '0.22'], ['45%', '0.10'], ['68%', '0.035'], ['100%', '0']]
+    .forEach(([offset, op]) =>
+      el('stop', { offset, 'stop-color': 'var(--paver)', 'stop-opacity': op }, wash));
+  el('rect', { x: L, y: T, width: W - L - R, height: H - B - T, fill: 'url(#cap-good)' }, svg);
 
   [1e4, 1e5, 1e6, 1e7].forEach(t => {
     /* 35: without the 2..9 ticks a decade looked like any other gap */
