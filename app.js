@@ -2034,8 +2034,11 @@ function sortableTables(scope) {
       status.textContent = q ? `${shown} of ${original.length} rows match “${filter.value}”`
                              : rest();
     });
-    tools.appendChild(filter);
-    if (table.querySelector('tr.ours')) {
+    /* a short table is read whole, so the filter and the key are noise there;
+       repeated verbatim above sixteen tables they read as furniture */
+    const worthTools = original.length > 8;
+    if (worthTools) tools.appendChild(filter);
+    if (worthTools && table.querySelector('tr.ours')) {
       const key = document.createElement('span');
       key.className = 'tkey';
       key.textContent = 'Tinted row: pretrained with PAVER';
@@ -2047,8 +2050,10 @@ function sortableTables(scope) {
     const wrap = table.closest('.scroller') || table;
     const rest = () => `${original.length} rows \u00b7 click a column name to sort`;
     status.textContent = rest();
-    if (wrap.parentNode) { wrap.parentNode.insertBefore(tools, wrap);
-                           wrap.parentNode.insertBefore(status, wrap); }
+    if (wrap.parentNode) {
+      if (worthTools) wrap.parentNode.insertBefore(tools, wrap);
+      wrap.parentNode.insertBefore(status, wrap);
+    }
 
     const cellText = (row, index) => {
       const cells = [...row.cells];
