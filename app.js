@@ -620,13 +620,13 @@ function enhanceSelects(scope) { $$('.select > select', scope || document).forEa
 /* Figure 2 is featured in the idea section, so the method walkthrough starts at Figure 3. */
 const METHOD_FIGURES = [
   ['fig3', 'Paper figure 3', 'PAVER overview', 'overview5',
-   'A single LiDAR sweep is rasterized into free, occupied and unknown cells, and rule-based ego motions are rolled out over it. The camera-derived BEV features along each corridor are replaced by a shared mask token before the head predicts the two target ratios.',
-   'PAVER constructs sparse action targets from a LiDAR sweep, masks the action corridors in the camera-derived BEV features with a shared learnable token, and predicts the targets conditioned on the corresponding action state.'],
+   'One LiDAR sweep becomes free, occupied and unknown cells. Rule-based ego motions are rolled out over it to read evidence along each candidate corridor.',
+   'Sparse action targets from a LiDAR sweep; the action corridors are masked in the camera-derived BEV and predicted from the surrounding context.'],
   ['fig4', 'Paper figure 4', 'Two-stage training protocol', 'training_method',
-   'Stage 1 trains only the BEV encoder and the auxiliary head. Stage 2 discards the head, reinitializes every task decoder, and runs the downstream recipe unchanged, so the comparison isolates initialization.',
+   'Stage 1 trains the BEV encoder and the auxiliary head. Stage 2 discards the head and fine-tunes the full stack.',
    'Only the pretrained BEV encoder transfers; every task decoder is reinitialized.'],
   ['fig5', 'Paper figure 5', 'Sparse action-target construction', 'soft_labels5',
-   'Each candidate state is queried at K lateral positions across the vehicle width. Risk is the fraction of those queries on measured returns and Unknown the fraction on cells no ray supports, so both targets describe only what the sensor observed.',
+   'Each candidate state is read at K lateral positions across the vehicle width. Risk is the occupied fraction, unknown the unobserved fraction.',
    'LiDAR rays provide Risk and Unknown targets for action-indexed queries; \u201cSafe\u201d denotes free space.']
 ];
 

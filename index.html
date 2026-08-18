@@ -94,7 +94,7 @@
         <span class="names"><a class="author" href="https://www.linkedin.com/in/archiiive99/" target="_blank" rel="noopener">Jaeha Song</a> &nbsp;&middot;&nbsp; <a class="author" href="https://soonminhwang.github.io/" target="_blank" rel="noopener">Soonmin Hwang</a></span>
         <span class="affil">Hanyang University</span>
       </div>
-      <p class="lead">One pretraining stage supervises the bird&rsquo;s-eye-view representation exactly where planning reads it, using targets read off a single LiDAR sweep. It needs no driving-task annotation and no teacher model, and leaves the downstream architecture untouched.</p>
+      <p class="lead">One pretraining stage supervises the bird&rsquo;s-eye-view representation where planning reads it, from targets read off a single LiDAR sweep. No driving annotation, no teacher, no change downstream.</p>
       <div class="chips">
         <a class="btn solid" href="assets/paper/paver_main.pdf" target="_blank" rel="noopener">Paper</a>
         <a class="btn" href="assets/paper/paver_supplement.pdf" target="_blank" rel="noopener">Supplementary</a>
@@ -128,7 +128,7 @@
       <header class="shead">
         <span class="label">nuScenes</span>
         <h2 id="scenes-h">Qualitative comparison</h2>
-        <p class="lead">Predicted boxes and futures on six surround cameras, with the encoder&rsquo;s attribution below. Three scenes exercise all three architectures; each architecture also has the ten where it gains most.</p>
+        <p class="lead">Predicted boxes and futures on six surround cameras, with the encoder&rsquo;s attribution below.</p>
       </header>
       <div class="stack">
         <div class="card lead-card" id="qvcommon">
@@ -144,7 +144,7 @@
             <div class="qvstage" id="qvStage"></div>
             <button class="qvnav next" id="qvSceneNext" type="button" aria-label="Next scene"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
           </div>
-          <p class="tcap" id="qvHelp">The track takes arrow keys to step, Shift with an arrow for a longer step, Home and End for the ends, and Space to play. Switching architecture holds the current instant, so the same moment can be read under each decoder.</p><div class="wvtransport" id="qvTransport" aria-describedby="qvHelp"><button class="wvplay" id="qvPlay" type="button" aria-label="Play or pause"><svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><div class="wvtrack" id="qvTrack" role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="wvrail"><div class="wvfill" id="qvFill"></div></div><div class="wvknob" id="qvKnob"></div></div><span class="wvclock"><b id="qvNow">0:00</b><i>/</i><span id="qvDur">0:00</span></span><div class="chips" id="qvSpeed" role="tablist" aria-label="Playback speed"></div></div>
+          <div class="wvtransport" id="qvTransport"><button class="wvplay" id="qvPlay" type="button" aria-label="Play or pause"><svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><div class="wvtrack" id="qvTrack" role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="wvrail"><div class="wvfill" id="qvFill"></div></div><div class="wvknob" id="qvKnob"></div></div><span class="wvclock"><b id="qvNow">0:00</b><i>/</i><span id="qvDur">0:00</span></span><div class="chips" id="qvSpeed" role="tablist" aria-label="Playback speed"></div></div>
         </div>
       </div>
     </div>
@@ -155,7 +155,7 @@
       <h2 id="headline-h" class="sr">Headline results</h2>
       <div class="card lead-card" id="glance">
       <div class="chead"><div class="titles"><span class="kicker">Transfer</span><h3>Transfer and auxiliary capacity</h3></div><div class="actions"></div></div>
-      <p class="lead">Left: arrows run from each baseline to the same architecture pretrained with PAVER; hollow markers are reconstruction-based pretraining as reported by its authors. Right: the selected metric against auxiliary parameter count on a logarithmic axis, with the no-pretraining baseline as the dashed rule.</p>
+      <p class="lead">Arrows run from each baseline to the same architecture with PAVER. Hollow markers are reconstruction-based pretraining, as its authors report it.</p>
       <div class="pane" data-pane="chart"><div class="stack"><div id="chartTransfer"></div><div id="chartCapacity"></div><div class="chips center tight" id="capacityTabs" role="tablist" aria-label="Metric"></div></div></div>
       <div class="pane" data-pane="table" hidden id="glanceTable"></div>
     </div>
@@ -166,8 +166,7 @@
               <button role="tab" aria-selected="false" data-pane="table">Table</button>
             </div></div>
         </div>
-        <p class="lead">Three architectures, each trained from scratch and with PAVER pretraining, under the same
-          downstream recipe. Every axis is normalized across all three, and outward is always better.</p>
+        <p class="lead">Three architectures, from scratch and with PAVER, under one downstream recipe.</p>
         <div class="pane" data-pane="chart"><div class="chips" id="radarTabs" role="tablist" aria-label="Architecture"></div><div id="chartRadar"></div></div>
         <div class="pane" data-pane="table" hidden>      <div class="scroller"><table>
         
@@ -195,10 +194,7 @@
       <header class="shead">
         <span class="label">Visualizer</span>
         <h2 id="scene-h">Interactive visualizer</h2>
-        <p class="lead">Both models decode the same validation clip: 3D boxes with their object futures, the
-          predicted vector map, and the planned ego trajectory against the recorded one. The baseline drifts
-          across the lane boundary it predicted, while the pretrained model keeps its plan inside the corridor
-          its own map marks out.</p>
+        <p class="lead">Both models decode the same clip: 3D boxes with object futures, the vector map, and the planned trajectory at one instant.</p>
       </header>
       <div class="card" id="viewer3d">
         <div class="chead">
@@ -208,9 +204,7 @@
             <span class="field"><label class="lbl" for="wvFrame">Scene</label><span class="select"><select id="wvFrame"></select></span></span>
           </div>
         </div>
-        <p class="lead">Pick an architecture and a validation scene. The six camera
-          images sit above the bird's-eye panes; the controls on the left choose what is
-          drawn over the images and the ones on the right choose which model is shown.</p>
+        <p class="lead">Six camera views over the bird&rsquo;s-eye panes, for any validation scene and any of the three architectures.</p>
         <!-- what the six camera images show, directly above them -->
         <div class="wvbar" aria-label="Camera images">
           <div class="wvbarL">
@@ -283,10 +277,7 @@
       <header class="shead">
         <span class="label">The idea</span>
         <h2 id="idea-h">Pretraining supervision</h2>
-        <p class="lead">Perception-supervised pretraining needs dense driving annotations. Reconstruction-based
-          pretraining supervises a lifted 3D volume, so what it hands downstream is the image backbone rather
-          than the shared BEV encoder. PAVER supervises the BEV encoder itself, at the locations a planner
-          queries.</p>
+        <p class="lead">Perception supervision needs dense annotation; reconstruction needs a dense 3D objective. PAVER supervises the BEV where planning reads it, with targets from one LiDAR sweep.</p>
       </header>
       <div class="card" id="fig2">
         <div class="chead"><div class="titles"><span class="kicker">Paper figure 2</span><h3>Driving pretraining paradigms</h3></div><div class="actions"></div></div>
@@ -319,7 +310,7 @@
       <header class="shead">
         <span class="label">Method</span>
         <h2 id="method-h">Method</h2>
-        <p class="lead">Existing driving pretraining supervises either perception labels or dense reconstruction. PAVER instead supervises the BEV along the corridors that candidate actions would traverse, using targets read straight off a single LiDAR sweep.</p>
+        <p class="lead">Perception supervision needs dense annotation; reconstruction needs a dense 3D objective. PAVER needs neither.</p>
       </header>
       <div class="stack">
   <div class="stack" id="methodFigs"></div>
@@ -332,7 +323,7 @@
       <header class="shead">
         <span class="label">Open-loop</span>
         <h2 id="results-h">Results on nuScenes</h2>
-        <p class="lead">Arrows in the tables mark the direction of improvement: &darr; lower is better, &uarr; higher is better. Bold marks the better value within a comparison block, and a blue rule on the left marks the PAVER row.</p>
+        <p class="lead">Every table reports the nuScenes validation split under one fine-tuning budget.</p>
       </header>
       <div class="stack">
       <div class="card" id="table4">
@@ -358,7 +349,7 @@
       <div class="card" id="table5">
       <div class="chead"><div class="titles"><span class="kicker">Paper table 6</span><h3>Reconstruction-based pretraining</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
-      <p class="lead">UniPAD and MIM4D reconstruct scene content with 6.41M and 13.43M auxiliary parameters. PAVER uses 0.01M and still reaches the lowest planning error and collision rate on VAD-Tiny.</p>
+      <p class="lead">UniPAD and MIM4D reconstruct scene content with 6.41M and 13.43M auxiliary parameters. PAVER uses 0.01M.</p>
       <div class="pane" data-pane="chart"><div class="chips" id="methodsTabs" role="tablist" aria-label="Metric"></div><div id="chartMethods"></div></div><div class="pane" data-pane="table" hidden>      <div class="scroller"><table>
         
         <thead><tr class="grp"><th class="stick"></th><th></th><th></th><th colspan="3" scope="colgroup">L2 (m) ↓</th><th colspan="3" scope="colgroup">Col. (%) ↓</th></tr>
@@ -398,11 +389,7 @@
       <div class="card" id="table2">
       <div class="chead"><div class="titles"><span class="kicker">Paper table 2</span><h3>Pseudo-LiDAR targets</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
       </div>
-      <p class="lead">PAVER reads its targets off a LiDAR sweep, but the sweep is not essential. A frozen
-        monocular metric-depth estimator, unprojected per camera, supplies the same surface endpoints and ray
-        segments the target builder expects. Estimated depth recovers most of the gain &mdash; planning L2, motion
-        and detection all improve over scratch &mdash; while the collision reduction does not carry over, so it is a
-        usable substitute rather than an equivalent one.</p>
+      <p class="lead">PAVER reads its targets off a LiDAR sweep, but the sweep is not essential: a frozen monocular depth model gives targets that transfer nearly as well.</p>
       <div class="pane" data-pane="chart"><div class="chips" id="pseudoTabs" role="tablist" aria-label="Metric"></div><div id="chartPseudo"></div></div><div class="pane" data-pane="table" hidden>        <div class="scroller"><table>
           
           <thead><tr class="grp"><th class="stick"></th><th colspan="2" scope="colgroup">Planning</th><th colspan="3" scope="colgroup">Motion</th><th scope="col">Det.</th><th scope="col">Map</th></tr>
@@ -447,7 +434,7 @@
     </div>
       <div class="card" id="routes">
       <div class="chead"><div class="titles"><span class="kicker">Replays</span><h3>Route replays</h3></div><div class="actions"></div></div>
-      <p class="lead">Each route is driven twice, once by UniAD-Tiny and once by the same model pretrained with PAVER. The two clips play in step, and the Driving Score and Route Completion of that run are shown above each video.</p>
+      <p class="lead">Each route driven twice, by UniAD-Tiny and by the same model with PAVER. The clips play in step.</p>
       <div class="actions"><span class="field"><label class="lbl" for="routeSel">Route</label><span class="select"><select id="routeSel"></select></span></span></div><div class="videos" id="videoGrid"></div><div class="wvtransport" id="routeTransport"><button class="wvplay" id="routePlay" type="button" aria-label="Play or pause both clips"><svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><div class="wvtrack" id="routeTrack" role="slider" tabindex="0" aria-label="Seek both clips together" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="wvrail"><div class="wvfill" id="routeFill"></div></div><div class="wvknob" id="routeKnob"></div></div><span class="wvclock"><b id="routeNow">0:00</b><i>/</i><span id="routeDur">0:00</span></span><div class="chips" id="routeSpeed" role="tablist" aria-label="Playback speed"></div></div>
 
       </div>
@@ -456,16 +443,12 @@
             <span class="field"><label class="lbl" for="routeChart">Route</label><span class="select"><select id="routeChart"></select></span></span>
             <div class="chips" id="traceTabs" role="tablist" aria-label="Channel"></div></div>
         </div>
-        <p class="lead">Reconstructed from the recorded leaderboard tracks: completion against simulated time for
-          every policy on the selected route, then the commanded speed and brake for the same run. Markers and dashed
-          lines are the recorded events.</p>
+        <p class="lead">Route completion against simulated time, then commanded speed and brake for the same run. Markers are the recorded events.</p>
         <div id="chartTimeline"></div>
         <div id="chartTrace"></div>
         <div class="chips" role="tablist" aria-label="View" id="routeView"></div>
         <div id="routeTable" hidden></div>
-        <p class="caption">Route completion is reconstructed by projecting the ego track onto the leaderboard polyline
-          and agrees with the recorded value within 3.0 points. <b>Failed&nbsp;-&nbsp;TickRuntime</b> denotes the
-          200.05&nbsp;s simulated-time budget being exhausted, that is a timeout, not a simulator error.</p>
+        <p class="caption">Route completion is projected from the ego track onto the leaderboard polyline, within 3.0 points of the recorded value. <b>Failed&nbsp;-&nbsp;TickRuntime</b> is the 200.05&nbsp;s budget running out, not a simulator error.</p>
       </div>
       </div>
     </div>
@@ -577,7 +560,7 @@
   <div class="cols-2">
       <div class="card" id="files">
       <div class="chead"><div class="titles"><span class="kicker">Downloads</span><h3>Files</h3></div><div class="actions"></div></div>
-      <p class="lead">The supplementary material carries the full method contract, rule-based action sampling, frozen-predictor controls, class-wise detection results, and the complete mechanistic analysis.</p>
+      <p class="lead">Every supplementary table, with the full per-checkpoint metrics.</p>
       <div class="chips"><a class="btn solid" href="assets/paper/paver_main.pdf" target="_blank" rel="noopener">Main paper</a><a class="btn" href="assets/paper/paver_supplement.pdf" target="_blank" rel="noopener">Supplementary material</a></div>
     </div>
       <div class="card" id="cite">
