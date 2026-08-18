@@ -2031,16 +2031,16 @@ new MutationObserver(records => {
 }).observe(document.body, { childList: true, subtree: true });
 
 /* ── nuScenes qualitative clips ───────────────────────────────────────────
- * Three scenes every architecture is exercised by, then ten per architecture.
- * One player at a time, driven by the same transport the visualizer uses: the
- * browser's default bar is a different control on every platform and does not
- * carry the playback rate these clips need.
+ * One card: the shared scenes and the per-architecture ten are the same clip in
+ * the same layout, so splitting them into two players made the reader learn the
+ * control twice. Picking an architecture rebuilds the scene list; the three
+ * shared scenes lead it and are marked.
  */
 (function qualVideos() {
   const COMMON = [
-    ['scene-0556', 'Left turn across oncoming traffic, with a pedestrian in the crossing.'],
-    ['scene-0345', 'Right turn past a work zone, with a scooter and cones in the lane.'],
-    ['scene-0905', 'Rain, a pedestrian crossing ahead, a truck alongside and a work zone.']
+    ['0556', 'Left turn across oncoming traffic, with a pedestrian in the crossing.'],
+    ['0345', 'Right turn past a work zone, with a scooter and cones in the lane.'],
+    ['0905', 'Rain, a pedestrian crossing ahead, a truck alongside and a work zone.']
   ];
   const ARCH = [['vad_tiny', 'VAD-Tiny'], ['vad_base', 'VAD-Base'], ['genad', 'GenAD']];
   const RATES = [['0.25', '0.25\u00d7'], ['0.5', '0.5\u00d7'], ['1', '1\u00d7']];
@@ -2050,141 +2050,109 @@ new MutationObserver(records => {
     genad:    ['1073','0922','0905','0917','0904','1071','0105','0967','0330','0345']
   };
   const NAME = Object.fromEntries(ARCH);
+  const NOTE = Object.fromEntries(COMMON);
+  const commonIds = COMMON.map(c => c[0]);
   const clock = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  const srcFor = (arch, id) => commonIds.includes(id) && !TOP[arch].includes(id)
+    ? `assets/qualvid/common/scene-${id}/${arch}.mp4`
+    : (TOP[arch].includes(id) ? `assets/qualvid/top10/${arch}/scene-${id}.mp4`
+                              : `assets/qualvid/common/scene-${id}/${arch}.mp4`);
 
-  /* one transport implementation for both cards, so they cannot drift apart */
-  function transport(pfx, stageId, rateKey) {
-    const stage = $('#' + stageId), play = $('#' + pfx + 'Play');
-    const track = $('#' + pfx + 'Track'), fill = $('#' + pfx + 'Fill');
-    const knob = $('#' + pfx + 'Knob'), now = $('#' + pfx + 'Now'), dur = $('#' + pfx + 'Dur');
-    const speed = $('#' + pfx + 'Speed');
-    let rate = parseFloat(getParam(rateKey, '0.5')) || 0.5;
-    let video = null;
+  const stage = $('#qvStage'), sel = $('#qvSceneSel'), archBar = $('#qvArch');
+  const note = $('#qvSceneNote'), play = $('#qvPlay'), track = $('#qvTrack');
+  const fill = $('#qvFill'), knob = $('#qvKnob'), now = $('#qvNow'), dur = $('#qvDur');
+  const speed = $('#qvSpeed');
+  if (!stage || !sel || !archBar) return;
 
-    const paint = () => {
-      if (!video || !video.duration) return;
-      const pct = video.currentTime / video.duration;
-      fill.style.width = knob.style.left = (pct * 100).toFixed(2) + '%';
-      now.textContent = clock(video.currentTime);
-      dur.textContent = clock(video.duration);
-      track.setAttribute('aria-valuenow', Math.round(pct * 100));
-    };
-    const seek = pct => {
-      if (video && video.duration) video.currentTime = Math.max(0, Math.min(1, pct)) * video.duration;
-      paint();
-    };
-    const fromEvent = e => {
-      const b = track.getBoundingClientRect();
-      seek((e.clientX - b.left) / b.width);
-    };
-    play.addEventListener('click', () => {
-      if (!video) return;
-      if (video.paused) video.play(); else video.pause();
-    });
-    track.addEventListener('pointerdown', e => {
-      track.setPointerCapture(e.pointerId); fromEvent(e);
-      const move = ev => fromEvent(ev);
-      const up = () => { track.removeEventListener('pointermove', move);
-                         track.removeEventListener('pointerup', up); };
-      track.addEventListener('pointermove', move);
-      track.addEventListener('pointerup', up);
-    });
-    track.addEventListener('keydown', e => {
-      if (!video || !video.duration) return;
-      const step = e.shiftKey ? 0.1 : 0.02;
-      if (e.key === 'ArrowRight') { e.preventDefault(); seek(video.currentTime / video.duration + step); }
-      if (e.key === 'ArrowLeft')  { e.preventDefault(); seek(video.currentTime / video.duration - step); }
-      if (e.key === 'Home') { e.preventDefault(); seek(0); }
-      if (e.key === 'End')  { e.preventDefault(); seek(0.999); }
-      if (e.key === ' ')    { e.preventDefault(); play.click(); }
-    });
-    if (speed) {
-      chipTabs(speed, RATES, (k, push) => {
-        rate = parseFloat(k);
-        if (video) video.playbackRate = rate;
-        markTabs(speed, k);
-        if (push) setParam(rateKey, k);
-      });
-      markTabs(speed, String(rate));
-    }
+  let arch = getParam('arch-clip', 'vad_tiny');  if (!NAME[arch]) arch = 'vad_tiny';
+  let scene = getParam('scene', commonIds[0]);
+  let rate = parseFloat(getParam('clip-speed', '0.5')) || 0.5;
+  let video = null;
 
-    return function load(src, label) {
-      stage.dataset.state = 'loading';
-      stage.innerHTML = `<video playsinline preload="metadata"
-        poster="${src.replace('.mp4', '.jpg')}" aria-label="${label}"></video>`;
-      video = $('video', stage);
-      video.src = src;
-      video.playbackRate = rate;
-      play.classList.remove('playing');
-      video.addEventListener('loadedmetadata', () => {
-        stage.dataset.state = 'ready'; video.playbackRate = rate; paint();
-      }, { once: true });
-      video.addEventListener('error', () => { stage.dataset.state = 'failed'; }, { once: true });
-      video.addEventListener('timeupdate', paint);
-      video.addEventListener('play',  () => play.classList.add('playing'));
-      video.addEventListener('pause', () => play.classList.remove('playing'));
-      video.addEventListener('ended', () => play.classList.remove('playing'));
-    };
+  const scenes = () => commonIds.concat(TOP[arch].filter(s => !commonIds.includes(s)));
+
+  const paint = () => {
+    if (!video || !video.duration) return;
+    const pct = video.currentTime / video.duration;
+    fill.style.width = knob.style.left = (pct * 100).toFixed(2) + '%';
+    now.textContent = clock(video.currentTime);
+    dur.textContent = clock(video.duration);
+    track.setAttribute('aria-valuenow', Math.round(pct * 100));
+  };
+  const seek = pct => {
+    if (video && video.duration) video.currentTime = Math.max(0, Math.min(1, pct)) * video.duration;
+    paint();
+  };
+  play.addEventListener('click', () => {
+    if (!video) return;
+    if (video.paused) video.play(); else video.pause();
+  });
+  const fromEvent = e => {
+    const b = track.getBoundingClientRect();
+    seek((e.clientX - b.left) / b.width);
+  };
+  track.addEventListener('pointerdown', e => {
+    track.setPointerCapture(e.pointerId); fromEvent(e);
+    const move = ev => fromEvent(ev);
+    const up = () => { track.removeEventListener('pointermove', move);
+                       track.removeEventListener('pointerup', up); };
+    track.addEventListener('pointermove', move);
+    track.addEventListener('pointerup', up);
+  });
+  track.addEventListener('keydown', e => {
+    if (!video || !video.duration) return;
+    const step = e.shiftKey ? 0.1 : 0.02;
+    if (e.key === 'ArrowRight') { e.preventDefault(); seek(video.currentTime / video.duration + step); }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); seek(video.currentTime / video.duration - step); }
+    if (e.key === 'Home') { e.preventDefault(); seek(0); }
+    if (e.key === 'End')  { e.preventDefault(); seek(0.999); }
+    if (e.key === ' ')    { e.preventDefault(); play.click(); }
+  });
+  chipTabs(speed, RATES, (k, push) => {
+    rate = parseFloat(k);
+    if (video) video.playbackRate = rate;
+    markTabs(speed, k);
+    if (push) setParam('clip-speed', k);
+  });
+  markTabs(speed, String(rate));
+
+  function draw(push) {
+    const list = scenes();
+    if (!list.includes(scene)) scene = list[0];
+    sel.innerHTML = list.map(s =>
+      `<option value="${s}">Scene ${s}${commonIds.includes(s) ? ' \u00b7 shared' : ''}</option>`).join('');
+    sel.value = scene;
+    markTabs(archBar, arch);
+    note.textContent = NOTE[scene] ||
+      `One of the ten validation scenes where ${NAME[arch]} gains most from PAVER.`;
+    stage.dataset.state = 'loading';
+    const src = srcFor(arch, scene);
+    stage.innerHTML = `<video playsinline preload="metadata" poster="${src.replace('.mp4', '.jpg')}"
+      aria-label="${NAME[arch]} on nuScenes scene ${scene}"></video>`;
+    video = $('video', stage);
+    video.src = src;
+    video.playbackRate = rate;
+    play.classList.remove('playing');
+    video.addEventListener('loadedmetadata', () => {
+      stage.dataset.state = 'ready'; video.playbackRate = rate; paint();
+    }, { once: true });
+    video.addEventListener('error', () => { stage.dataset.state = 'failed'; }, { once: true });
+    video.addEventListener('timeupdate', paint);
+    video.addEventListener('play',  () => play.classList.add('playing'));
+    video.addEventListener('pause', () => play.classList.remove('playing'));
+    video.addEventListener('ended', () => play.classList.remove('playing'));
+    if (push) { setParam('arch-clip', arch); setParam('scene', scene); }
   }
 
-  /* a dropdown alone means opening a menu to step one scene */
-  function stepper(prevId, nextId, list, get, set) {
-    const go = delta => {
-      const i = list().indexOf(get());
-      const next = list()[(i + delta + list().length) % list().length];
-      set(next);
-    };
-    const p = $('#' + prevId), n = $('#' + nextId);
-    if (p) p.addEventListener('click', () => go(-1));
-    if (n) n.addEventListener('click', () => go(1));
-  }
-
-  /* shared scenes */
-  const sel = $('#qvSceneSel'), note = $('#qvSceneNote'), archBar = $('#qvArch');
-  if (sel && archBar && $('#qvStage')) {
-    const load = transport('qv', 'qvStage', 'scene-speed');
-    let scene = getParam('scene', COMMON[0][0]);
-    if (!COMMON.some(c => c[0] === scene)) scene = COMMON[0][0];
-    let arch = getParam('scene-arch', 'vad_tiny');
-    if (!NAME[arch]) arch = 'vad_tiny';
-    sel.innerHTML = COMMON.map(([s]) =>
-      `<option value="${s}">Scene ${s.replace('scene-', '')}</option>`).join('');
-    const paint = push => {
-      sel.value = scene;
-      note.textContent = (COMMON.find(c => c[0] === scene) || COMMON[0])[1];
-      markTabs(archBar, arch);
-      load(`assets/qualvid/common/${scene}/${arch}.mp4`,
-        `${NAME[arch]} on ${scene.replace('scene-', 'nuScenes scene ')}`);
-      if (push) { setParam('scene', scene); setParam('scene-arch', arch); }
-    };
-    chipTabs(archBar, ARCH, (k, push) => { arch = k; paint(push); });
-    sel.addEventListener('change', () => { scene = sel.value; paint(true); });
-    stepper('qvScenePrev', 'qvSceneNext', () => COMMON.map(c => c[0]),
-      () => scene, v => { scene = v; paint(true); announce(`Scene ${v.replace('scene-', '')}`); });
-    paint(false);
-  }
-
-  /* per-architecture top ten */
-  const tArch = $('#qvTopArch'), tSel = $('#qvTopSel');
-  if (tArch && tSel && $('#qvTopStage')) {
-    const load = transport('qvTop', 'qvTopStage', 'top-speed');
-    let arch = getParam('top-arch', 'vad_tiny');
-    if (!TOP[arch]) arch = 'vad_tiny';
-    let scene = getParam('top-scene', [...TOP[arch]].sort()[0]);
-    const list = () => [...TOP[arch]].sort();
-    const paint = push => {
-      if (!list().includes(scene)) scene = list()[0];
-      tSel.innerHTML = list().map(s => `<option value="${s}">Scene ${s}</option>`).join('');
-      tSel.value = scene;
-      markTabs(tArch, arch);
-      load(`assets/qualvid/top10/${arch}/scene-${scene}.mp4`,
-        `${NAME[arch]} on nuScenes scene ${scene}`);
-      if (push) { setParam('top-arch', arch); setParam('top-scene', scene); }
-    };
-    chipTabs(tArch, ARCH, (k, push) => { arch = k; paint(push); });
-    tSel.addEventListener('change', () => { scene = tSel.value; paint(true); });
-    stepper('qvTopPrev', 'qvTopNext', list, () => scene,
-      v => { scene = v; paint(true); announce(`Scene ${v}`); });
-    paint(false);
-  }
+  chipTabs(archBar, ARCH, (k, push) => { arch = k; draw(push); });
+  sel.addEventListener('change', () => { scene = sel.value; draw(true); });
+  const step = delta => {
+    const list = scenes();
+    scene = list[(list.indexOf(scene) + delta + list.length) % list.length];
+    draw(true);
+    announce(`Scene ${scene}`);
+  };
+  $('#qvScenePrev').addEventListener('click', () => step(-1));
+  $('#qvSceneNext').addEventListener('click', () => step(1));
+  draw(false);
 })();

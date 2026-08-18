@@ -1420,14 +1420,34 @@ section[id] > .wrap > .shead { scroll-margin-top: calc(var(--bar-h) + var(--s5))
   .qvstage video { min-width: 0; }
 }
 
-/* the scene select with a step either side, so moving one scene does not mean
-   opening a menu */
-.stepper { display: inline-flex; align-items: stretch; gap: var(--s2); }
-.stepper .step { min-width: 34px; padding: 0; }
-@media (pointer: coarse) { .stepper .step { min-width: 44px; } }
 .qvstage[data-state="loading"] video { opacity: 0.6; }
 .qvstage[data-state="failed"]::after {
   content: "This clip could not be loaded"; display: block; padding: var(--s7);
   text-align: center; color: var(--fg-3);
 }
 #qvTransport, #qvTopTransport { margin-top: var(--s3); }
+
+
+/* ── clip frame ───────────────────────────────────────────────────────────
+   The step controls belong on the picture, where the eye already is, not
+   beside a dropdown in the header. They sit over the edges of the frame and
+   stay clear of the video's own surface on narrow screens. */
+.qvframe { position: relative; margin-top: var(--s4); }
+.qvnav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: var(--z-raised);
+  width: 44px; height: 64px; display: grid; place-items: center;
+  border: 0; border-radius: var(--radius); cursor: pointer;
+  background: rgb(6 9 14 / 0.52); color: #fff;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  opacity: 0; transition: opacity var(--t-base) ease, background var(--t-fast) ease;
+}
+.qvframe:hover .qvnav, .qvnav:focus-visible { opacity: 1; }
+.qvnav:hover, .qvnav:focus-visible { background: rgb(6 9 14 / 0.72); }
+.qvnav.prev { left: var(--s3); }
+.qvnav.next { right: var(--s3); }
+.qvnav .ic { width: 22px; height: 22px; }
+/* on touch there is no hover to reveal them, so they are simply always there */
+@media (pointer: coarse) { .qvnav { opacity: 1; width: 48px; height: 72px; } }
+@media (prefers-reduced-transparency: reduce) {
+  .qvnav { backdrop-filter: none; background: rgb(6 9 14 / 0.85); }
+}
