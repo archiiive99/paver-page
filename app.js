@@ -1458,6 +1458,9 @@ addEventListener('DOMContentLoaded', () => {
         `${e.name}: predicted 3D boxes, vector map and planned trajectory for this frame`);
       const tag = document.createElement('span');
       tag.className = 'wvtag';
+      /* filled at runtime, so it is an empty unlabelled element until then */
+      tag.setAttribute('role', 'status');
+      tag.setAttribute('aria-live', 'polite');
       box.append(head, canvas, tag);
       stage.appendChild(box);
       const view = { model: e.id, ours: e.ours, canvas, tag, hits: [] };

@@ -111,7 +111,7 @@
       <header class="shead">
         <span class="label">nuScenes</span>
         <h2 id="scenes-h">Qualitative comparison</h2>
-        <p class="lead">Six surround cameras with predicted boxes and futures above, the attribution the encoder produced below. Three scenes were chosen because all three architectures are exercised by them; each architecture then has its own ten.</p>
+        <p class="lead">Predicted boxes and futures on six surround cameras, with the encoder’s attribution below. Three scenes exercise all three architectures; each architecture also has its own ten.</p>
       </header>
       <div class="stack">
         <div class="card lead-card" id="qvcommon">
@@ -126,7 +126,7 @@
           <div class="chead"><div class="titles"><span class="kicker">Per architecture</span><h3>Per-architecture scenes</h3></div>
             <div class="actions"><div class="segbar" id="qvTopArch" role="tablist" aria-label="Architecture"></div></div>
           </div>
-          <p class="lead">The ten validation scenes where each architecture gains most from PAVER pretraining. The lists overlap only where a scene is hard for more than one decoder.</p>
+          <p class="lead">The ten validation scenes where each architecture gains most from PAVER. Overlap means a scene is hard for more than one decoder.</p>
           <div class="actions"><span class="field"><label class="lbl" for="qvTopSel">Scene</label><span class="stepper"><button class="btn icon step" id="qvTopPrev" type="button" aria-label="Previous scene"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="select"><select id="qvTopSel"></select></span><button class="btn icon step" id="qvTopNext" type="button" aria-label="Next scene"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button></span></span></div>
           <div class="qvstage" id="qvTopStage"></div><div class="wvtransport" id="qvTopTransport"><button class="wvplay" id="qvTopPlay" type="button" aria-label="Play or pause"><svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><div class="wvtrack" id="qvTopTrack" role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="wvrail"><div class="wvfill" id="qvTopFill"></div></div><div class="wvknob" id="qvTopKnob"></div></div><span class="wvclock"><b id="qvTopNow">0:00</b><i>/</i><span id="qvTopDur">0:00</span></span><div class="chips" id="qvTopSpeed" role="tablist" aria-label="Playback speed"></div></div>
         </div>
