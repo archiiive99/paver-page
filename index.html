@@ -132,7 +132,7 @@
       </header>
       <div class="stack">
         <div class="card lead-card" id="qvcommon">
-          <div class="chead"><div class="titles"><span class="kicker">Clips</span><h3>Multi-camera video</h3></div>
+          <div class="chead"><div class="titles"><span class="kicker">Clips</span><h3>Predictions and attribution</h3></div>
             <div class="actions">
               <span class="field"><label class="lbl" for="qvSceneSel">Scene</label><span class="select"><select id="qvSceneSel"></select></span></span>
             </div>
@@ -277,7 +277,7 @@
       <header class="shead">
         <span class="label">The idea</span>
         <h2 id="idea-h">Pretraining supervision</h2>
-        <p class="lead">Perception supervision needs dense annotation; reconstruction needs a dense 3D objective. PAVER supervises the BEV where planning reads it, with targets from one LiDAR sweep.</p>
+        <p class="lead">Where each family of driving pretraining puts its supervision, and what that costs in annotation and auxiliary capacity.</p>
       </header>
       <div class="card" id="fig2">
         <div class="chead"><div class="titles"><span class="kicker">Paper figure 2</span><h3>Driving pretraining paradigms</h3></div><div class="actions"></div></div>
@@ -292,7 +292,7 @@
       <header class="shead">
         <span class="label">Overview</span>
         <h2 id="overview-h">Training cost</h2>
-        <p class="lead">Three views of one result: the training cost it removes, where the initialization lands against competing pretraining, and how little auxiliary capacity it needs.</p>
+        <p class="lead">What PAVER costs to train and what that buys against competing pretraining.</p>
       </header>
       <div class="stack">
       <div class="card" id="fig1">
@@ -401,7 +401,7 @@
           </tbody>
         </table></div>
         <p class="tcap">Replacing the LiDAR target source with monocular pseudo-LiDAR.</p>
-        <p class="foot">If no LiDAR is available, monocular pseudo-LiDAR from a frozen metric-depth estimator is a usable, non-equivalent target source. <sup>†</sup> Reproduced results.</p></div>
+        <p class="foot"><sup>†</sup> Reproduced results.</p></div>
       </div>
       </div>
     </div>
@@ -485,7 +485,7 @@
           <tbody id="t8body"></tbody>
         </table></div>
         <p class="tcap">Feature masking and action-state conditioning, separately and together.</p>
-        <p class="foot">Neither component helps safety alone; only together do they reach 0.187 collision with the lowest L2 and highest NDS.</p></div>
+        <p class="foot">Mask denotes the corridor mask; Action state denotes the 4-D state concatenated at readout.</p></div>
     </div>
       <div class="card" id="table9">
       <div class="chead"><div class="titles"><span class="kicker">Paper table 10</span><h3>Training schedule</h3></div><div class="actions"><div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="true" data-pane="chart">Chart</button><button role="tab" aria-selected="false" data-pane="table">Table</button></div></div>
@@ -519,8 +519,7 @@
       <header class="shead">
         <span class="label">Supplementary analysis</span>
         <h2 id="analysis-h">Analysis</h2>
-        <p class="lead">Every supplementary panel is rebuilt here from the analysis CSV and JSON it was originally
-          rendered from, so each series can be read value by value.</p>
+        <p class="lead">What the pretrained encoder changes downstream, series by series.</p>
       </header>
       <div class="stack">
       <div class="card" id="trajviews">
