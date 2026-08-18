@@ -2172,13 +2172,7 @@ new MutationObserver(records => {
  * shared scenes lead it and are marked.
  */
 (function qualVideos() {
-  /* The caption says what the clip is evidence for, not what is in frame: the
-     agents that bound the manoeuvre are what the attribution should sit on. */
-  const COMMON = [
-    ['0556', 'Turning left across oncoming traffic with a pedestrian in the crossing. PAVER holds its attribution on the two agents that bound the turn.'],
-    ['0345', 'Turning right past a work zone. PAVER keeps the scooter and the cone line in view, which is what sets the drivable gap.'],
-    ['0905', 'Rain, a crossing pedestrian and a truck alongside. PAVER stays on the agents that constrain the path rather than spreading over the scene.']
-  ];
+  const COMMON = ['0556', '0345', '0905'];
   const ARCH = [['vad_tiny', 'VAD-Tiny'], ['vad_base', 'VAD-Base'], ['genad', 'GenAD']];
   const RATES = [['0.25', '0.25\u00d7'], ['0.5', '0.5\u00d7'], ['1', '1\u00d7']];
   const TOP = {
@@ -2187,8 +2181,7 @@ new MutationObserver(records => {
     genad:    ['1073','0922','0905','0917','0904','1071','0105','0967','0330','0345']
   };
   const NAME = Object.fromEntries(ARCH);
-  const NOTE = Object.fromEntries(COMMON);
-  const commonIds = COMMON.map(c => c[0]);
+  const commonIds = COMMON;
   const clock = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
   const srcFor = (arch, id) => commonIds.includes(id) && !TOP[arch].includes(id)
     ? `assets/qualvid/common/scene-${id}/${arch}.mp4`
@@ -2269,8 +2262,6 @@ new MutationObserver(records => {
     if (sel.dataset.list !== markup) { sel.innerHTML = markup; sel.dataset.list = markup; }
     sel.value = scene;
     markTabs(archBar, arch);
-    note.textContent = NOTE[scene] ||
-      `${NAME[arch]} gains most from PAVER on this scene of the ten.`;
     stage.dataset.state = 'loading';
     const src = srcFor(arch, scene);
     stage.innerHTML = `<video playsinline muted loop preload="metadata"
